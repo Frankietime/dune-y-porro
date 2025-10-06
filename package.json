@@ -1,0 +1,24 @@
+{
+  "name": "turnbased-starter",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w server & npm run dev -w client",
+    "install:all": "npm i -w server && npm i -w client"
+  },
+  "dependencies": {
+    "@radix-ui/themes": "^3.2.1",
+    "boardgame.io": "^0.50.2",
+    "faker": "^6.6.6",
+    "nes.css": "^2.2.1",
+    "react95": "^4.0.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
+    "sass-embedded": "^1.93.2"
+  }
+}

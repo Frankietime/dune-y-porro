@@ -1,0 +1,26 @@
+.location-section {
+    margin: auto;
+
+    // .location-cost-section {
+    //     margin: auto;
+
+        .location-resource-icon {
+                width: 24px;
+                height: 24px;
+        }
+
+        .location-card-type-icon {
+            width: 32px;
+            height: 32px;
+        }
+    // }
+
+    &.location-deploy-section {
+        height: 100%;  
+        width: 100%;
+        padding-top: 20px;
+    }
+}
+
+
+
