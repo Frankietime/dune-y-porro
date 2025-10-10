@@ -1,0 +1,15 @@
+services:
+  backend:
+    build:
+      dockerfile: ./Dockerfile.server
+    restart: always
+    ports:
+      - 4000:4000
+  frontend:
+    build:
+      dockerfile: ./Dockerfile.client
+      args:
+        BACKEND_URL: "https://dyp.lucho.io/server"
+    ports:
+      - 5174:80
+    restart: always
