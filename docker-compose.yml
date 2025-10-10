@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      dockerfile: ./Dockerfile.server
+    restart: always
+    ports:
+      - 4000:4000
+  frontend:
+    build:
+      dockerfile: ./Dockerfile.client
+    ports:
+      - 5174:80
+    restart: always

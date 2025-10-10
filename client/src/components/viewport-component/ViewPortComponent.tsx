@@ -1,5 +1,5 @@
 import { Box, Container, Flex, Grid, Theme } from "@radix-ui/themes";
-import "./ViewPortComponent.scss";
+import "./viewportComponent.scss";
 import { LocationComponent } from "../location-component/LocationComponent";
 import { Location, Resource, ResourceEnum, useGame } from "../../store";
 import agente from "../../assets/icons/agent-4.png";

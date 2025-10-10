@@ -55,7 +55,7 @@ export const MainComponent = () => {
     // set "me" local con el id de socket (llega justo después)
     setTimeout(() => {
       // socket.id está disponible tras conectar/emitir
-      setMe({ id: socket.id, name, score: 0 });
+      setMe({ id: socket.id!, name, score: 0, resources: [], power: 0, numberOfAgents: 0 });
       socket.emit("sync", { roomId: room });
     }, 200);
   };
