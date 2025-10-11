@@ -7,6 +7,7 @@ import { socket } from "../../socket";
 import React from "react";
 import player1 from "../../assets/characters/1.png"
 import player2 from "../../assets/characters/2.png"
+import { BoardComponent } from "../board-component/BoardComponent";
 
 export const ViewportComponent = ({ enabled }: { enabled: boolean }) => {
     const { me, roomId, state, player, setMe, setRoomId, setState, setPlayer } = useGame();
@@ -58,25 +59,20 @@ export const ViewportComponent = ({ enabled }: { enabled: boolean }) => {
                     resource: { type: randomEnumValue(ResourceEnum), amount: 2}
                 }
             },
-            {
-              index: 2,
-                name: "Intrigue Spot",
-                cost: {
-                    resource: { type: randomEnumValue(ResourceEnum), amount: 2}
-                }
-            }
+            // {
+            //   index: 2,
+            //     name: "Intrigue Spot",
+            //     cost: {
+            //         resource: { type: randomEnumValue(ResourceEnum), amount: 2}
+            //     }
+            // }
         ];
   
 
   return (
     (player &&
       <div className="viewport-component">
-        <Grid columns="3">
-         <Box>
-        <img src={player1} width="300px" height="450x" />
-          
-          </Box> 
-      <Container>
+      {/* <Container> */}
         <Box>
           <div className="nes-container is-dark with-title">
             <p className="title">Game Log</p>
@@ -87,57 +83,23 @@ export const ViewportComponent = ({ enabled }: { enabled: boolean }) => {
           <>
           {enabled && (
           <div className="nes-container with-title is-centered">
-            <p className="title">Locations</p>
-            <Box ml="100px" mr="100px" mt="50px" mb="50px" height="300px">
+            <p className="title">Board</p>
+              
+              <BoardComponent></BoardComponent>
               {randomLocations.map(loc => (
               <LocationComponent
                   key={loc.name}
                   location={loc}
                   resources={player!.resources}
+                  position={{top: -650, right: -540}}
                   onSelect={(callback) => onLocationSelect(callback)}
                 />
-              ))}
-              
-            </Box>
+              ))}            
           </div>
           )}
-
-          <div className="nes-container  with-title">
-            <p className="title">Player Area</p>
-            <Grid columns="3" rows="repeat(1, 64px)" width="auto" height="100px">
-              <Box width="300px">
-                <div className="nes-container is-dark with-title">
-                  <p className="title">Resources</p>
-                  {currentPlayer?.resources?.map((res) => (<span>{ res.type + ": " + res.amount + " | " }</span>))}
-                </div>
-              </Box>
-              <Box>
-
-              </Box>
-              <Flex>
-                {enabled && Array.from({ length: player!.numberOfAgents }).map((_, i) => (
-                  <div key={i}>
-                    <img onClick={ () => {
-                      if (isAgentSelected) return;
-                      onAgentClick()
-                    }}
-                    src={agente} alt="Agent Icon" />
-                  </div>
-                ))}
-              </Flex>
-                
-                
-            </Grid>
-          </div>
           </>  
-        </Box>
-      
-      </Container>
-      <Box>
-        <img src={player2} width="300px" height="450x" />
-      </Box>
-      </Grid>
-      
+        </Box>      
+      {/* </Container>  */}
     </div>)
   );
 }

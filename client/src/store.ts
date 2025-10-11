@@ -21,9 +21,7 @@ type Player = {
 export enum ResourceEnum {
   Water = "water",
   Spice = "spice",
-  Solari = "solari",
-  Persuasion = "persuasion",
-  Power = "power"
+  Solari = "solari"
 }
 
 export type Resource = {
