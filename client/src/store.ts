@@ -1,60 +1,31 @@
 import { create } from "zustand";
+import { Player } from "./types";
+import { LobbyAPI } from "boardgame.io";
 
-export type LocationCost = {
-  resource: Resource;
-}
-export type Location = {
-  index: number;
-  name: string;
-  cost: LocationCost;
-}
+type AppState = {
+  playerProps: Player;
+  setPlayerProps: (p: Player) => void;
 
-type Player = { 
-  id: string; 
-  name: string; 
-  score: number;
-  resources: Resource[];
-  power: number;
-  numberOfAgents: number;
+  matchData: any;
+  setMatchData: (m: any) => void;
+
+  gameClient: any;
+  setGameClient: (gameClient: any) => void;
+
+  server: any;
+  setServer: (gameClient: any) => void;
 }
 
-export enum ResourceEnum {
-  Water = "water",
-  Spice = "spice",
-  Solari = "solari",
-  Persuasion = "persuasion",
-  Power = "power"
-}
+export const useAppStore = create<AppState>((set) => ({
+  playerProps: { name: "Player 1"} as Player,
+  setPlayerProps: (p) => set({ playerProps: p }),
+  
+  matchData: {} as LobbyAPI.Match,
+  setMatchData: (m) => set({ matchData: m }),
 
-export type Resource = {
-  type: ResourceEnum;
-  amount: number;
-}
-type RoomState = {
-  id: string;
-  players: Player[];
-  turnIndex: number;
-  startedAt: number;
-  lastActionAt: number;
-};
+  gameClient: {},
+  setGameClient: (gameClient: any) => set({ gameClient }),
 
-type LocalState = {
-  me?: Player;
-  roomId?: string;
-  state?: RoomState;
-  player?: Player;
-  setMe: (p?: Player) => void;
-  setRoomId: (id?: string) => void;
-  setState: (s?: RoomState) => void;
-  setPlayer: (p: Player) => void;
-};
-
-export const useGame = create<LocalState>((set) => ({
-  me: undefined,
-  roomId: undefined,
-  state: undefined,
-  setMe: (me) => set({ me }),
-  setRoomId: (roomId) => set({ roomId }),
-  setState: (state) => set({ state }),
-  setPlayer: (player: Player) => set({ player }),
+  server: {},
+  setServer: (server: any) => set({ server })
 }));
