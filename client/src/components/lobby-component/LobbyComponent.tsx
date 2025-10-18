@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LobbyAPI } from 'boardgame.io';
 import { useAppStore } from '../../store';
 import { useLobbyStore } from './store';
@@ -7,11 +7,14 @@ import { useLobbyServices } from '../services/lobbyServices';
 
 export const LobbyComponent = () => {
 
+  const [matchesFilter, setMatchesFilter] = useState<string[]>([])
+
   const {
     createMatch,
     getMatch,
     joinMatch,
-    listMatches
+    listMatches, 
+    leaveMatch
   } = useLobbyServices();
 
   const {
@@ -65,6 +68,10 @@ export const LobbyComponent = () => {
     });
   }
 
+  const onRemoveMatch = async (matchID: string) => {
+    setMatchesFilter([...matchesFilter, matchID])
+  }
+
   const isLobbyClientLoaded = () => true;
 
   return (
@@ -114,6 +121,13 @@ export const LobbyComponent = () => {
                       >
                         Join
                       </button>
+                      {/* <button
+                        onClick={() => onRemoveMatch(match.matchID)}
+                        className="mt-2 w-full rounded bg-red-600 px-3 py-1.5 text-white text-sm disabled:opacity-60"
+                      >
+                        Remove
+                      </button> */}
+
                     </li>
                   );
                 })}

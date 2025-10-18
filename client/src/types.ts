@@ -1,10 +1,16 @@
 export type LocationCost = {
   resource: Resource;
 }
+
+export type District = {
+  locations: Location[];
+}
 export type Location = {
   index: number;
   name: string;
   cost: LocationCost;
+  isDisabled?: boolean;
+  isSelected?: boolean;
 }
 
 export type Player = { 

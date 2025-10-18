@@ -9,11 +9,11 @@ type AppState = {
   matchData: any;
   setMatchData: (m: any) => void;
 
-  gameClient: any;
-  setGameClient: (gameClient: any) => void;
+  client: any;
+  setClient: (client: any) => void;
 
   server: any;
-  setServer: (gameClient: any) => void;
+  setServer: (client: any) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -23,8 +23,8 @@ export const useAppStore = create<AppState>((set) => ({
   matchData: {} as LobbyAPI.Match,
   setMatchData: (m) => set({ matchData: m }),
 
-  gameClient: {},
-  setGameClient: (gameClient: any) => set({ gameClient }),
+  client: {},
+  setClient: (client: any) => set({ client }),
 
   server: {},
   setServer: (server: any) => set({ server })

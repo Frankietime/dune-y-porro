@@ -1,39 +1,50 @@
 import { LobbyComponent } from "./components/lobby-component/LobbyComponent";
 import { BoardComponent } from "./components/board-component/BoardComponent";
 import "./App.css";
+import "nes.css/css/nes.min.css";
 import { useAppStore } from "./store";
-import { useMemo } from "react";
+import { Context, useEffect, useMemo } from "react";
 import { SocketIO } from "boardgame.io/multiplayer";
-import { Client } from "boardgame.io/react";
+import { Client as ClientComponent} from "boardgame.io/react";
+import { Client as GameClient } from "boardgame.io/client";
 import { Game } from "../../shared/Game";
+import { _ClientImpl, ClientOpts } from "boardgame.io/dist/types/src/client/client";
 
 export default function App() {
 
   const {
+    client,
+    setClient,
+
     playerProps,
-    setGameClient,
     setServer
   } = useAppStore();
+
+  useEffect(() => {
+    client
+  }, []);
+
+
 
   const server = SocketIO({ server: 'http://localhost:8000' });
 
   const GameClientComponent = useMemo(() => {
-    const client = Client({ 
+    const gameClientComponent = ClientComponent({ 
       game: Game, 
       board: BoardComponent,
-      multiplayer: server
-    });
-
-    setGameClient(client);
+      multiplayer: server,
+    });   
+    
+    setClient(client);
     setServer(server);
 
-    return client;
+    return gameClientComponent;
   }, [Game]);
 
   const isGameInCourse = () => playerProps.matchID != null && playerProps.matchID != "";
 
   return (
-      <div className="flex justify-center m-auto my-4">
+      <div className="flex justify-center m-auto my-4 nes-poiter">
         { !isGameInCourse() ? 
           <LobbyComponent />
             :        
