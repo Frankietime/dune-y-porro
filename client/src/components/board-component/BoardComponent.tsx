@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapBg from "../../assets/map-full.png";
 import { useAppStore } from "../../store";
 import { useBoardComponent } from "./UseBoardComponent";
@@ -26,6 +26,41 @@ export const BoardComponent = ({
     chatMessages,
     
 }: BoardGameProps) => {
+
+  const chatRef = useRef<HTMLDivElement | null>(null);
+
+  // 🧷 Auto-scroll "stickeado" al fondo (mientras no se suba manualmente)
+  useEffect(() => {
+    const el = chatRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      // si el usuario se va del fondo, no forzamos más el scroll
+      const atBottom =
+        el.scrollHeight - el.scrollTop - el.clientHeight < 10;
+      el.dataset.stick = atBottom ? "true" : "false";
+    };
+
+    el.addEventListener("scroll", handleScroll);
+
+    const observer = new ResizeObserver(() => {
+      // solo scrollear si seguimos pegados abajo
+      if (el.dataset.stick === "true") {
+        el.scrollTop = el.scrollHeight;
+      }
+    });
+
+    observer.observe(el);
+
+    // inicializamos
+    el.scrollTop = el.scrollHeight;
+    el.dataset.stick = "true";
+
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
+  }, [chatMessages]);
 
   const [errorNotification, setErrorNotification] = useState("");
   const [chatMessage, setChatMessage] = useState("");
@@ -142,65 +177,141 @@ return (
   <div className='game-container'>
     {matchData != null && matchData.matchID && (
       <>
-        <div className="absolute top-6 left-4 rounded-xl bg-black/60 px-6 py-4 text-base text-gray-100 shadow-lg backdrop-blur-sm">
-          <h1 className="font-semibold text-lg">
-            Game | {matchData.setupData.name}
-          </h1>
 
-          <div className="mt-2 space-y-1.5 leading-snug">
-            <div>
-              <span className="font-medium text-gray-200">Player Name:</span>{" "}
-              <span className="text-gray-300">{playerProps.name}</span>
-            </div>
-             <div>
-              <span className="font-medium text-gray-200">Players:</span>{" "}
-              <span className="text-gray-300">
-                {
-                  matchData.players.map((p: any, index: number) => <p key={index} className={ctx.currentPlayer == p.id ? 'underline' : ''}>{p.name}</p> )
-                }
-              </span>
-            </div>
-            <div>
-              <span className="font-medium text-gray-200">ID:</span>{" "}
-              <span className="text-gray-300">{playerProps.playerID}</span>
-            </div>
-            <div>
-              <span className="font-medium text-gray-200">Match ID:</span>{" "}
-              <span className="text-gray-300">{playerProps.matchID}</span>
-            </div>
-            <div>
-              <span className="font-medium text-gray-200">Creds:</span>{" "}
-              <span className="text-gray-300">{playerProps.playerCredentials}</span>
-            </div>
-            {errorNotification != "" && errorNotification != null && (
-              <div>
-                <span className="text-red-300">{errorNotification}</span>
-              </div>
-            )}
-          </div>
+<div
+  className="nes-container with-title is-dark font-nes"
+  style={{
+    position: "absolute",
+    top: "0",
+    left: "0",
+    width: "310px",
+    zIndex: 10,
+    fontFamily: "'Press Start 2P', cursive",
+    fontSize: "12px",
+    paddingLeft: "0px"
 
-          <div className="bg-black/40 mt-4 rounded-xl p-1">
-            <div>Chat</div>
-            <input className="bg-black/100 rounded-xl p-1" value={chatMessage} onChange={(evt) => setChatMessage(evt.target.value)}></input>
-            <button className="bg-indigo-500 rounded-xl p-1" 
-              onClick={() => { sendChatMessage(chatMessage); setChatMessage("")}}
-            >Enviar</ button>
-            
-            {chatMessages != null && chatMessages.map((msj, index) => (
-              <div>
-                <span key={index} className="text-blue-300 nes-ballon">{playerProps.name + ": " + msj.payload}</span>
-              </div>
-            ))}
-          </div>
+  }}
+>
+  <p className="title">Game | {matchData.setupData.name}</p>
 
+  <div className="message-list">
+    <div className="nes-text is-primary">
+      <strong>Player Name:</strong> <p>{playerProps.name}</p>
+    </div>
 
-          <button
-            onClick={onLeaveMatch}
-            className="mt-4 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+    <div className="nes-text is-primary">
+      <strong>Players:</strong>
+    </div>
+    <ul className="nes-list is-circle" style={{ marginLeft: "1rem" }}>
+      {matchData.players.map((p: any, index: number) => (
+        <li
+          key={index}
+          className={ctx.currentPlayer == p.id ? "nes-text is-success" : "nes-text"}
+        >
+          {p.name}
+        </li>
+      ))}
+    </ul>
+
+    <div className="nes-text is-primary">
+      <strong>ID:</strong> <p>{playerProps.playerID}</p>
+    </div>
+    <div className="nes-text is-primary">
+      <strong>Match ID:</strong> <p>{playerProps.matchID}</p>
+    </div>
+    <div className="nes-text is-primary">
+      <strong>Creds:</strong> <p>{playerProps.playerCredentials}</p>
+    </div>
+
+    {errorNotification && (
+      <div className="nes-text is-error">{errorNotification}</div>
+    )}
+  </div>
+
+  {/* CHAT */}
+  <div  
+    className=" with-title is-rounded is-dark"
+    style={{
+      marginTop: "1rem",
+      margin: "10px",
+      fontFamily: "'Press Start 2P', cursive",
+      scrollBehavior: "smooth",
+    }}
+  >
+    <p className="title">Chat</p>
+
+    <div className="nes-field" style={{ marginBottom: ".75rem" }}>
+      <input
+        type="text"
+        className="nes-input"
+        placeholder="..."
+        value={chatMessage}
+        onChange={(evt) => setChatMessage(evt.target.value)}
+        style={{ fontFamily: "'Press Start 2P', cursive" }}
+        onKeyDown={(event) => { 
+          if(event.code == "Enter") {
+            sendChatMessage(chatMessage);
+            setChatMessage(""); 
+           }}}
+      />
+    </div>
+
+    <button
+      type="button"
+      className="nes-btn is-primary"
+      style={{ fontFamily: "'Press Start 2P', cursive" }}
+      onClick={() => {
+        sendChatMessage(chatMessage);
+        setChatMessage("");
+      }}
+    >
+      Enviar
+    </button>
+
+    {/* Chat con alto fijo y scroll */}
+    <div
+      ref={chatRef}
+      className="chat-log"
+      style={{
+        marginTop: "1rem",
+        height: "300px",
+        overflowY: "auto",
+        paddingRight: "4px",
+      }}
+    >
+      {chatMessages != null &&
+        chatMessages.map((msj, index) => (
+          <p
+            key={index}
+            className={"nes-balloon " + (msj.sender == playerProps.playerID ? "from-left" : "from-right")}
+            style={{
+              marginBottom: "1.5rem",
+              fontFamily: "'Press Start 2P', cursive",
+              fontSize: "10px",
+              lineHeight: "1.4",
+              color: "black",
+              marginLeft: msj.sender == playerProps.playerID ? "0px" : "40px"
+            }}
           >
-            Leave
-          </button>
-        </div>
+            <span className="nes-text is-info">
+              {matchData.players[msj.sender].name}:
+            </span>{" "}
+            {msj.payload}
+          </p>
+        ))}
+    </div>
+  </div>
+
+  <button
+    onClick={onLeaveMatch}
+    type="button"
+    className="nes-btn is-error"
+    style={{ marginTop: "1rem", fontFamily: "'Press Start 2P', cursive" }}
+  >
+    Leave
+  </button>
+</div>
+
 
         <div className="flex w-screen justify-around board">
           <div className="w-[1280px] h-[720px] relative border-1 box-content" style={{
