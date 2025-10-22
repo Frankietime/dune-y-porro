@@ -32,7 +32,7 @@ export const LobbyComponent = () => {
       const intervalId = setInterval(() => {
         listMatches()
           .then((data) => setMatchList(data))
-      }, 100);
+      }, 500);
       return () => clearInterval(intervalId);
   }, []);
 

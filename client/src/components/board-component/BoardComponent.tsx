@@ -20,6 +20,7 @@ export const BoardComponent = ({
   
   const {
     getMatch,
+    leaveMatch,
   } = useLobbyServices();
 
   const {
