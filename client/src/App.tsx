@@ -9,6 +9,7 @@ import { SocketIO } from "boardgame.io/multiplayer";
 import { Client as ClientComponent} from "boardgame.io/react";
 import { Game } from "../../shared/Game";
 import { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
+import { BACKEND_URL } from "./config";
 
 export default function App() {
 
@@ -26,7 +27,7 @@ export default function App() {
 
 
 
-  const server = SocketIO({ server: 'http://localhost:8000' });
+  const server = SocketIO({ server: BACKEND_URL });
 
   const GameClientComponent = useMemo(() => {
     const gameClientComponent = ClientComponent({ 
