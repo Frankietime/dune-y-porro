@@ -202,9 +202,9 @@ export const Game: GameInterface<GameState> = {
                     G.numberOfWorkers = INITIAL_NUMBER_OF_WORKERS;
                     G.selectedCard = NO_CARD_SELECTED;
                 },
-                // onEnd: ({ G, ctx, events, random, ...plugins }) => {
+                onEnd: ({ G, ctx, events, random, ...plugins }) => {
                     
-                // }
+                }
             },
             onBegin: (context) => {
             },

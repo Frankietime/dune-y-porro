@@ -1,7 +1,7 @@
 import { LobbyAPI } from "boardgame.io";
-import { GAME_NAME } from "../../../../shared/constants";
-import { Player } from "../../types";
-import { useLobby } from "../../lib/LobbyProvider";
+import { GAME_NAME } from "../../../shared/constants";
+import { Player } from "../types";
+import { useLobby } from "../lib/LobbyProvider";
 
 export const useLobbyServices = () => {
     const lobby = useLobby();

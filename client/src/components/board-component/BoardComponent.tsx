@@ -5,7 +5,7 @@ import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useAppStore } from "../../store";
 import { useBoardComponent } from "./UseBoardComponent";
 import { useQuery } from "@tanstack/react-query";
-import { useLobbyServices } from "../services/lobbyServices";
+import { useLobbyServices } from "../../services/lobbyServices";
 import { BoardProps } from "boardgame.io/react";
 import { GameState } from "../../../../shared/types";
 import { LogEntry } from "boardgame.io";
@@ -13,6 +13,7 @@ import { Client } from "boardgame.io/client";
 import { Game } from "../../../../shared/Game";
 import { District, Location, LocationCost } from "../../types";
 import { LocationComponent } from "../location-component/LocationComponent";
+import { WorkerComponent } from "../worker-component/WorkerComponent";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -126,17 +127,6 @@ export const BoardComponent = ({
   }
 
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
-    // const updatedDistricts = [
-    //   ...districts.slice(0, districtIndex),
-
-    //   {...districts[districtIndex], locations: districts[districtIndex].locations
-    //     .map((l, i) => { l.isSelected = locationIndex == i; return l; })
-    //   },
-      
-    //   ...districts.slice(districtIndex + 1 ) ]
- 
-    // setDistricts([...updatedDistricts]);
-
     moves.placeWorker(G, districtIndex, locationIndex);
   } 
 
@@ -307,31 +297,32 @@ return (
                 </div>
               ))}
             
-            {/* side circular tracker */}
-            {/* <NumericTracker x={345} y={209} w={54} h={54} show={true} />   */}
-            {/* purple visual tracker */}
-            {/* <VisualTracker x={400} y={210} show={true} />  */}
-            {/* square numeric tracker combat */}
-            {/* <NumericTracker x={575} y={190} w={80} h={75} show={true} /> */}
-            {/* green dynamic elem */}  
-            {/* <DynamicElement x={229} y={197} show={true} />   */}
+            {/* <NumericTracker x={345} y={209} w={54} h={54} show={true} />  
+            <VisualTracker x={400} y={210} show={true} /> 
+            <NumericTracker x={575} y={190} w={80} h={75} show={true} />
+            <DynamicElement x={229} y={197} show={true} />  
 
-            {/* <NumericTrackers x={989} y={88} />
-            <Clickers x={613} y={67} mirror={true} />
+            <NumericTrackers x={989} y={88} />
             <NumericTracker x={912} y={209} w={54} h={54} show={true} />
             <VisualTracker x={735} y={210} show={true} />
             <NumericTracker x={657} y={190} w={80} h={75} show={true} />
             <DynamicElement x={1045} y={197} show={true} /> */}
 
-            {/* <NumericTrackers x={277} y={279} />
-            <Clickers x={303} y={344} mirror={true} />
+            <NumericTrackers x={277} y={279} />
             <NumericTracker x={345} y={270} w={54} h={54} show={true} />
             <VisualTracker x={400} y={270} show={true} />
             <NumericTracker x={575} y={270} w={80} h={75} show={true} />
-            <DynamicElement x={281} y={463} show={true} /> */}
+            {/* <DynamicElement x={281} y={463} show={true} /> */}
+            <WorkerComponent
+              numerOfWorkers={G.numberOfWorkers}
+              x={281} y={463}
+              onClick={() => alert("Worker clicked!")}
+              mirror={0}
+              name={"worker_1"}
+              isDisabled={false}
+            />
 
             {/* <NumericTrackers x={989} y={279} />
-            <Clickers x={665} y={344} />
             <NumericTracker x={912} y={270} w={54} h={54} show={true} />
             <VisualTracker x={735} y={270} show={true} />
             <NumericTracker x={657} y={270} w={80} h={75} show={true} />

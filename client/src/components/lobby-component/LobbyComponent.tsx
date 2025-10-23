@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { LobbyAPI } from 'boardgame.io';
 import { useAppStore } from '../../store';
 import { useLobbyStore } from './store';
-import { useLobbyServices } from '../services/lobbyServices';
+import { useLobbyServices } from '../../services/lobbyServices';
 import { BACKEND_URL } from '../../config';
 
 
