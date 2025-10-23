@@ -1,8 +1,7 @@
-// server.ts
 import { Server, Origins } from 'boardgame.io/server';
 import { Game } from '../shared/Game';
-// 👇 Importá el CORS para Koa, no el de Express
 import KoaCors from '@koa/cors';
+import type { StorageAPI } from 'boardgame.io';
 
 const allowed = new Set([
   '*',
@@ -18,7 +17,6 @@ const server = Server({
   ],
 });
 
-// ✅ CORS para Koa
 server.app.use(
   KoaCors({
     origin: (ctx) => {
@@ -31,5 +29,20 @@ server.app.use(
     exposeHeaders: ['Content-Length'],
   })
 );
+
+server.router.delete('/admin/matches/:matchID', async (ctx) => {
+  const { matchID } = ctx.params;
+
+  const data = await (server.db as StorageAPI.Async).fetch(matchID, { metadata: true });
+  if (!data.metadata) {
+    ctx.status = 404;
+    ctx.body = { error: 'Match not found' };
+    return;
+  }
+
+  await (server.db as StorageAPI.Async).wipe(matchID);
+
+  ctx.status = 204;
+});
 
 server.run({ port: 4000 });

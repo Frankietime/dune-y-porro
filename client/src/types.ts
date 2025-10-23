@@ -16,6 +16,7 @@ export type Location = {
   cost: LocationCost;
   isDisabled?: boolean;
   isSelected?: boolean;
+  worker?: string;
 }
 
 export type Player = { 

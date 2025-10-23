@@ -3,11 +3,10 @@ import { LobbyAPI } from 'boardgame.io';
 import { useAppStore } from '../../store';
 import { useLobbyStore } from './store';
 import { useLobbyServices } from '../services/lobbyServices';
+import { BACKEND_URL } from '../../config';
 
 
 export const LobbyComponent = () => {
-
-  const [matchesFilter, setMatchesFilter] = useState<string[]>([])
 
   const {
     createMatch,
@@ -68,11 +67,13 @@ export const LobbyComponent = () => {
     });
   }
 
-  const onRemoveMatch = async (matchID: string) => {
-    setMatchesFilter([...matchesFilter, matchID])
-  }
-
   const isLobbyClientLoaded = () => true;
+
+  const onRemoveMatch = async (matchID: string) => {
+    await fetch(`${BACKEND_URL}/admin/matches/${matchID}`, {
+      method: 'DELETE',
+    });
+  };
 
   return (
     <>
@@ -121,12 +122,12 @@ export const LobbyComponent = () => {
                       >
                         Join
                       </button>
-                      {/* <button
+                      <button
                         onClick={() => onRemoveMatch(match.matchID)}
                         className="mt-2 w-full rounded bg-red-600 px-3 py-1.5 text-white text-sm disabled:opacity-60"
                       >
                         Remove
-                      </button> */}
+                      </button>
 
                     </li>
                   );

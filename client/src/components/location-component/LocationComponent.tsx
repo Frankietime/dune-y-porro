@@ -18,13 +18,15 @@ export const LocationComponent = ({
     y,
     mirror,
     name,
-    isSelected
+    isSelected,
+    isDisabled
 }: LocationComponentProps) => {
 
     const { ClickBox } = useBoardComponent();
     return (
         <ClickBox 
             _onClick={onClick}
+            disabled={isDisabled}
             x={x + mirror} y={y} 
             show={true}>
             <div className="location-component-container">

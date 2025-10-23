@@ -2,6 +2,7 @@ import { LobbyComponent } from "./components/lobby-component/LobbyComponent";
 import { BoardComponent } from "./components/board-component/BoardComponent";
 import "./App.css";
 import "nes.css/css/nes.min.css";
+import "././styles.scss";
 import "@fontsource/press-start-2p";
 import { useAppStore } from "./store";
 import { useEffect, useMemo } from "react";

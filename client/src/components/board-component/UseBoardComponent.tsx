@@ -58,12 +58,14 @@ export const useBoardComponent = () => {
         show?: boolean,
         _onClick: () => void;
         children?: React.ReactNode,
+        disabled?: boolean,
     }) => {
     return ( 
         <EventBox 
             onClick={props._onClick} 
             // w={props.w ?? 110} h={props.h ?? 55} 
             // isSelected={props.isSelected}
+            disabled={props.disabled}
             x={props.x} y={props.y}
             show={props.show}
         >
@@ -162,11 +164,12 @@ export const useBoardComponent = () => {
         isSelected?: boolean,
         onClick?: () => void,
         children?: React.ReactNode,
+        disabled?: boolean,
         }) => {
         return (
-            <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "")}
+            <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "") + (props.disabled ? " disabled" : "")}
                 style={{top: props.y, left: props.x, backgroundColor: props.isSelected ? "RGB(75,0,130, 0.3)" : "none", width: props.w ?? "fit-content", height: props.h ?? "fit-content"}}
-                onClick={props.onClick}
+                onClick={props.disabled ? () => {} : props.onClick}
             >
                 {props.children}
             </div>

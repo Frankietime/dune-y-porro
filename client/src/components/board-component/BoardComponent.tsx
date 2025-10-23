@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 // import mapBg from "../../assets/board/prodis-tablero-mockup-v1.png";
-import mapBg from "../../assets/board/prodis-tablero-estilo-v1.png";
+// import mapBg from "../../assets/board/prodis-tablero-estilo-v1.png";
+import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useAppStore } from "../../store";
 import { useBoardComponent } from "./UseBoardComponent";
 import { useQuery } from "@tanstack/react-query";
@@ -66,181 +67,6 @@ export const BoardComponent = ({
 
   const [errorNotification, setErrorNotification] = useState("");
   const [chatMessage, setChatMessage] = useState("");
-  const [selectedCard, setSelectedCard] = useState(-1);
-  const [districts, setDistricts] = useState<District[]>([
-    {
-      name: "Conurba Complex",
-      y: 67,
-      x: 355,
-      locations: [
-      {
-        index: 0,
-        x: 54,
-        y: 0,
-        name: "La Salada",
-        cost: {} as LocationCost,
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 1,
-        x: 178,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "Gaseod. 7",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 2,
-        x: 0,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "Docke",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 3,
-        x: 124,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "Centro",
-        isSelected: false,
-        isDisabled: false
-      },
-      ],
-    },
-    {
-      name: "EDOMEX",
-      x: 613,
-      y: 67,
-      locations: [
-      {
-        index: 0,
-        x: 54,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "edo_1",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 1,
-        x: 178,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "edo_2",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 2,
-        x: 0,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "edo_3",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 3,
-        x: 124,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "edo_4",
-        isSelected: false,
-        isDisabled: false
-      },
-      ],
-    },
-    {
-      name: "Kakkoii Atarashi Mall",
-      x: 303,
-      y: 344,
-      locations: [
-      {
-        index: 0,
-        x: 54,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "koii_1",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 1,
-        x: 178,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "koii_2",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 2,
-        x: 0,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "koii_3",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 3,
-        x: 124,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "koii_4",
-        isSelected: false,
-        isDisabled: false
-      },
-      ],
-    },
-    {
-      name: "#Xya_Xya_ZONE#",
-      x: 665,
-      y: 344,
-      locations: [
-      {
-        index: 0,
-        x: 54,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "xya_1",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 1,
-        x: 178,
-        y: 0,
-        cost: {} as LocationCost,
-        name: "xya_2",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 2,
-        x: 0,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "xya_3",
-        isSelected: false,
-        isDisabled: false
-      },
-      {
-        index: 3,
-        x: 124,
-        y: 67,
-        cost: {} as LocationCost,
-        name: "xia_4",
-        isSelected: false,
-        isDisabled: false
-      },
-      ],
-    }
-  ]);
   
   const {
     getMatch,
@@ -295,21 +121,23 @@ export const BoardComponent = ({
     events.endTurn!();
   }
 
-  const onSelectCard = (i: number) => {
-    setSelectedCard(i);
+  const onSelectCard = (selectedCard: number) => {
+    moves.selectCard(G, selectedCard)
   }
 
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
-    const updatedDistricts = [
-      ...districts.slice(0, districtIndex),
+    // const updatedDistricts = [
+    //   ...districts.slice(0, districtIndex),
 
-      {...districts[districtIndex], locations: districts[districtIndex].locations
-        .map((l, i) => { l.isSelected = locationIndex == i; return l; })
-      },
+    //   {...districts[districtIndex], locations: districts[districtIndex].locations
+    //     .map((l, i) => { l.isSelected = locationIndex == i; return l; })
+    //   },
       
-      ...districts.slice(districtIndex + 1 ) ]
+    //   ...districts.slice(districtIndex + 1 ) ]
  
-    setDistricts([...updatedDistricts])
+    // setDistricts([...updatedDistricts]);
+
+    moves.placeWorker(G, districtIndex, locationIndex);
   } 
 
 
@@ -454,7 +282,7 @@ return (
   </button>
 </div>
 
-
+      {G.districts && (
         <div className="flex w-screen justify-around board">
           <div className="w-[1280px] h-[720px] relative border-1 box-content" style={{
             backgroundImage: `url(${mapBg})`,
@@ -462,8 +290,8 @@ return (
             <NumericTrackers x={277} y={88} /> {/* vertical trackers */}
             {/* <Clickers x={355} y={67} district={districts[0]} onLocationSelect={onLocationSelect}/> */}
            
-              {districts.map((district, dIndex) => (
-                 <div className="relative" style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
+              {G.districts.map((district, dIndex) => (
+                 <div key={dIndex} className="relative" style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
                   {district.locations.map((location, locIndex) => (
                     <LocationComponent
                       {...location}
@@ -472,7 +300,7 @@ return (
                       x={xPos[locIndex]} y={yPos[locIndex]}
                       show={true}
                       district={district}
-                      isDisabled={location.isDisabled || selectedCard != -1}
+                      isDisabled={location.isDisabled || G.selectedCard == -1}
                       mirror={(dIndex == 1 || dIndex == 2) && locIndex > 1 ? 107 : 0}
                     />)
                   )}
@@ -512,15 +340,16 @@ return (
             <Hud 
               onPass={() => onTurnEnd()}
               onReveal={() => alert("Reveal!")}
-              onSelectCard={(i) => onSelectCard(i)}
+              onSelectCard={(selectedCard) => onSelectCard(selectedCard)}
               onArrowUp={() => alert("arrow up")}
               onArrowDown={() => alert("arrow down")}
 
-              selectedCardIndex={selectedCard}
+              selectedCardIndex={G.selectedCard}
             />
           </div>
         </div>
-      </>  
+      ) }
+      </>
     )}
 
     </div>
