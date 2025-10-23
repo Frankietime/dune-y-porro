@@ -21,7 +21,6 @@ export const useBoardComponent = () => {
         
         <Card y={540} x={1115} show={true} key="arrow-down" onClick={props.onArrowDown}  />
 
-
         <Button y={470} x={992} show={true} key="btn-pass" onClick={props.onPass} />
         <Button y={470} x={1110} show={true} key="btn-reveal" onClick={props.onReveal} />
         </>;
