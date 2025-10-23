@@ -25,7 +25,9 @@ export const useLobbyServices = () => {
             )
     }
 
-    const listMatches = async (): Promise<LobbyAPI.MatchList> => await lobby.listMatches(GAME_NAME);
+    const listMatches = async (): Promise<LobbyAPI.MatchList> => { 
+        return await lobby.listMatches(GAME_NAME);
+    }
 
     const createMatch = async (numPlayers: number, setupData: any): Promise<any> => {
         return await lobby.createMatch(

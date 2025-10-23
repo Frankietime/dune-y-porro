@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import mapBg from "../../assets/map-full.png";
+// import mapBg from "../../assets/board/prodis-tablero-mockup-v1.png";
+import mapBg from "../../assets/board/prodis-tablero-estilo-v1.png";
 import { useAppStore } from "../../store";
 import { useBoardComponent } from "./UseBoardComponent";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import { LogEntry } from "boardgame.io";
 import { Client } from "boardgame.io/client";
 import { Game } from "../../../../shared/Game";
 import { District, Location, LocationCost } from "../../types";
+import { LocationComponent } from "../location-component/LocationComponent";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -65,43 +67,180 @@ export const BoardComponent = ({
   const [errorNotification, setErrorNotification] = useState("");
   const [chatMessage, setChatMessage] = useState("");
   const [selectedCard, setSelectedCard] = useState(-1);
-  const [districts, setDistricts] = useState<District[]>([{
-    locations: [
+  const [districts, setDistricts] = useState<District[]>([
+    {
+      name: "Conurba Complex",
+      y: 67,
+      x: 355,
+      locations: [
       {
         index: 0,
+        x: 54,
+        y: 0,
+        name: "La Salada",
         cost: {} as LocationCost,
-        name: "location 1A",
         isSelected: false,
         isDisabled: false
-      } as Location,
+      },
       {
         index: 1,
+        x: 178,
+        y: 0,
         cost: {} as LocationCost,
-        name: "location 1A",
+        name: "Gaseod. 7",
         isSelected: false,
         isDisabled: false
-      } as Location,
+      },
       {
         index: 2,
+        x: 0,
+        y: 67,
         cost: {} as LocationCost,
-        name: "location 1A",
+        name: "Docke",
         isSelected: false,
         isDisabled: false
-      } as Location,
+      },
       {
         index: 3,
+        x: 124,
+        y: 67,
         cost: {} as LocationCost,
-        name: "location 1A",
+        name: "Centro",
         isSelected: false,
         isDisabled: false
-      } as Location,
-    ]
-  },])
-  
-  const client = Client({
-    game: Game,
-    matchID
-  });
+      },
+      ],
+    },
+    {
+      name: "EDOMEX",
+      x: 613,
+      y: 67,
+      locations: [
+      {
+        index: 0,
+        x: 54,
+        y: 0,
+        cost: {} as LocationCost,
+        name: "edo_1",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 1,
+        x: 178,
+        y: 0,
+        cost: {} as LocationCost,
+        name: "edo_2",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 2,
+        x: 0,
+        y: 67,
+        cost: {} as LocationCost,
+        name: "edo_3",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 3,
+        x: 124,
+        y: 67,
+        cost: {} as LocationCost,
+        name: "edo_4",
+        isSelected: false,
+        isDisabled: false
+      },
+      ],
+    },
+    {
+      name: "Kakkoii Atarashi Mall",
+      x: 303,
+      y: 344,
+      locations: [
+      {
+        index: 0,
+        x: 54,
+        y: 0,
+        cost: {} as LocationCost,
+        name: "koii_1",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 1,
+        x: 178,
+        y: 0,
+        cost: {} as LocationCost,
+        name: "koii_2",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 2,
+        x: 0,
+        y: 67,
+        cost: {} as LocationCost,
+        name: "koii_3",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 3,
+        x: 124,
+        y: 67,
+        cost: {} as LocationCost,
+        name: "koii_4",
+        isSelected: false,
+        isDisabled: false
+      },
+      ],
+    },
+    {
+      name: "#Xya_Xya_ZONE#",
+      x: 665,
+      y: 344,
+      locations: [
+      {
+        index: 0,
+        x: 54,
+        y: 0,
+        cost: {} as LocationCost,
+        name: "xya_1",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 1,
+        x: 178,
+        y: 0,
+        cost: {} as LocationCost,
+        name: "xya_2",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 2,
+        x: 0,
+        y: 67,
+        cost: {} as LocationCost,
+        name: "xya_3",
+        isSelected: false,
+        isDisabled: false
+      },
+      {
+        index: 3,
+        x: 124,
+        y: 67,
+        cost: {} as LocationCost,
+        name: "xia_4",
+        isSelected: false,
+        isDisabled: false
+      },
+      ],
+    }
+  ]);
   
   const {
     getMatch,
@@ -173,6 +312,10 @@ export const BoardComponent = ({
     setDistricts([...updatedDistricts])
   } 
 
+
+  const xPos = [54, 178, 0, 124];
+  const yPos = [0, 0, 67, 67];
+
 return (
   <div className='game-container'>
     {matchData != null && matchData.matchID && (
@@ -240,34 +383,6 @@ return (
   >
     <p className="title">Chat</p>
 
-    <div className="nes-field" style={{ marginBottom: ".75rem" }}>
-      <input
-        type="text"
-        className="nes-input"
-        placeholder="..."
-        value={chatMessage}
-        onChange={(evt) => setChatMessage(evt.target.value)}
-        style={{ fontFamily: "'Press Start 2P', cursive" }}
-        onKeyDown={(event) => { 
-          if(event.code == "Enter") {
-            sendChatMessage(chatMessage);
-            setChatMessage(""); 
-           }}}
-      />
-    </div>
-
-    <button
-      type="button"
-      className="nes-btn is-primary"
-      style={{ fontFamily: "'Press Start 2P', cursive" }}
-      onClick={() => {
-        sendChatMessage(chatMessage);
-        setChatMessage("");
-      }}
-    >
-      Enviar
-    </button>
-
     {/* Chat con alto fijo y scroll */}
     <div
       ref={chatRef}
@@ -302,6 +417,33 @@ return (
     </div>
   </div>
 
+  <div className="nes-field" style={{ marginBottom: ".75rem" }}>
+      <input
+        type="text"
+        className="nes-input"
+        placeholder="..."
+        value={chatMessage}
+        onChange={(evt) => setChatMessage(evt.target.value)}
+        style={{ fontFamily: "'Press Start 2P', cursive" }}
+        onKeyDown={(event) => { 
+          if(event.code == "Enter") {
+            sendChatMessage(chatMessage);
+            setChatMessage(""); 
+           }}}
+      />
+    </div>
+    <button
+      type="button"
+      className="nes-btn is-primary"
+      style={{ fontFamily: "'Press Start 2P', cursive" }}
+      onClick={() => {
+        sendChatMessage(chatMessage);
+        setChatMessage("");
+      }}
+    >
+      Enviar
+    </button>
+
   <button
     onClick={onLeaveMatch}
     type="button"
@@ -318,32 +460,54 @@ return (
             backgroundImage: `url(${mapBg})`,
           }}>
             <NumericTrackers x={277} y={88} /> {/* vertical trackers */}
-            <Clickers x={355} y={67} district={districts[0]} onLocationSelect={onLocationSelect}/>
-            <NumericTracker x={345} y={209} w={54} h={54} show={true} />  {/* side circular tracker */}
-            <VisualTracker x={400} y={210} show={true} /> {/* purple visual tracker */}
-            <NumericTracker x={575} y={190} w={80} h={75} show={true} />  {/* square numeric tracker combat */}
-            <DynamicElement x={229} y={197} show={true} />  {/* green dynamic elem */}
+            {/* <Clickers x={355} y={67} district={districts[0]} onLocationSelect={onLocationSelect}/> */}
+           
+              {districts.map((district, dIndex) => (
+                 <div className="relative" style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
+                  {district.locations.map((location, locIndex) => (
+                    <LocationComponent
+                      {...location}
+                      key={dIndex + "-" + locIndex}
+                      onClick={() => onLocationSelect(dIndex, locIndex)} 
+                      x={xPos[locIndex]} y={yPos[locIndex]}
+                      show={true}
+                      district={district}
+                      isDisabled={location.isDisabled || selectedCard != -1}
+                      mirror={(dIndex == 1 || dIndex == 2) && locIndex > 1 ? 107 : 0}
+                    />)
+                  )}
+                </div>
+              ))}
+            
+            {/* side circular tracker */}
+            {/* <NumericTracker x={345} y={209} w={54} h={54} show={true} />   */}
+            {/* purple visual tracker */}
+            {/* <VisualTracker x={400} y={210} show={true} />  */}
+            {/* square numeric tracker combat */}
+            {/* <NumericTracker x={575} y={190} w={80} h={75} show={true} /> */}
+            {/* green dynamic elem */}  
+            {/* <DynamicElement x={229} y={197} show={true} />   */}
 
-            <NumericTrackers x={989} y={88} />
+            {/* <NumericTrackers x={989} y={88} />
             <Clickers x={613} y={67} mirror={true} />
             <NumericTracker x={912} y={209} w={54} h={54} show={true} />
             <VisualTracker x={735} y={210} show={true} />
             <NumericTracker x={657} y={190} w={80} h={75} show={true} />
-            <DynamicElement x={1045} y={197} show={true} />
+            <DynamicElement x={1045} y={197} show={true} /> */}
 
-            <NumericTrackers x={277} y={279} />
+            {/* <NumericTrackers x={277} y={279} />
             <Clickers x={303} y={344} mirror={true} />
             <NumericTracker x={345} y={270} w={54} h={54} show={true} />
             <VisualTracker x={400} y={270} show={true} />
             <NumericTracker x={575} y={270} w={80} h={75} show={true} />
-            <DynamicElement x={281} y={463} show={true} />
+            <DynamicElement x={281} y={463} show={true} /> */}
 
-            <NumericTrackers x={989} y={279} />
+            {/* <NumericTrackers x={989} y={279} />
             <Clickers x={665} y={344} />
             <NumericTracker x={912} y={270} w={54} h={54} show={true} />
             <VisualTracker x={735} y={270} show={true} />
             <NumericTracker x={657} y={270} w={80} h={75} show={true} />
-            <DynamicElement x={1045} y={385} show={true} />
+            <DynamicElement x={1045} y={385} show={true} /> */}
             
             <Hud 
               onPass={() => onTurnEnd()}

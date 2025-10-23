@@ -3,10 +3,15 @@ export type LocationCost = {
 }
 
 export type District = {
+  name: string;
+  y: number;
+  x: number;
   locations: Location[];
 }
 export type Location = {
   index: number;
+  x: number;
+  y: number;
   name: string;
   cost: LocationCost;
   isDisabled?: boolean;

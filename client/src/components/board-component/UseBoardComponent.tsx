@@ -36,11 +36,11 @@ export const useBoardComponent = () => {
     const bottomRowOffsetX = props.mirror ? 108 : 0;
     const offsetY = 0;
     const offsetX = 0;
-    return <div className="relative" style={{top: props.y ?? 0, left: props.x ?? 0}}>
-        <ClickBox _onClick={() => props.onLocationSelect(0, 0)} isSelected={props.district?.locations[0].isSelected} x={54 + offsetX} y={0 + offsetY} show={true} />
-        <ClickBox _onClick={() => props.onLocationSelect(0, 1)} isSelected={props.district?.locations[1].isSelected} x={178 + offsetX} y={0 + offsetY} show={true} />
-        <ClickBox _onClick={() => props.onLocationSelect(0, 2)} isSelected={props.district?.locations[2].isSelected} x={0 + bottomRowOffsetX} y={67 + offsetY} show={true} />
-        <ClickBox _onClick={() => props.onLocationSelect(0, 3)} isSelected={props.district?.locations[3].isSelected} x={124 + bottomRowOffsetX} y={67 + offsetY} show={true} />
+    return <div className="relative" style={{top: props.y ?? 0, left: props.x ?? 0, width: "fit-content", height: "fit-content"}}>
+        <ClickBox _onClick={() => props.onLocationSelect(0, 0)} x={54 + offsetX} y={0 + offsetY} show={true} />
+        <ClickBox _onClick={() => props.onLocationSelect(0, 1)} x={178 + offsetX} y={0 + offsetY} show={true} />
+        <ClickBox _onClick={() => props.onLocationSelect(0, 2)} x={0 + bottomRowOffsetX} y={67 + offsetY} show={true} />
+        <ClickBox _onClick={() => props.onLocationSelect(0, 3)} x={124 + bottomRowOffsetX} y={67 + offsetY} show={true} />
     </div>;
     }
 
@@ -52,15 +52,27 @@ export const useBoardComponent = () => {
     }
 
     const ClickBox = (props: {
-    w?: number,
-    h?: number,
-    x: number,
-    y: number,
-    show?: boolean,
-    isSelected?: boolean;
-    _onClick: () => void;
+        // w?: number,
+        // h?: number,
+        x: number,
+        y: number,
+        show?: boolean,
+        _onClick: () => void;
+        children?: React.ReactNode,
     }) => {
-    return <EventBox onClick={props._onClick} {...props} w={props.w ?? 110} h={props.h ?? 55} isSelected={props.isSelected} />;
+    return ( 
+        <EventBox 
+            onClick={props._onClick} 
+            // w={props.w ?? 110} h={props.h ?? 55} 
+            // isSelected={props.isSelected}
+            x={props.x} y={props.y}
+            show={props.show}
+        >
+            
+            {props.children}
+        
+        </EventBox>
+    );
     }
 
     const NumericTrackers = (props: {
@@ -81,8 +93,13 @@ export const useBoardComponent = () => {
     x: number,
     y: number,
     show?: boolean,
+    children?: React.ReactNode,
     }) => {
-    return <EventBox {...props} w={props.w ?? 45} h={props.h ?? 45} />;
+    return (
+        <EventBox {...props} w={props.w ?? 45} h={props.h ?? 45}>
+            {props.children}
+        </EventBox>
+    );
     }
 
     const VisualTracker = (props: {
@@ -117,7 +134,13 @@ export const useBoardComponent = () => {
     onClick?: () => void,
     isSelected?: boolean,
     }) => {
-    return <EventBox {...props} w={props.w ?? 105} h={props.h ?? 157} isSelected={props.isSelected} />;
+    return (
+        <EventBox 
+            {...props} 
+            w={props.w ?? 105} 
+            h={props.h ?? 157} 
+            isSelected={props.isSelected} 
+        />);
     }
 
     const Button = (props: {
@@ -132,18 +155,23 @@ export const useBoardComponent = () => {
     }
 
     const EventBox = (props: {
-        w: number,
-        h: number,
+        w?: number,
+        h?: number,
         x: number,
         y: number,
         show?: boolean,
         isSelected?: boolean,
         onClick?: () => void,
+        children?: React.ReactNode,
         }) => {
-        return <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "")}
-            style={{top: props.y, left: props.x, width: `${props.w}px`, height: `${props.h}px`, backgroundColor: props.isSelected ? "RGB(75,0,130, 0.3)" : "none"}}
-            onClick={props.onClick}
-        />
+        return (
+            <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "")}
+                style={{top: props.y, left: props.x, backgroundColor: props.isSelected ? "RGB(75,0,130, 0.3)" : "none", width: props.w ?? "fit-content", height: props.h ?? "fit-content"}}
+                onClick={props.onClick}
+            >
+                {props.children}
+            </div>
+        );
     }
 
     return {

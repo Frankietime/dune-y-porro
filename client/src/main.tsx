@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <LobbyProvider
-        serverUrl="http://localhost:8000" 
+        serverUrl="http://localhost:8000"
         gameComponents={[ { game: Game, board: BoardComponent } ]}
       >
         <App />

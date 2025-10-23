@@ -4,12 +4,11 @@ import "./App.css";
 import "nes.css/css/nes.min.css";
 import "@fontsource/press-start-2p";
 import { useAppStore } from "./store";
-import { Context, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { SocketIO } from "boardgame.io/multiplayer";
 import { Client as ClientComponent} from "boardgame.io/react";
-import { Client as GameClient } from "boardgame.io/client";
 import { Game } from "../../shared/Game";
-import { _ClientImpl, ClientOpts } from "boardgame.io/dist/types/src/client/client";
+import { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
 
 export default function App() {
 
@@ -34,6 +33,7 @@ export default function App() {
       game: Game, 
       board: BoardComponent,
       multiplayer: server,
+      numPlayers: 999999
     });   
     
     setClient(client);

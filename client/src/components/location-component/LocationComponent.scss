@@ -1,42 +1,15 @@
 
-.location-container {
+.location-component-container {
+    width: 106px;
+    height: 51px;
 
-    position: relative;
+    font-size: 10px;
 
+    .location-container {
 
-    // todo: tamaños por tipo de location en su propio scss overrideando esto 
-    // todo: position manipulable por props
-    // bottom: 500px;
-
-    width: 100px;
-    height: 50px;
-
-    background-color: black;
-
-    .location-section {
-        margin: auto;
-
-        // .location-cost-section {
-        //     margin: auto;
-
-            .location-resource-icon {
-                    width: 24px;
-                    height: 24px;
-            }
-
-            .location-card-type-icon {
-                width: 32px;
-                height: 32px;
-            }
-        // }
-
-        &.location-deploy-section {
-            height: 100%;  
-            width: 100%;
-            padding-top: 20px;
+        &.selected {
+            
         }
+
     }
 }
-
-
-
