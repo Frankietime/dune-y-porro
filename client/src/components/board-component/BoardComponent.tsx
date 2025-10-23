@@ -75,8 +75,8 @@ export const BoardComponent = ({
   } = useLobbyServices();
 
   const {
-    playerProps,
-    setPlayerProps,
+    playerState,
+    setPlayerState,
 
     matchData,
     setMatchData
@@ -94,7 +94,7 @@ export const BoardComponent = ({
 
   useQuery({
     queryKey: ["fetch-match-data"], 
-    queryFn: () => getMatch(playerProps.matchID)    
+    queryFn: () => getMatch(playerState.matchID)    
       .then((match) => {
           setMatchData(match);
 
@@ -104,14 +104,14 @@ export const BoardComponent = ({
         setErrorNotification(error)
       }
     ),
-    enabled: playerProps != null && playerProps.matchID != ""}
+    enabled: playerState != null && playerState.matchID != ""}
   );
 
   const onLeaveMatch = async () => {
-    leaveMatch(playerProps)
+    leaveMatch(playerState)
       .then(() => {
-        setPlayerProps({ 
-          ...playerProps, 
+        setPlayerState({ 
+          ...playerState, 
           matchID: "", 
           playerCredentials: ""
         });
@@ -157,7 +157,7 @@ return (
 
   <div className="message-list">
     <div className="nes-text is-primary">
-      <strong>Player Name:</strong> <p>{playerProps.name}</p>
+      <strong>Player Name:</strong> <p>{playerState.name}</p>
     </div>
 
     <div className="nes-text is-primary">
@@ -175,13 +175,13 @@ return (
     </ul>
 
     <div className="nes-text is-primary">
-      <strong>ID:</strong> <p>{playerProps.playerID}</p>
+      <strong>ID:</strong> <p>{playerState.playerID}</p>
     </div>
     <div className="nes-text is-primary">
-      <strong>Match ID:</strong> <p>{playerProps.matchID}</p>
+      <strong>Match ID:</strong> <p>{playerState.matchID}</p>
     </div>
     <div className="nes-text is-primary">
-      <strong>Creds:</strong> <p>{playerProps.playerCredentials}</p>
+      <strong>Creds:</strong> <p>{playerState.playerCredentials}</p>
     </div>
 
     {errorNotification && (
@@ -216,14 +216,14 @@ return (
         chatMessages.map((msj, index) => (
           <p
             key={index}
-            className={"nes-balloon " + (msj.sender == playerProps.playerID ? "from-left" : "from-right")}
+            className={"nes-balloon " + (msj.sender == playerState.playerID ? "from-left" : "from-right")}
             style={{
               marginBottom: "1.5rem",
               fontFamily: "'Press Start 2P', cursive",
               fontSize: "10px",
               lineHeight: "1.4",
               color: "black",
-              marginLeft: msj.sender == playerProps.playerID ? "0px" : "40px"
+              marginLeft: msj.sender == playerState.playerID ? "0px" : "40px"
             }}
           >
             <span className="nes-text is-info">
@@ -290,7 +290,7 @@ return (
                       x={xPos[locIndex]} y={yPos[locIndex]}
                       show={true}
                       district={district}
-                      isDisabled={location.isDisabled || G.selectedCard == -1}
+                      isDisabled={location.isDisabled || G.players[ctx.currentPlayer]?.selectedCard == -1}
                       mirror={(dIndex == 1 || dIndex == 2) && locIndex > 1 ? 107 : 0}
                     />)
                   )}
@@ -314,7 +314,7 @@ return (
             <NumericTracker x={575} y={270} w={80} h={75} show={true} />
             {/* <DynamicElement x={281} y={463} show={true} /> */}
             <WorkerComponent
-              numerOfWorkers={G.numberOfWorkers}
+              numerOfWorkers={G.players[ctx.currentPlayer]?.numberOfWorkers}
               x={281} y={463}
               onClick={() => alert("Worker clicked!")}
               mirror={0}
@@ -335,7 +335,7 @@ return (
               onArrowUp={() => alert("arrow up")}
               onArrowDown={() => alert("arrow down")}
 
-              selectedCardIndex={G.selectedCard}
+              selectedCardIndex={G.players[ctx.currentPlayer]?.selectedCard}
             />
           </div>
         </div>

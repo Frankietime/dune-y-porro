@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import { Player } from "./types";
+import { PlayerState } from "./types";
 import { LobbyAPI } from "boardgame.io";
 
 type AppState = {
-  playerProps: Player;
-  setPlayerProps: (p: Player) => void;
+  playerState: PlayerState;
+  setPlayerState: (p: PlayerState) => void;
 
   matchData: any;
   setMatchData: (m: any) => void;
@@ -17,8 +17,8 @@ type AppState = {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  playerProps: { name: "Player 1"} as Player,
-  setPlayerProps: (p) => set({ playerProps: p }),
+  playerState: { name: "Player 1"} as PlayerState,
+  setPlayerState: (p) => set({ playerState: p }),
   
   matchData: {} as LobbyAPI.Match,
   setMatchData: (m) => set({ matchData: m }),

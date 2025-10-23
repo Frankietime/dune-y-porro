@@ -1,7 +1,6 @@
-import { District } from "../client/src/types";
+import { District, PlayerGameState } from "../client/src/types";
 
 export interface GameState {
-    numberOfWorkers: number;
+    players: { [key: string]: PlayerGameState };
     districts: District[];
-    selectedCard: number;
 }

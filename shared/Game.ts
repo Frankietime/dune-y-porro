@@ -1,20 +1,40 @@
 import { Game as GameInterface} from "boardgame.io";
-import { INVALID_MOVE } from "boardgame.io/core";
+import { INVALID_MOVE, PlayerView } from "boardgame.io/core";
 import { GAME_NAME, INITIAL_NUMBER_OF_WORKERS, NO_CARD_SELECTED } from "./constants";
 import { GameState } from "./types";
-import { LocationCost, Location } from "../client/src/types";
+import { LocationCost, Location, PlayerGameState } from "../client/src/types";
 import { isNullOrEmpty } from "./common-methods";
 
-const isWorkerPlacementValid = (G: GameState, currentLocation: Location): boolean => {
-   return G.numberOfWorkers > 0 && isNullOrEmpty(currentLocation.worker);
+const isPlayCardValid = (playerState: PlayerGameState, selectedCardIndex: number): boolean => {
+    return !playerState.hasPlayedCard && selectedCardIndex !== NO_CARD_SELECTED;
+}
+
+const isWorkerPlacementValid = (playerState: PlayerGameState, currentLocation: Location): boolean => {
+   return !playerState.hasPlayedCard && playerState.numberOfWorkers > 0 && isNullOrEmpty(currentLocation.worker);
+}
+
+const getInitialPlayersState = (numberOfPlayers: number) => {
+    let initialPlayersState: {[key: string]: PlayerGameState} = {};
+    Array.from({ length: numberOfPlayers }).forEach((value: any, index: number) => {
+        initialPlayersState[index.toString()] = {
+        numberOfWorkers: INITIAL_NUMBER_OF_WORKERS,
+        selectedCard: NO_CARD_SELECTED,
+        hasPlayedCard: false
+        }
+    });
+
+    return initialPlayersState;
 }
 
 export const Game: GameInterface<GameState> = {
     
     name: GAME_NAME,
+
+    minPlayers: 2,
+    maxPlayers: 4,
     
-    setup: () => ({
-        
+    setup: ({ ctx, ...plugins }, setupData) => ({
+        players: getInitialPlayersState(ctx.numPlayers),
         numberOfWorkers: INITIAL_NUMBER_OF_WORKERS,
         selectedCard: NO_CARD_SELECTED,
         districts: 
@@ -194,17 +214,37 @@ export const Game: GameInterface<GameState> = {
         ]
     }),
 
+    playerView: PlayerView.STRIP_SECRETS,
+
+    // players: {
+    //     '1': { token: 'Player 1' },
+    //     '2': { token: 'Player 2' },
+    // },
+
+    events: {
+        // prevents player from ending a game
+        endGame: false,
+    },
+
     phases: {
-        workerPlacement: {
+        // worker placement, reveal,
+        mainPhase: {
             start: true,
             turn: {
+                
+                // play or reveal
+                minMoves: 1,
+
                 onBegin: ({ G, ctx, events, random, ...plugins })=> {
-                    G.numberOfWorkers = INITIAL_NUMBER_OF_WORKERS;
-                    G.selectedCard = NO_CARD_SELECTED;
+                    // reset player state
+                    const playerState = G.players[ctx.currentPlayer];
+                    playerState.hasPlayedCard = false;
+                    playerState.selectedCard = NO_CARD_SELECTED;
                 },
-                onEnd: ({ G, ctx, events, random, ...plugins }) => {
-                    
-                }
+                onEnd: ({ G, ctx, events, random, ...plugins }) => {},
+                
+                // end if no workers left, stage?
+                endIf: () => (false)
             },
             onBegin: (context) => {
             },
@@ -214,26 +254,35 @@ export const Game: GameInterface<GameState> = {
     },
 
     moves: {
-        selectCard: (state, _, selectedCard ) => {
-            state.G.selectedCard = selectedCard;
+        selectCard: {
+            move: (state, _, selectedCard ) => {
+                if (!isPlayCardValid(state.G.players[state.ctx.currentPlayer], selectedCard))
+                    return INVALID_MOVE;
+                state.G.players[state.ctx.currentPlayer].selectedCard = selectedCard;
+            }, 
+            undoable: true
         },        
-        placeWorker: (state, _, districtID, locationID) => {
-            const currentLocation = state.G.districts[districtID].locations[locationID];
+        placeWorker: {
+            move: (state, _, districtID, locationID) => {
+                const currentLocation = state.G.districts[districtID].locations[locationID];
 
-            if (!isWorkerPlacementValid(state.G, currentLocation))
-                return INVALID_MOVE;
-        
-            // resources
-            state.G.numberOfWorkers -= 1;
-            state.G.selectedCard = -1;
+                const playerState = state.G.players[state.ctx.currentPlayer];
 
-            // district & location
-            currentLocation.isDisabled = true;
-            currentLocation.isSelected = true;
-            currentLocation.worker = state.ctx.currentPlayer;
+                if (!isWorkerPlacementValid(playerState, currentLocation))
+                    return INVALID_MOVE;
             
-        
-        },
+                // resources
+                playerState.numberOfWorkers -= 1;
+                // playerState.selectedCard = -1;
+                playerState.hasPlayedCard = true;
+
+                // district & location
+                currentLocation.isDisabled = true;
+                currentLocation.isSelected = true;
+                currentLocation.worker = state.ctx.currentPlayer;        
+            },
+            undoable: true
+        }
     },
 
     ai: {

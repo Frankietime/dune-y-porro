@@ -17,8 +17,8 @@ export const LobbyComponent = () => {
   } = useLobbyServices();
 
   const {
-    playerProps,
-    setPlayerProps
+    playerState,
+    setPlayerState
   } = useAppStore();
 
   const {
@@ -43,7 +43,7 @@ export const LobbyComponent = () => {
       2, 
       {
         name: useLobbyStore.getState().matchName, 
-        playerName: useAppStore.getState().playerProps.name
+        playerName: useAppStore.getState().playerState.name
       }       
     ).then((res) =>  res);
   }
@@ -52,15 +52,15 @@ export const LobbyComponent = () => {
     const { playerCredentials, playerID } = await joinMatch(
       matchID,
       {
-        playerName: useAppStore.getState().playerProps.name,
+        playerName: useAppStore.getState().playerState.name,
       }
     );
 
     const match: LobbyAPI.Match = await getMatch(matchID);
     useAppStore.getState().setMatchData(match);
     
-    useAppStore.getState().setPlayerProps({ 
-      ...useAppStore.getState().playerProps, 
+    useAppStore.getState().setPlayerState({ 
+      ...useAppStore.getState().playerState, 
       matchID, 
       playerID, 
       playerCredentials 
@@ -86,8 +86,8 @@ export const LobbyComponent = () => {
             <label htmlFor="playerName" className="text-sm">Player Name</label>
             <input
               id="playerName"
-              value={playerProps.name}
-              onChange={(e) => setPlayerProps({ ...playerProps, name: e.target.value })}
+              value={playerState.name}
+              onChange={(e) => setPlayerState({ ...playerState, name: e.target.value })}
               className="mt-1 w-full border rounded px-2 py-1"
               placeholder="Tu nombre"
             />

@@ -1,6 +1,6 @@
 import { LobbyAPI } from "boardgame.io";
 import { GAME_NAME } from "../../../shared/constants";
-import { Player } from "../types";
+import { PlayerState } from "../types";
 import { useLobby } from "../lib/LobbyProvider";
 
 export const useLobbyServices = () => {
@@ -14,13 +14,13 @@ export const useLobbyServices = () => {
             );
     }
 
-    const leaveMatch = async (playerProps: Player) => { 
+    const leaveMatch = async (playerState: PlayerState) => { 
         return await lobby.leaveMatch(
                 GAME_NAME, 
-                playerProps.matchID, 
+                playerState.matchID, 
                 {
-                    playerID: playerProps.playerID,
-                    credentials: playerProps.playerCredentials
+                    playerID: playerState.playerID,
+                    credentials: playerState.playerCredentials
                 }
             )
     }

@@ -18,7 +18,7 @@ export default function App() {
     client,
     setClient,
 
-    playerProps,
+    playerState,
     setServer
   } = useAppStore();
 
@@ -35,7 +35,6 @@ export default function App() {
       game: Game, 
       board: BoardComponent,
       multiplayer: server,
-      numPlayers: 999999
     });   
     
     setClient(client);
@@ -44,7 +43,7 @@ export default function App() {
     return gameClientComponent;
   }, [Game]);
 
-  const isGameInCourse = () => playerProps.matchID != null && playerProps.matchID != "";
+  const isGameInCourse = () => playerState.matchID != null && playerState.matchID != "";
 
   return (
       <div className="flex justify-center m-auto my-4 nes-poiter">
@@ -52,9 +51,9 @@ export default function App() {
           <LobbyComponent />
             :        
           <GameClientComponent
-            matchID={playerProps.matchID} 
-            playerID={playerProps.playerID ? playerProps.playerID : "0"} 
-            credentials={playerProps.playerCredentials ? playerProps.playerCredentials : undefined}
+            matchID={playerState.matchID} 
+            playerID={playerState.playerID ? playerState.playerID : "0"} 
+            credentials={playerState.playerCredentials ? playerState.playerCredentials : undefined}
           />  
         }
       </div>
