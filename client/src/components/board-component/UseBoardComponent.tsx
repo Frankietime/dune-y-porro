@@ -1,4 +1,4 @@
-import { useAppStore } from "../../store";
+import { District } from "../../types";
 
 export const useBoardComponent = () => {
     
@@ -8,11 +8,13 @@ export const useBoardComponent = () => {
         onArrowDown?: () => void,
         onPass?: () => void,
         onReveal?: () => void,
+        selectedCardIndex: number,
     }) => {
     return <>
         <Card y={540} x={83} show={true} key="arrow-up" onClick={props.onArrowUp} />
 
-        {Array.from(Array(5).keys()).map((_, i) => <Card 
+        {Array.from(Array(5).keys()).map((_, i) => <Card
+            isSelected={i == props.selectedCardIndex} 
             y={540} x={390 + i*105} show={true} key={`card-${i}`} 
             onClick={() => props.onSelectCard ? props.onSelectCard(i) : undefined} 
         />)}
@@ -26,16 +28,18 @@ export const useBoardComponent = () => {
 
     const Clickers = (props: {
     x?: number, y?: number,
-    mirror?: boolean
+    mirror?: boolean,
+    district?: District,
+    onLocationSelect: (districtIndex: number, locationIndex: number) => void;
     }) => {
     const bottomRowOffsetX = props.mirror ? 108 : 0;
     const offsetY = 0;
     const offsetX = 0;
-    return <div className="relative" style={{top: props.y ?? 0, left: props.x ?? 0}}>
-        <ClickBox x={54 + offsetX} y={0 + offsetY} show={true} />
-        <ClickBox x={178 + offsetX} y={0 + offsetY} show={true} />
-        <ClickBox x={0 + bottomRowOffsetX} y={67 + offsetY} show={true} />
-        <ClickBox x={124 + bottomRowOffsetX} y={67 + offsetY} show={true} />
+    return <div className="relative" style={{top: props.y ?? 0, left: props.x ?? 0, width: "fit-content", height: "fit-content"}}>
+        <ClickBox _onClick={() => props.onLocationSelect(0, 0)} x={54 + offsetX} y={0 + offsetY} show={true} />
+        <ClickBox _onClick={() => props.onLocationSelect(0, 1)} x={178 + offsetX} y={0 + offsetY} show={true} />
+        <ClickBox _onClick={() => props.onLocationSelect(0, 2)} x={0 + bottomRowOffsetX} y={67 + offsetY} show={true} />
+        <ClickBox _onClick={() => props.onLocationSelect(0, 3)} x={124 + bottomRowOffsetX} y={67 + offsetY} show={true} />
     </div>;
     }
 
@@ -47,13 +51,29 @@ export const useBoardComponent = () => {
     }
 
     const ClickBox = (props: {
-    w?: number,
-    h?: number,
-    x: number,
-    y: number,
-    show?: boolean,
+        // w?: number,
+        // h?: number,
+        x: number,
+        y: number,
+        show?: boolean,
+        _onClick: () => void;
+        children?: React.ReactNode,
+        disabled?: boolean,
     }) => {
-    return <EventBox {...props} w={props.w ?? 110} h={props.h ?? 55} />;
+    return ( 
+        <EventBox 
+            onClick={props._onClick} 
+            // w={props.w ?? 110} h={props.h ?? 55} 
+            // isSelected={props.isSelected}
+            disabled={props.disabled}
+            x={props.x} y={props.y}
+            show={props.show}
+        >
+            
+            {props.children}
+        
+        </EventBox>
+    );
     }
 
     const NumericTrackers = (props: {
@@ -74,8 +94,13 @@ export const useBoardComponent = () => {
     x: number,
     y: number,
     show?: boolean,
+    children?: React.ReactNode,
     }) => {
-    return <EventBox {...props} w={props.w ?? 45} h={props.h ?? 45} />;
+    return (
+        <EventBox {...props} w={props.w ?? 45} h={props.h ?? 45}>
+            {props.children}
+        </EventBox>
+    );
     }
 
     const VisualTracker = (props: {
@@ -108,8 +133,15 @@ export const useBoardComponent = () => {
     y: number,
     show?: boolean,
     onClick?: () => void,
+    isSelected?: boolean,
     }) => {
-    return <EventBox {...props} w={props.w ?? 105} h={props.h ?? 157} />;
+    return (
+        <EventBox 
+            {...props} 
+            w={props.w ?? 105} 
+            h={props.h ?? 157} 
+            isSelected={props.isSelected} 
+        />);
     }
 
     const Button = (props: {
@@ -124,17 +156,24 @@ export const useBoardComponent = () => {
     }
 
     const EventBox = (props: {
-        w: number,
-        h: number,
+        w?: number,
+        h?: number,
         x: number,
         y: number,
         show?: boolean,
+        isSelected?: boolean,
         onClick?: () => void,
+        children?: React.ReactNode,
+        disabled?: boolean,
         }) => {
-        return <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "")}
-            style={{top: props.y, left: props.x, width: `${props.w}px`, height: `${props.h}px`}}
-            onClick={props.onClick}
-        />
+        return (
+            <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "") + (props.disabled ? " disabled" : "")}
+                style={{top: props.y, left: props.x, backgroundColor: props.isSelected ? "RGB(75,0,130, 0.3)" : "none", width: props.w ?? "fit-content", height: props.h ?? "fit-content"}}
+                onClick={props.disabled ? () => {} : props.onClick}
+            >
+                {props.children}
+            </div>
+        );
     }
 
     return {

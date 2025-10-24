@@ -1,30 +1,30 @@
 import { create } from "zustand";
-import { Player } from "./types";
+import { PlayerState } from "./types";
 import { LobbyAPI } from "boardgame.io";
 
 type AppState = {
-  playerProps: Player;
-  setPlayerProps: (p: Player) => void;
+  playerState: PlayerState;
+  setPlayerState: (p: PlayerState) => void;
 
   matchData: any;
   setMatchData: (m: any) => void;
 
-  gameClient: any;
-  setGameClient: (gameClient: any) => void;
+  client: any;
+  setClient: (client: any) => void;
 
   server: any;
-  setServer: (gameClient: any) => void;
+  setServer: (client: any) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  playerProps: { name: "Player 1"} as Player,
-  setPlayerProps: (p) => set({ playerProps: p }),
+  playerState: { name: "Player 1"} as PlayerState,
+  setPlayerState: (p) => set({ playerState: p }),
   
   matchData: {} as LobbyAPI.Match,
   setMatchData: (m) => set({ matchData: m }),
 
-  gameClient: {},
-  setGameClient: (gameClient: any) => set({ gameClient }),
+  client: {},
+  setClient: (client: any) => set({ client }),
 
   server: {},
   setServer: (server: any) => set({ server })

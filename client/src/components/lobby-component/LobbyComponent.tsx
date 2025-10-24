@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LobbyAPI } from 'boardgame.io';
 import { useAppStore } from '../../store';
 import { useLobbyStore } from './store';
-import { useLobbyServices } from '../services/lobbyServices';
+import { useLobbyServices } from '../../services/lobbyServices';
+import { BACKEND_URL } from '../../config';
 
 
 export const LobbyComponent = () => {
@@ -11,21 +12,22 @@ export const LobbyComponent = () => {
     createMatch,
     getMatch,
     joinMatch,
-    listMatches
+    listMatches,
   } = useLobbyServices();
 
   const {
-    playerProps,
-    setPlayerProps
+    playerState,
+    setPlayerState
   } = useAppStore();
 
   const {
-    setMatchName,
     matchName,
-    
+    setMatchName,
     matchList,
     setMatchList
   } = useLobbyStore();
+
+  const [numberOfPlayers, setNumberOfPlayers] = useState(2);
 
   // Polling
   useEffect(() => {
@@ -38,10 +40,10 @@ export const LobbyComponent = () => {
 
   const onCreateMatch = async () => {
     return await createMatch(
-      2, 
+      numberOfPlayers, 
       {
         name: useLobbyStore.getState().matchName, 
-        playerName: useAppStore.getState().playerProps.name
+        playerName: useAppStore.getState().playerState.name
       }       
     ).then((res) =>  res);
   }
@@ -50,15 +52,15 @@ export const LobbyComponent = () => {
     const { playerCredentials, playerID } = await joinMatch(
       matchID,
       {
-        playerName: useAppStore.getState().playerProps.name,
+        playerName: useAppStore.getState().playerState.name,
       }
     );
 
     const match: LobbyAPI.Match = await getMatch(matchID);
     useAppStore.getState().setMatchData(match);
     
-    useAppStore.getState().setPlayerProps({ 
-      ...useAppStore.getState().playerProps, 
+    useAppStore.getState().setPlayerState({ 
+      ...useAppStore.getState().playerState, 
       matchID, 
       playerID, 
       playerCredentials 
@@ -66,6 +68,12 @@ export const LobbyComponent = () => {
   }
 
   const isLobbyClientLoaded = () => true;
+
+  const onRemoveMatch = async (matchID: string) => {
+    await fetch(`${BACKEND_URL}/admin/matches/${matchID}`, {
+      method: 'DELETE',
+    });
+  };
 
   return (
     <>
@@ -78,8 +86,8 @@ export const LobbyComponent = () => {
             <label htmlFor="playerName" className="text-sm">Player Name</label>
             <input
               id="playerName"
-              value={playerProps.name}
-              onChange={(e) => setPlayerProps({ ...playerProps, name: e.target.value })}
+              value={playerState.name}
+              onChange={(e) => setPlayerState({ ...playerState, name: e.target.value })}
               className="mt-1 w-full border rounded px-2 py-1"
               placeholder="Tu nombre"
             />
@@ -114,6 +122,13 @@ export const LobbyComponent = () => {
                       >
                         Join
                       </button>
+                      <button
+                        onClick={() => onRemoveMatch(match.matchID)}
+                        className="mt-2 w-full rounded bg-red-600 px-3 py-1.5 text-white text-sm disabled:opacity-60"
+                      >
+                        Remove
+                      </button>
+
                     </li>
                   );
                 })}

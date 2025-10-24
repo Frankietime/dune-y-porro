@@ -1,17 +1,35 @@
 export type LocationCost = {
   resource: Resource;
 }
+
+export type District = {
+  name: string;
+  y: number;
+  x: number;
+  locations: Location[];
+}
 export type Location = {
   index: number;
+  x: number;
+  y: number;
   name: string;
   cost: LocationCost;
+  isDisabled?: boolean;
+  isSelected?: boolean;
+  worker?: string;
 }
 
-export type Player = { 
+export type PlayerState = { 
     playerID: string; 
     name: string; 
     matchID: string;  
     playerCredentials: string;  
+}
+
+export type PlayerGameState = {
+    hasPlayedCard: boolean;
+    numberOfWorkers: number;
+    selectedCard: number;
 }
 
 export enum ResourceEnum {
@@ -24,22 +42,3 @@ export type Resource = {
   type: ResourceEnum;
   amount: number;
 }
-
-export type RoomState = {
-  id: string;
-  players: Player[];
-  turnIndex: number;
-  startedAt: number;
-  lastActionAt: number;
-};
-
-export type LocalState = {
-  me?: Player;
-  roomId?: string;
-  state?: RoomState;
-  player?: Player;
-  setMe: (p?: Player) => void;
-  setRoomId: (id?: string) => void;
-  setState: (s?: RoomState) => void;
-  setPlayer: (p: Player) => void;
-};
