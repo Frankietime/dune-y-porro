@@ -12,8 +12,7 @@ export const LobbyComponent = () => {
     createMatch,
     getMatch,
     joinMatch,
-    listMatches, 
-    leaveMatch
+    listMatches,
   } = useLobbyServices();
 
   const {
@@ -22,12 +21,13 @@ export const LobbyComponent = () => {
   } = useAppStore();
 
   const {
-    setMatchName,
     matchName,
-    
+    setMatchName,
     matchList,
     setMatchList
   } = useLobbyStore();
+
+  const [numberOfPlayers, setNumberOfPlayers] = useState(2);
 
   // Polling
   useEffect(() => {
@@ -40,7 +40,7 @@ export const LobbyComponent = () => {
 
   const onCreateMatch = async () => {
     return await createMatch(
-      2, 
+      numberOfPlayers, 
       {
         name: useLobbyStore.getState().matchName, 
         playerName: useAppStore.getState().playerState.name
