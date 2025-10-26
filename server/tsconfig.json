@@ -8,5 +8,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["*.js", "*.cjs", "*.ts", "*.d.ts", "../shared/*.ts"]
+  "include": ["*.js", "*.cjs", "*.ts", "*.d.ts", "../shared/*.ts", "../shared/types.ts"]
 }

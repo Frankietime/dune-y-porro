@@ -1,11 +1,10 @@
 import { LobbyAPI } from "boardgame.io";
 import { GAME_NAME } from "../../../shared/constants";
-import { PlayerState } from "../types";
+import { PlayerState } from "../../../shared/types";
 import { useLobby } from "../lib/LobbyProvider";
 
 export const useLobbyServices = () => {
     const lobby = useLobby();
-
 
     const getMatch = async (matchID: string): Promise<LobbyAPI.Match> => {
         return await lobby.getMatch(

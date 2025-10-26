@@ -1,200 +1,87 @@
-import { LocationCost, PlayerGameState, Location } from "../client/src/types";
+import { LocationCost, PlayerGameState, Location, District, Dictionary, ResourceCost, LocationReward } from "./types";
 import { isNullOrEmpty } from "./common-methods";
 import { INITIAL_NUMBER_OF_WORKERS, NO_CARD_SELECTED } from "./constants";
+import { LocationIconsEnum, ResourceEnum } from "./enums";
+import { drawCard } from "./Game";
 
-export const getInitialPlayersState = (numberOfPlayers: number) => {
-        let initialPlayersState: {[key: string]: PlayerGameState} = {};
-        Array.from({ length: numberOfPlayers }).forEach((value: any, index: number) => {
-            initialPlayersState[index.toString()] = {
-            numberOfWorkers: INITIAL_NUMBER_OF_WORKERS,
-            selectedCard: NO_CARD_SELECTED,
-            hasPlayedCard: false
-            }
-        });
-    
-        return initialPlayersState;
-    }
+export const getInitialLocationsState = (districtName: string, names: string[]): Location[] => names.map<Location>((name, locIndex) => ({
+    Id: districtName + "-" + locIndex.toString(),
+    name,
+    cost: getInitialLocationCost(),      
+    reward: getInitialLocationReward(),     
+    isSelected: false,
+    isDisabled: false
+}));
 
-export const getInitialDistrictsState = () => {
+export const getInitialLocationCost = (): LocationCost => ({
+    locationIconIds: Object.keys(LocationIconsEnum).map(k => k).filter(id => typeof id == "number"),
+    resources: [
+        {
+            amount: 1,
+            type: ResourceEnum.Candy
+        },
+        {
+            amount: 1,
+            type: ResourceEnum.Loot
+        }
+    ]
+});
+
+export const getInitialLocationReward = (): LocationReward => ({
+    resources: [
+        {
+            amount: 1,
+            type: ResourceEnum.Candy,
+        }
+    ],
+    moves: []
+})
+
+export const getInitialPlayersState = (numberOfPlayers: number): Dictionary<PlayerGameState> => {
+    let initialPlayersState: {[key: string]: PlayerGameState} = {};
+    Array.from({ length: numberOfPlayers }).forEach((value: any, Id: number) => {
+        initialPlayersState[Id.toString()] = {
+        numberOfWorkers: INITIAL_NUMBER_OF_WORKERS,
+        selectedCard: NO_CARD_SELECTED,
+        hasPlayedCard: false
+        }
+    });
+
+    return initialPlayersState;
+}
+
+export const getInitialDistrictsState = (): District[] => {
     return [
         {
-        name: "Conurba Complex",
+        name: "CONURBAPLEX",
         y: 67,
         x: 355,
-        locations: [
-        {
-            index: 0,
-            x: 54,
-            y: 0,
-            name: "La Salada",
-            cost: {} as LocationCost,
-            isSelected: false,
-            isDisabled: false
+        locations: getInitialLocationsState("CONURBAPLEX", ["La Salada", "Gaseod. 7", "Docke", "Centro"]),
         },
         {
-            index: 1,
-            x: 178,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "Gaseod. 7",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 2,
-            x: 0,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "Docke",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 3,
-            x: 124,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "Centro",
-            isSelected: false,
-            isDisabled: false
-        },
-        ],
-        },
-        {
-        name: "EDOMEX",
+        name: "ECOPLEX",
         x: 613,
         y: 67,
-        locations: [
-        {
-            index: 0,
-            x: 54,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "edo_1",
-            isSelected: false,
-            isDisabled: false
+        locations: getInitialLocationsState("", ["edo_1", "edo_2", "edo_3", "edo_4"]),
         },
         {
-            index: 1,
-            x: 178,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "edo_2",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 2,
-            x: 0,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "edo_3",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 3,
-            x: 124,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "edo_4",
-            isSelected: false,
-            isDisabled: false
-        },
-        ],
-        },
-        {
-        name: "Kakkoii Atarashi Mall",
+        name: "ATA Mall",
         x: 303,
         y: 344,
-        locations: [
-        {
-            index: 0,
-            x: 54,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "koii_1",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 1,
-            x: 178,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "koii_2",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 2,
-            x: 0,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "koii_3",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 3,
-            x: 124,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "koii_4",
-            isSelected: false,
-            isDisabled: false
-        },
-        ],
+        locations: getInitialLocationsState("Conurba Complex", ["koii_1", "koii_2", "koii_3", "koii_4"]),
         },
         {
         name: "#Xya_Xya_ZONE#",
         x: 665,
         y: 344,
-        locations: [
-        {
-            index: 0,
-            x: 54,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "xya_1",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 1,
-            x: 178,
-            y: 0,
-            cost: {} as LocationCost,
-            name: "xya_2",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 2,
-            x: 0,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "xya_3",
-            isSelected: false,
-            isDisabled: false
-        },
-        {
-            index: 3,
-            x: 124,
-            y: 67,
-            cost: {} as LocationCost,
-            name: "xia_4",
-            isSelected: false,
-            isDisabled: false
-        },
-        ],
+        locations: getInitialLocationsState("Con", ["xya_1", "xya_2", "xya_3", "xya_4"]),
         }
     ];
 }
 
 
-export const isPlayCardValid = (playerState: PlayerGameState, selectedCardIndex: number): boolean => {
-    return !playerState.hasPlayedCard && selectedCardIndex !== NO_CARD_SELECTED;
+export const isPlayCardValid = (playerState: PlayerGameState, selectedCardId: number): boolean => {
+    return !playerState.hasPlayedCard && selectedCardId !== NO_CARD_SELECTED;
 }
     
 export const isWorkerPlacementValid = (playerState: PlayerGameState, currentLocation: Location): boolean => {

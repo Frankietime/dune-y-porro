@@ -16,6 +16,7 @@
     "@radix-ui/themes": "^3.2.1",
     "boardgame.io": "^0.50.2",
     "faker": "^6.6.6",
+    "g": "^2.0.1",
     "nes.css": "^2.2.1",
     "react95": "^4.0.0",
     "styled-components": "^6.1.19"

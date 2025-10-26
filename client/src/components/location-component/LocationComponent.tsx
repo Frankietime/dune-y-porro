@@ -1,5 +1,5 @@
 import { isNullOrEmpty } from "../../../../shared/common-methods";
-import { District, Location } from "../../types";
+import { District, Location } from "../../../../shared/types";
 import { useBoardComponent } from "../board-component/UseBoardComponent";
 import "./LocationComponent.scss";
 import redWorker from "../../assets/tipitos/tipito-rojo.png";
@@ -8,6 +8,8 @@ import violetWorker from "../../assets/tipitos/tipito-violeta.png";
 import yellowWorker from "../../assets/tipitos/tipito-amarillo.png";
 
 export interface LocationComponentProps extends Location {
+    x: number,
+    y: number,
     district: District,
     show?: boolean,
     isSelected?: boolean;
@@ -16,13 +18,14 @@ export interface LocationComponentProps extends Location {
 }
 
 export const LocationComponent = ({
+    x, y,
     district,
     show = true,
     onClick,
-    x,
-    y,
     mirror,
     name,
+    cost,
+    reward,
     isSelected,
     isDisabled,
     worker
@@ -37,7 +40,11 @@ export const LocationComponent = ({
             show={true}>
             <div className="location-component-container">
                 <div className="location-container" style={{backgroundColor: isSelected ? "RGB(75,0,130, 0.3)" : "none"}}>
-                    {name}
+                    <div>{name}</div>
+                    <div>{cost.locationIconIds.join(",")}</div>
+                    {/* <div>{cost.resources.map(r => <span>{r.amount} - {r.type}</span>).join(",")}</div>
+                    <div>{reward.resources.map(r => <span>{r.amount} - {r.type}</span>).join(",")}</div>
+                    <div>{reward.moves.map(m => m.toString()).join(",")}</div> */}
                 </div>
                 {!isNullOrEmpty(worker) && (
                     <div className="worker-image-container">

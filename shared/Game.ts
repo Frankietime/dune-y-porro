@@ -1,7 +1,7 @@
-import { Game as GameInterface} from "boardgame.io";
+import { Ctx, DefaultPluginAPIs, Game as GameInterface, PlayerID} from "boardgame.io";
 import { INVALID_MOVE, PlayerView } from "boardgame.io/core";
 import { GAME_NAME, NO_CARD_SELECTED } from "./constants";
-import { GameState } from "./types";
+import { GameState } from "../shared/types";
 import { 
     getInitialDistrictsState, 
     getInitialPlayersState, 
@@ -9,6 +9,21 @@ import {
     isWorkerPlacementValid 
 } from "./game-helper";
 
+type State = {
+    G: GameState;
+    ctx: Ctx;
+    playerID: PlayerID;
+}
+
+export const selectCard = (state: State, _: any, selectedCard: number) => {
+    if (!isPlayCardValid(state.G.players[state.ctx.currentPlayer], selectedCard))
+        return INVALID_MOVE;
+    state.G.players[state.ctx.currentPlayer].selectedCard = selectedCard;
+}
+
+export const drawCard = () => {
+    console.log("DRAW A CARD");
+}
 
 export const Game: GameInterface<GameState> = {
     
@@ -43,11 +58,7 @@ export const Game: GameInterface<GameState> = {
             },
             moves: {
                 selectCard: {
-                    move: (state, _, selectedCard ) => {
-                        if (!isPlayCardValid(state.G.players[state.ctx.currentPlayer], selectedCard))
-                            return INVALID_MOVE;
-                        state.G.players[state.ctx.currentPlayer].selectedCard = selectedCard;
-                    }, 
+                    move: selectCard, 
                     undoable: true
                 },        
                 placeWorker: {

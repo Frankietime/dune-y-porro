@@ -2,7 +2,7 @@ import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useBoardComponent } from "./UseBoardComponent";
 import { BoardProps } from "boardgame.io/react";
 import { GameState } from "../../../../shared/types";
-import { Location } from "../../types";
+import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
 import { WorkerComponent } from "../worker-component/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
