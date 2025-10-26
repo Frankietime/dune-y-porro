@@ -1,40 +1,38 @@
 import { LocationCost, PlayerGameState, Location, District, Dictionary, ResourceCost, LocationReward } from "./types";
 import { isNullOrEmpty } from "./common-methods";
 import { INITIAL_NUMBER_OF_WORKERS, NO_CARD_SELECTED } from "./constants";
-import { LocationIconsEnum, ResourceEnum } from "./enums";
-import { drawCard } from "./Game";
+import { DistrictIconsEnum, ResourceEnum } from "./enums";
 
-export const getInitialLocationsState = (districtName: string, names: string[]): Location[] => names.map<Location>((name, locIndex) => ({
+export const getInitialLocationsState = (districtName: string, districtId: string, names: string[]): Location[] => names.map<Location>((name, locIndex) => ({
     Id: districtName + "-" + locIndex.toString(),
     name,
-    cost: getInitialLocationCost(),      
+    cost: getInitialLocationCost(districtId),      
     reward: getInitialLocationReward(),     
     isSelected: false,
     isDisabled: false
 }));
-
-export const getInitialLocationCost = (): LocationCost => ({
-    locationIconIds: Object.keys(LocationIconsEnum).map(k => k).filter(id => typeof id == "number"),
-    resources: [
-        {
-            amount: 1,
-            type: ResourceEnum.Candy
-        },
-        {
-            amount: 1,
-            type: ResourceEnum.Loot
-        }
-    ]
+export const getInitialLocationCost = (districtId: string): LocationCost => ({
+        locationIconIds: [districtId],
+        resources: [
+            {
+                amount: 1,
+                resourceId: ResourceEnum.Candy.toString()
+            },
+            {
+                amount: 1,
+                resourceId: ResourceEnum.Loot.toString()
+            }
+        ]
 });
 
 export const getInitialLocationReward = (): LocationReward => ({
     resources: [
         {
             amount: 1,
-            type: ResourceEnum.Candy,
+            resourceId: ResourceEnum.Candy,
         }
     ],
-    moves: []
+    moves: ["draw"]
 })
 
 export const getInitialPlayersState = (numberOfPlayers: number): Dictionary<PlayerGameState> => {
@@ -56,25 +54,25 @@ export const getInitialDistrictsState = (): District[] => {
         name: "CONURBAPLEX",
         y: 67,
         x: 355,
-        locations: getInitialLocationsState("CONURBAPLEX", ["La Salada", "Gaseod. 7", "Docke", "Centro"]),
+        locations: getInitialLocationsState("CONURBAPLEX", DistrictIconsEnum.D1.toString(), ["La Salada", "Gaseod. 7", "Docke", "Centro"]),
         },
         {
         name: "ECOPLEX",
         x: 613,
         y: 67,
-        locations: getInitialLocationsState("", ["edo_1", "edo_2", "edo_3", "edo_4"]),
+        locations: getInitialLocationsState("", DistrictIconsEnum.D2.toString(), ["edo_1", "edo_2", "edo_3", "edo_4"]),
         },
         {
         name: "ATA Mall",
         x: 303,
         y: 344,
-        locations: getInitialLocationsState("Conurba Complex", ["koii_1", "koii_2", "koii_3", "koii_4"]),
+        locations: getInitialLocationsState("Conurba Complex",  DistrictIconsEnum.D3.toString(), ["koii_1", "koii_2", "koii_3", "koii_4"]),
         },
         {
         name: "#Xya_Xya_ZONE#",
         x: 665,
         y: 344,
-        locations: getInitialLocationsState("Con", ["xya_1", "xya_2", "xya_3", "xya_4"]),
+        locations: getInitialLocationsState("Con",  DistrictIconsEnum.D4.toString(), ["xya_1", "xya_2", "xya_3", "xya_4"]),
         }
     ];
 }

@@ -1,8 +1,8 @@
-export enum LocationIconsEnum {
-    LOC1 = 1,
-    LOC2 = 2,
-    LOC3 = 3,
-    LOC4 = 4,
+export enum DistrictIconsEnum {
+    D1 = "LOC1",
+    D2 = "LOC2",
+    D3 = "LOC3",
+    D4 = "LOC4",
 }
 
 export enum ResourceEnum {

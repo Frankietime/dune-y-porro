@@ -42,11 +42,11 @@ export type LocationCost = {
 
 export type LocationReward = {
   resources: ResourceCost[];
-  moves: Function[];
+  moves: string[];
 }
 
 export type ResourceCost = {
-  type: ResourceEnum;
+  resourceId: string;
   amount: number;
 }
 

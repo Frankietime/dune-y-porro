@@ -43,7 +43,7 @@ export const BoardComponent = ({
     moves.placeWorker(G, districtIndex, locationIndex);
   }
 
-  const locsXPos = [54, 178, 0, 124];
+  const locsXPos = [40, 168, -10, 112];
   const locsYPos = [0, 0, 67, 67];
 
   const currentPlayerNumberOfWorkers = (): number => {
