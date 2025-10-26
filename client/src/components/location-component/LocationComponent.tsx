@@ -86,18 +86,12 @@ export const LocationComponent = ({
                             </div>
                         </div>
                     </div>
-                    {/* <div className="location-name-container">{name}</div> */}
-                    {/* <div className="location-icons-container">{cost.locationIconIds.map(lid => <img style={{height: "20px", width: "20px", display: "inline"}} src={districtIconsDict[lid]}/>)}</div> */}
-                    {/* <div className="location-resource-cost-container">{cost.locationIconIds.map(lid => <span>{lid}</span>)}</div> */}
-                    {/* <div className="location-resource-cost-container">{cost.resources.map(r => <span>{r.amount} - {r.type}</span>).join(",")}</div> */}
-                    {/* <div className="location-reward-container">{reward.resources.map(r => <span>{r.amount} - {r.type}</span>).join(",")}</div> */}
-                    {/*<div>{reward.moves.map(m => m.toString()).join(",")}</div> */}
-                </div>
                 {!isNullOrEmpty(worker) && (
                     <div className="worker-image-container">
                         <img src={redWorker}/>
                     </div>
                 )}
+                </div>
             </div>
         </ClickBox>
     );

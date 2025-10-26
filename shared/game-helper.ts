@@ -30,6 +30,10 @@ export const getInitialLocationReward = (): LocationReward => ({
         {
             amount: 1,
             resourceId: ResourceEnum.Candy,
+        },
+        {
+            amount: 1,
+            resourceId: ResourceEnum.Candy,
         }
     ],
     moves: ["draw"]
