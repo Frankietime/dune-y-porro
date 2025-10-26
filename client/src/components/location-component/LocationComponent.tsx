@@ -10,6 +10,7 @@ import violetWorker from "../../assets/tipitos/tipito-violeta.png";
 import yellowWorker from "../../assets/tipitos/tipito-amarillo.png";
 import { districtIconsDict, resourceIconsDict } from "./constants";
 import { DistrictIconsEnum } from "../../../../shared/enums";
+import { workerIconsByPlayerId } from "../board-component/BoardComponent";
 
 // location icons
 
@@ -35,7 +36,7 @@ export const LocationComponent = ({
     reward,
     isSelected,
     isDisabled,
-    worker
+    takenByPlayerID
 }: LocationComponentProps) => {
 
     const { ClickBox } = useBoardComponent();
@@ -86,9 +87,9 @@ export const LocationComponent = ({
                             </div>
                         </div>
                     </div>
-                {!isNullOrEmpty(worker) && (
+                {!isNullOrEmpty(takenByPlayerID) && (
                     <div className="worker-image-container">
-                        <img src={redWorker}/>
+                        <img src={workerIconsByPlayerId[parseInt(takenByPlayerID!)]}/>
                     </div>
                 )}
                 </div>

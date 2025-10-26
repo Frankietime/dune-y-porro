@@ -11,6 +11,7 @@ export const getInitialLocationsState = (districtName: string, districtId: strin
     isSelected: false,
     isDisabled: false
 }));
+
 export const getInitialLocationCost = (districtId: string): LocationCost => ({
         locationIconIds: [districtId],
         resources: [
@@ -87,5 +88,5 @@ export const isPlayCardValid = (playerState: PlayerGameState, selectedCardId: nu
 }
     
 export const isWorkerPlacementValid = (playerState: PlayerGameState, currentLocation: Location): boolean => {
-    return !playerState.hasPlayedCard && playerState.numberOfWorkers > 0 && isNullOrEmpty(currentLocation.worker);
+    return !playerState.hasPlayedCard && playerState.numberOfWorkers > 0 && isNullOrEmpty(currentLocation.takenByPlayerID);
 }

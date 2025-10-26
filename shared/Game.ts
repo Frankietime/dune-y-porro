@@ -76,7 +76,7 @@ export const Game: GameInterface<GameState> = {
                         // update district & location
                         currentLocation.isDisabled = true;
                         currentLocation.isSelected = true;
-                        currentLocation.worker = state.ctx.currentPlayer;        
+                        currentLocation.takenByPlayerID = state.ctx.currentPlayer;        
                     },
                     undoable: true
                 }

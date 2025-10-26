@@ -5,6 +5,7 @@ import LOC4 from "../../assets/board/LOC4-ICON-S.png";
 
 import CANDY from "../../assets/icon-placeholder/c-spice.png";
 import LOOT from "../../assets/icon-placeholder/c-water.png";
+
 import { Dictionary } from "../../../../shared/types";
 import { DistrictIconsEnum, ResourceEnum } from "../../../../shared/enums";
 

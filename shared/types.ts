@@ -32,7 +32,7 @@ export type Location = {
   reward: LocationReward;
   isDisabled?: boolean;
   isSelected?: boolean;
-  worker?: string;
+  takenByPlayerID?: string;
 }
 
 export type LocationCost = {

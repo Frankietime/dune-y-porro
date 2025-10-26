@@ -7,8 +7,14 @@ import { LocationComponent } from "../location-component/LocationComponent";
 import { WorkerComponent } from "../worker-component/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
+import redWorker from "../../assets/tipitos/tipito-rojo.png";
+import greenWorker from "../../assets/tipitos/tipito-verde.png";
+import violetWorker from "../../assets/tipitos/tipito-violeta.png";
+import yellowWorker from "../../assets/tipitos/tipito-amarillo.png";
 
 interface BoardGameProps extends BoardProps<GameState> {};
+
+export const workerIconsByPlayerId = [redWorker, greenWorker, violetWorker, yellowWorker];
 
 export const BoardComponent = ({ 
     ctx, 
@@ -112,10 +118,12 @@ return (
               <VisualTracker x={400} y={270} show={true} />
               <NumericTracker x={575} y={270} w={80} h={75} show={true} />
               
+              {/* Player Area Component */}
               <WorkerComponent
                 numerOfWorkers={currentPlayerNumberOfWorkers()}
                 x={281} y={463}
                 mirror={0}
+                playerID={parseInt(playerID!)}
               />
 
               {/* <NumericTrackers x={989} y={279} />
