@@ -74,14 +74,10 @@ export const getInitialDistrictsState = (): District[] => {
     ];
 }
 
-
 export const isPlayCardValid = (playerState: PlayerGameState, selectedCardId: number): boolean => {
     return !playerState.hasPlayedCard && selectedCardId !== NO_CARD_SELECTED;
 }
-    
-// export const isWorkerPlacementValid = (playerState: PlayerGameState, currentLocation: Location, cardInPlay: Card): boolean => {
-//     return currentLocation.cost.resources[0].amount == 1;
-// }
+
 export const isWorkerPlacementValid = (playerState: PlayerGameState, currentLocation: Location, cardInPlay: Card): boolean => {
     const clonedPlayerState = JSON.parse(JSON.stringify(playerState));
     const clonedCurrentLocation = JSON.parse(JSON.stringify(currentLocation));

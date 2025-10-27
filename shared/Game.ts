@@ -74,6 +74,7 @@ export const Game: GameInterface<GameState> = {
                         playerState.numberOfWorkers -= 1;
                         playerState.hasPlayedCard = true;
                         playerState.cardsInPlay?.push(selectedCard);
+                        
                         currentLocation.cost.resources.forEach(res => {
                             playerState[res.resourceId] -= res.amount;
                         })

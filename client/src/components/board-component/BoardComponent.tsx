@@ -1,14 +1,13 @@
 import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useBoardComponent } from "./UseBoardComponent";
 import { BoardProps } from "boardgame.io/react";
-import { Card, GameState } from "../../../../shared/types";
+import {  GameState } from "../../../../shared/types";
 import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
 import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos } from "./constants";
-import { DistrictIconsEnum, ResourceEnum } from "../../../../shared/enums";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -40,9 +39,11 @@ export const BoardComponent = ({
   const onSelectCard = (selectedCardId: number) => {
     moves.selectCard(G, {
       id: selectedCardId,
-      districtIds: ["LOC" + Math.round((Math.random() / 0.25))],
+      districtIds: [getRandomLocation()],
     })
   }
+
+  const getRandomLocation = () => "LOC" + Math.round((Math.random() / 0.25));
 
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
     moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);

@@ -27,7 +27,6 @@ export default function App() {
       game: Game, 
       board: BoardComponent,
       multiplayer: server,
-      debug: true
     });   
     
     setClient(client);

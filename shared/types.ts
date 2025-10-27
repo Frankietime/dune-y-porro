@@ -39,11 +39,6 @@ export type Location = {
   takenByPlayerID?: string;
 }
 
-// export type LocationCost = {
-//   districtIconIds: string[];
-//   resourceIds: string[];
-// }
-
 export type LocationCost = {
   districtIconIds: string[];
   resources: ResourceBag[];
