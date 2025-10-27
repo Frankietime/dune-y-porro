@@ -4,17 +4,12 @@ import { BoardProps } from "boardgame.io/react";
 import { GameState } from "../../../../shared/types";
 import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
-import { WorkerComponent } from "../worker-component/WorkerComponent";
+import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
-import redWorker from "../../assets/tipitos/tipito-rojo.png";
-import greenWorker from "../../assets/tipitos/tipito-verde.png";
-import violetWorker from "../../assets/tipitos/tipito-violeta.png";
-import yellowWorker from "../../assets/tipitos/tipito-amarillo.png";
+import { locsXPos, locsYPos } from "./constants";
 
 interface BoardGameProps extends BoardProps<GameState> {};
-
-export const workerIconsByPlayerId = [redWorker, greenWorker, violetWorker, yellowWorker];
 
 export const BoardComponent = ({ 
     ctx, 
@@ -48,9 +43,6 @@ export const BoardComponent = ({
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
     moves.placeWorker(G, districtIndex, locationIndex);
   }
-
-  const locsXPos = [40, 168, -10, 112];
-  const locsYPos = [0, 0, 67, 67];
 
   const currentPlayerNumberOfWorkers = (): number => {
     return G.players[playerID!]?.numberOfWorkers;

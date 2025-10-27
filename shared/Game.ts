@@ -1,4 +1,4 @@
-import { Ctx, DefaultPluginAPIs, Game as GameInterface, PlayerID} from "boardgame.io";
+import { Ctx, Game as GameInterface, PlayerID} from "boardgame.io";
 import { INVALID_MOVE, PlayerView } from "boardgame.io/core";
 import { GAME_NAME, NO_CARD_SELECTED } from "./constants";
 import { GameState } from "../shared/types";
@@ -21,7 +21,7 @@ export const selectCard = (state: State, _: any, selectedCard: number) => {
     state.G.players[state.ctx.currentPlayer].selectedCard = selectedCard;
 }
 
-export const drawCard = () => {
+export const draw = () => {
     console.log("DRAW A CARD");
 }
 

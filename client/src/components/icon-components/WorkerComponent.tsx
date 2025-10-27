@@ -1,8 +1,4 @@
-import redWorker from "../../assets/tipitos/tipito-rojo.png";
-import greenWorker from "../../assets/tipitos/tipito-verde.png";
-import violetWorker from "../../assets/tipitos/tipito-violeta.png";
-import yellowWorker from "../../assets/tipitos/tipito-amarillo.png";
-import { workerIconsByPlayerId } from "../board-component/BoardComponent";
+import { workerIconsByPlayerId } from "./constants";
 
 export interface WorkerComponentProps {
     mirror: number,

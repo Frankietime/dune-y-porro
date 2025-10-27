@@ -1,4 +1,4 @@
-import { LocationCost, PlayerGameState, Location, District, Dictionary, ResourceCost, LocationReward } from "./types";
+import { LocationCost, PlayerGameState, Location, District, Dictionary, LocationReward } from "./types";
 import { isNullOrEmpty } from "./common-methods";
 import { INITIAL_NUMBER_OF_WORKERS, NO_CARD_SELECTED } from "./constants";
 import { DistrictIconsEnum, ResourceEnum } from "./enums";
@@ -13,29 +13,17 @@ export const getInitialLocationsState = (districtName: string, districtId: strin
 }));
 
 export const getInitialLocationCost = (districtId: string): LocationCost => ({
-        locationIconIds: [districtId],
-        resources: [
-            {
-                amount: 1,
-                resourceId: ResourceEnum.Candy.toString()
-            },
-            {
-                amount: 1,
-                resourceId: ResourceEnum.Loot.toString()
-            }
-        ]
+    locationIconIds: [districtId],
+    resourceIds: [
+        ResourceEnum.Candy.toString(),
+        ResourceEnum.Loot.toString()
+    ]
 });
 
 export const getInitialLocationReward = (): LocationReward => ({
-    resources: [
-        {
-            amount: 1,
-            resourceId: ResourceEnum.Candy,
-        },
-        {
-            amount: 1,
-            resourceId: ResourceEnum.Candy,
-        }
+    resourceIds: [
+        ResourceEnum.Candy,
+        ResourceEnum.Candy,
     ],
     moves: ["draw"]
 })

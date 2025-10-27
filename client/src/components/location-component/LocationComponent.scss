@@ -1,4 +1,3 @@
-
 .location-component-container {
     width: 106px;
     height: 51px;
@@ -19,26 +18,18 @@
 
         display: grid;
 
-        &.selected {
-            
-        }
+        &.selected {}
 
         .location-name-container {
             width: 100%;
             height: 13px;
             background-color: violet;  
-        }
-
-        
+        }        
 
         .location-icons-container {
             width: 38px;
             height: 20px;
         }
-
-        // .location-cost-container {
-        //     width: 38px !important;
-        // }
 
         .location-resource-cost-container {
             width: 38px;
@@ -48,8 +39,6 @@
         .location-reward-container {
             width: 74px;
             height: 40px;
-            // background-color: blue;
         }
-
     }
 }

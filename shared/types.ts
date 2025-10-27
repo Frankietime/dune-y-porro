@@ -1,5 +1,3 @@
-import { ResourceEnum } from "./enums";
-
 export interface GameState {
   players: Dictionary<PlayerGameState>;
   districts: District[];
@@ -37,19 +35,13 @@ export type Location = {
 
 export type LocationCost = {
   locationIconIds: string[];
-  resources: ResourceCost[];
+  resourceIds: string[];
 }
 
 export type LocationReward = {
-  resources: ResourceCost[];
+  resourceIds: string[];
   moves: string[];
 }
 
-export type ResourceCost = {
-  resourceId: string;
-  amount: number;
-}
-
 // Utils
-
 export type Dictionary<T> = Record<string, T>;
