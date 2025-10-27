@@ -8,7 +8,7 @@ export const useBoardComponent = () => {
         onArrowDown?: () => void,
         onPass?: () => void,
         onReveal?: () => void,
-        selectedCardIndex: number,
+        selectedCardIndex: number | undefined,
     }) => {
     return <>
         <Card y={540} x={83} show={true} key="arrow-up" onClick={props.onArrowUp} />

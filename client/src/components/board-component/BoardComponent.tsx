@@ -1,13 +1,14 @@
 import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useBoardComponent } from "./UseBoardComponent";
 import { BoardProps } from "boardgame.io/react";
-import { GameState } from "../../../../shared/types";
+import { Card, GameState } from "../../../../shared/types";
 import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
 import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos } from "./constants";
+import { DistrictIconsEnum, ResourceEnum } from "../../../../shared/enums";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -36,12 +37,15 @@ export const BoardComponent = ({
     events.endTurn!();
   }
 
-  const onSelectCard = (selectedCard: number) => {
-    moves.selectCard(G, selectedCard)
+  const onSelectCard = (selectedCardId: number) => {
+    moves.selectCard(G, {
+      id: selectedCardId,
+      districtIds: ["LOC" + Math.round((Math.random() / 0.25))],
+    })
   }
 
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
-    moves.placeWorker(G, districtIndex, locationIndex);
+    moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);
   }
 
   const currentPlayerNumberOfWorkers = (): number => {
@@ -49,11 +53,11 @@ export const BoardComponent = ({
   }
 
   const isLocationDisabled = (location: Location): boolean => {
-    return location.isDisabled || G.players[ctx.currentPlayer]?.selectedCard == -1;
+    return location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard;
   }
 
-  const getSelectedCard = (): number => {
-    return G.players[ctx.currentPlayer]?.selectedCard;
+  const getSelectedCard = (): number| undefined => {
+    return G.players[ctx.currentPlayer]?.selectedCard?.id;
   }
 
 return (
