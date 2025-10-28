@@ -1,3 +1,4 @@
+import { Children } from "react";
 import { District } from "../../../../shared/types";
 
 export const useBoardComponent = () => {
@@ -9,15 +10,18 @@ export const useBoardComponent = () => {
         onPass?: () => void,
         onReveal?: () => void,
         selectedCardIndex: number | undefined,
+        children?: React.ReactNode
     }) => {
     return <>
         <Card y={540} x={83} show={true} key="arrow-up" onClick={props.onArrowUp} />
 
-        {Array.from(Array(5).keys()).map((_, i) => <Card
+        {/* {Array.from(Array(5).keys()).map((_, i) => <Card
             isSelected={i == props.selectedCardIndex} 
             y={540} x={390 + i*105} show={true} key={`card-${i}`} 
             onClick={() => props.onSelectCard ? props.onSelectCard(i) : undefined} 
-        />)}
+        />)} */}
+
+        {props.children}
         
         <Card y={540} x={1115} show={true} key="arrow-down" onClick={props.onArrowDown}  />
 
@@ -134,13 +138,15 @@ export const useBoardComponent = () => {
     show?: boolean,
     onClick?: () => void,
     isSelected?: boolean,
+    children?: React.ReactNode
     }) => {
     return (
         <EventBox 
             {...props} 
             w={props.w ?? 105} 
             h={props.h ?? 157} 
-            isSelected={props.isSelected} 
+            isSelected={props.isSelected}
+            children={props.children} 
         />);
     }
 

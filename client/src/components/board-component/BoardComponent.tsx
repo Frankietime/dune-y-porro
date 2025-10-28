@@ -1,13 +1,16 @@
 import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useBoardComponent } from "./UseBoardComponent";
 import { BoardProps } from "boardgame.io/react";
-import {  GameState } from "../../../../shared/types";
+import {  GameState, PlayerGameState } from "../../../../shared/types";
 import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
 import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos } from "./constants";
+import { useEffect, useMemo } from "react";
+import { Card } from "../../../../shared/services/types";
+import { wrap } from "lodash";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -30,17 +33,30 @@ export const BoardComponent = ({
     NumericTrackers,
     NumericTracker,
     VisualTracker,
+    Card
   } = useBoardComponent();  
+
+  const player = useMemo<PlayerGameState>(() => {
+    if(playerID != null) 
+      return G.players[playerID] as PlayerGameState;    
+    return {} as PlayerGameState;
+  }, [G])
+  
+  const currentPlayer = useMemo(() => {
+    const player = G.players[ctx.currentPlayer];
+    return player;
+  }, [G]);
+
+  useEffect(() => {
+
+  }, [G.players])
 
   const onTurnEnd = (): void => {
     events.endTurn!();
   }
 
-  const onSelectCard = (selectedCardId: number) => {
-    moves.selectCard(G, {
-      id: selectedCardId,
-      districtIds: [getRandomLocation()],
-    })
+  const onSelectCard = (selectedCard: Card) => {
+    moves.selectCard(G, selectedCard)
   }
 
   const getRandomLocation = () => "LOC" + Math.round((Math.random() / 0.25));
@@ -57,8 +73,8 @@ export const BoardComponent = ({
     return location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard;
   }
 
-  const getSelectedCard = (): number| undefined => {
-    return G.players[ctx.currentPlayer]?.selectedCard?.id;
+  const getSelectedCard = (): Card | undefined => {
+    return G.players[ctx.currentPlayer]?.selectedCard;
   }
 
 return (
@@ -69,7 +85,13 @@ return (
           ctx={ctx}
           chatMessages={chatMessages}
           sendChatMessage={sendChatMessage}
-        />
+        >
+          <div>Candy: {player.candy}</div>
+          <div>Loot: {player.loot}</div>
+          <div>VP: {player.victoryPoints}</div>
+          <div>Deck: {player.deck.length}</div>
+          <div>Discard: {player.discardPile.length}</div>
+        </GameInfoComponent>
 
         {G.districts && (
 
@@ -78,7 +100,7 @@ return (
               style={{backgroundImage: `url(${mapBg})`,}}
             >
               {G.districts.map((district, dIndex) => (
-                <div 
+                <div
                   key={dIndex} 
                   className="relative" 
                   style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
@@ -128,6 +150,8 @@ return (
               <VisualTracker x={735} y={270} show={true} />
               <NumericTracker x={657} y={270} w={80} h={75} show={true} />
               <DynamicElement x={1045} y={385} show={true} /> */}
+
+              
               
               <Hud 
                 onPass={() => onTurnEnd()}
@@ -135,9 +159,50 @@ return (
                 onArrowUp={() => alert("arrow up")}
                 onArrowDown={() => alert("arrow down")}
 
-                onSelectCard={(selectedCard) => onSelectCard(selectedCard)}
-                selectedCardIndex={getSelectedCard()}
-              />
+                // onSelectCard={(selectedCard) => onSelectCard(selectedCard)}
+                // selectedCardIndex={getSelectedCard()}
+              >
+              <div style={{
+                width: "200px"
+              }}>
+                {player.hand?.map((card: Card, index) => 
+                  <Card
+                      isSelected={card.id == getSelectedCard()?.id}
+                      y={540} x={390 + index*105} show={true} key={`card-${card.id}-${index}`} 
+                      onClick={() => onSelectCard(card)} 
+                  >
+                    <div style={{
+                      fontSize: "9px",
+                      overflowWrap: "break-word",
+                      backgroundColor: "white"
+                    }}>
+                      <div>
+                      {card?.name}
+                    </div>
+                    <hr></hr>
+                    {card?.districtIds.length > 0 && 
+                      <div>
+                        Districts: {card.districtIds.join(",")}
+                      </div>
+                    }
+                    <br></br>
+                    {card.primaryEffects != null &&
+                      <div>
+                        Play: {card?.primaryEffects?.join(",")}
+                      </div>
+                    }
+                    <br></br>
+
+                    {card?.primaryEffects != null &&
+                      <div>
+                        Reveal: {card?.secondaryEffects?.join(",")}
+                      </div>
+                    }
+                    </div>
+                  </Card>
+                )}  
+              </div>
+              </Hud>
             </div>
           </div>
         )}

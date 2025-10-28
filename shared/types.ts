@@ -1,8 +1,10 @@
-import { ResourceEnum } from "./enums";
+import { DistrictIconsEnum, ResourceEnum } from "./enums";
+import { Card } from "./services/types";
 
 export interface GameState {
   players: Dictionary<PlayerGameState>;
   districts: District[];
+  cardMarket: Card[];
 }
 
 export type PlayerGameState = {
@@ -13,6 +15,10 @@ export type PlayerGameState = {
   [ResourceEnum.Candy]: number;
   [ResourceEnum.Loot]: number;
   victoryPoints: number;
+  deck: Card[];
+  discardPile: Card[];
+  trashPile: Card[];
+  hand: Card[];
 }
 
 export type PlayerState = { 
@@ -23,6 +29,7 @@ export type PlayerState = {
 }
 
 export type District = {
+  id: DistrictIconsEnum;
   name: string;
   y: number;
   x: number;
@@ -52,11 +59,6 @@ export type ResourceBag = {
 export type LocationReward = {
   resources: ResourceBag[];
   moves: string[];
-}
-
-export type Card = {
-  id: number;
-  districtIds: string[];
 }
 
 // Utils

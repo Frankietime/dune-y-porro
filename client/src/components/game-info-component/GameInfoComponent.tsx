@@ -8,12 +8,14 @@ interface GameInfoComponentProps {
     chatMessages: any[];
     sendChatMessage: (message: string) => void;
     errorNotification?: string;
+    children?: React.ReactNode;
 }
 
 export const GameInfoComponent = ({
     ctx,
     chatMessages,
     sendChatMessage,
+    children,
 }: GameInfoComponentProps) => {
 
     const { 
@@ -219,6 +221,7 @@ export const GameInfoComponent = ({
             >
                 Leave
             </button>
+            {children}
         </div>
     )
 }

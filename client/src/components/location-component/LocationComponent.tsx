@@ -53,14 +53,14 @@ export const LocationComponent = ({
                                 {/* Location Icons Cost */}
                                 <div className="location-icons-container">
                                     {cost.districtIconIds.map(did => 
-                                        <DistrictIconComponent districtId={did} />
+                                        <DistrictIconComponent key={did} districtId={did} />
                                     )}
                                 </div>
                                 {/* Location Resources Cost */}
                                 <div className="location-resource-cost-container">
                                     {cost.resources.map(resource => 
-                                        Array.from({ length: resource.amount }).map(() => (
-                                            <ResourceComponent resourceId={resource.resourceId} />
+                                        Array.from({ length: resource.amount }).map((_, index) => (
+                                            <ResourceComponent key={index} resourceId={resource.resourceId} />
                                         ))
                                     )}
                                 </div>
@@ -74,11 +74,11 @@ export const LocationComponent = ({
                                 {/* Resources and Moves Reward */}
                                 <div className="location-reward-container">
                                     {reward.resources.map(resource => 
-                                        Array.from({ length: resource.amount }).map(() => (
-                                            <ResourceComponent resourceId={resource.resourceId} />
+                                        Array.from({ length: resource.amount }).map((_, index) => (
+                                            <ResourceComponent key={index} resourceId={resource.resourceId} />
                                         ))
                                     )}
-                                    <div className="">{reward.moves.map(m => <span>{m}</span>)}</div>
+                                    <div className="">{reward.moves.map((m, index) => <span key={index}>{m}</span>)}</div>
                                 </div>
                             </div>
                         </div>

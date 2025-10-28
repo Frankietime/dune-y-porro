@@ -6,6 +6,20 @@
     "server",
     "shared"
   ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["*", "./*"]
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
   "scripts": {
     "dev": "npm run dev -w client & npm run dev -w server",
     "dev:client": "npm run dev --prefix client",
@@ -15,9 +29,11 @@
   },
   "dependencies": {
     "@radix-ui/themes": "^3.2.1",
+    "@types/lodash": "^4.17.20",
     "boardgame.io": "^0.50.2",
     "faker": "^6.6.6",
     "g": "^2.0.1",
+    "lodash": "^4.17.21",
     "nes.css": "^2.2.1",
     "react95": "^4.0.0",
     "styled-components": "^6.1.19"
