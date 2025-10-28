@@ -44,11 +44,13 @@ export type Location = {
   isDisabled?: boolean;
   isSelected?: boolean;
   takenByPlayerID?: string;
+  dominanceBy?: string[];
 }
 
 export type LocationCost = {
   districtIconIds: string[];
-  resources: ResourceBag[];
+  resources?: ResourceBag[];
+  moves?: string[]; 
 }
 
 export type ResourceBag = {
@@ -57,8 +59,8 @@ export type ResourceBag = {
 }
 
 export type LocationReward = {
-  resources: ResourceBag[];
-  moves: string[];
+  resources?: ResourceBag[];
+  moves?: string[];
 }
 
 // Utils

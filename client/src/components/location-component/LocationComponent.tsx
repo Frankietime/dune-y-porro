@@ -58,7 +58,7 @@ export const LocationComponent = ({
                                 </div>
                                 {/* Location Resources Cost */}
                                 <div className="location-resource-cost-container">
-                                    {cost.resources.map(resource => 
+                                    {cost.resources?.map(resource => 
                                         Array.from({ length: resource.amount }).map((_, index) => (
                                             <ResourceComponent key={index} resourceId={resource.resourceId} />
                                         ))
@@ -73,12 +73,12 @@ export const LocationComponent = ({
 
                                 {/* Resources and Moves Reward */}
                                 <div className="location-reward-container">
-                                    {reward.resources.map(resource => 
+                                    {reward.resources?.map(resource => 
                                         Array.from({ length: resource.amount }).map((_, index) => (
                                             <ResourceComponent key={index} resourceId={resource.resourceId} />
                                         ))
                                     )}
-                                    <div className="">{reward.moves.map((m, index) => <span key={index}>{m}</span>)}</div>
+                                    <div className="">{reward.moves?.map((m, index) => <span key={index}>{m}</span>)}</div>
                                 </div>
                             </div>
                         </div>

@@ -104,13 +104,13 @@ export const Game: GameInterface<GameState> = {
                         playerState.hasPlayedCard = true;
                         playerState.cardsInPlay?.push(selectedCard);
                         
-                        currentLocation.cost.resources.forEach(res => {
+                        currentLocation.cost.resources?.forEach(res => {
                             playerState[res.resourceId] -= res.amount;
                         })
-                        currentLocation.reward.resources.forEach(res => {
+                        currentLocation.reward.resources?.forEach(res => {
                             playerState[res.resourceId] += res.amount;
                         })
-                        currentLocation.reward.moves.forEach(move => {
+                        currentLocation.reward.moves?.forEach(move => {
                             locationMoves[move](state.G, state.ctx, state.random);
                         })
 
