@@ -20,12 +20,6 @@ export default function App() {
     setServer
   } = useAppStore();
 
-  useEffect(() => {
-    client
-  }, []);
-
-
-
   const server = SocketIO({ server: BACKEND_URL });
 
   const GameClientComponent = useMemo(() => {

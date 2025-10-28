@@ -1,19 +1,25 @@
+import { ResourceEnum } from "./enums";
+
 export interface GameState {
   players: Dictionary<PlayerGameState>;
   districts: District[];
 }
 
 export type PlayerGameState = {
+  cardsInPlay?: Card[];
   hasPlayedCard: boolean;
   numberOfWorkers: number;
-  selectedCard: number;
+  selectedCard?: Card;
+  [ResourceEnum.Candy]: number;
+  [ResourceEnum.Loot]: number;
+  victoryPoints: number;
 }
 
 export type PlayerState = { 
   playerID: string; 
   name: string; 
   matchID: string;  
-  playerCredentials: string;  
+  playerCredentials: string;
 }
 
 export type District = {
@@ -34,13 +40,23 @@ export type Location = {
 }
 
 export type LocationCost = {
-  locationIconIds: string[];
-  resourceIds: string[];
+  districtIconIds: string[];
+  resources: ResourceBag[];
+}
+
+export type ResourceBag = {
+  resourceId: ResourceEnum;
+  amount: number
 }
 
 export type LocationReward = {
-  resourceIds: string[];
+  resources: ResourceBag[];
   moves: string[];
+}
+
+export type Card = {
+  id: number;
+  districtIds: string[];
 }
 
 // Utils

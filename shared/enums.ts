@@ -9,3 +9,7 @@ export enum ResourceEnum {
     Candy = "candy",
     Loot = "loot"
 }
+
+export enum LocationMovesEnum {
+    DRAW = "draw",
+}

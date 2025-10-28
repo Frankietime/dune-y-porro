@@ -52,14 +52,16 @@ export const LocationComponent = ({
 
                                 {/* Location Icons Cost */}
                                 <div className="location-icons-container">
-                                    {cost.locationIconIds.map(did => 
+                                    {cost.districtIconIds.map(did => 
                                         <DistrictIconComponent districtId={did} />
                                     )}
                                 </div>
                                 {/* Location Resources Cost */}
                                 <div className="location-resource-cost-container">
-                                    {cost.resourceIds.map(rid => 
-                                        <ResourceComponent resourceId={rid} />
+                                    {cost.resources.map(resource => 
+                                        Array.from({ length: resource.amount }).map(() => (
+                                            <ResourceComponent resourceId={resource.resourceId} />
+                                        ))
                                     )}
                                 </div>
                             </div>
@@ -71,8 +73,10 @@ export const LocationComponent = ({
 
                                 {/* Resources and Moves Reward */}
                                 <div className="location-reward-container">
-                                    {reward.resourceIds.map(rid => 
-                                        <ResourceComponent resourceId={rid} />
+                                    {reward.resources.map(resource => 
+                                        Array.from({ length: resource.amount }).map(() => (
+                                            <ResourceComponent resourceId={resource.resourceId} />
+                                        ))
                                     )}
                                     <div className="">{reward.moves.map(m => <span>{m}</span>)}</div>
                                 </div>
