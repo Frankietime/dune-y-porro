@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { PlayerState } from "./types";
+import { PlayerState } from "../../shared/types";
 import { LobbyAPI } from "boardgame.io";
 
 type AppState = {

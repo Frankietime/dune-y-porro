@@ -1,12 +1,9 @@
-// @import "tailwindcss";
-
 body {
   width: 100vw;
   height: 100vh;
 
   .disabled {
     pointer-events: 'none'!important;
-    opacity: 0.5
   }
 }
 

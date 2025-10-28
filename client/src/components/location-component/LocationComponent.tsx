@@ -1,13 +1,14 @@
-import { isNullOrEmpty } from "../../../../shared/common-methods";
-import { District, Location } from "../../types";
-import { useBoardComponent } from "../board-component/UseBoardComponent";
 import "./LocationComponent.scss";
-import redWorker from "../../assets/tipitos/tipito-rojo.png";
-import greenWorker from "../../assets/tipitos/tipito-verde.png";
-import violetWorker from "../../assets/tipitos/tipito-violeta.png";
-import yellowWorker from "../../assets/tipitos/tipito-amarillo.png";
+import { isNullOrEmpty } from "../../../../shared/common-methods";
+import { District, Location } from "../../../../shared/types";
+import { useBoardComponent } from "../board-component/UseBoardComponent";
+import { ResourceComponent } from "../icon-components/ResourceComponent";
+import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
+import { workerIconsByPlayerId } from "../icon-components/constants";
 
 export interface LocationComponentProps extends Location {
+    x: number,
+    y: number,
     district: District,
     show?: boolean,
     isSelected?: boolean;
@@ -16,34 +17,76 @@ export interface LocationComponentProps extends Location {
 }
 
 export const LocationComponent = ({
+    x, y,
     district,
     show = true,
     onClick,
-    x,
-    y,
     mirror,
     name,
+    cost,
+    reward,
     isSelected,
     isDisabled,
-    worker
+    takenByPlayerID
 }: LocationComponentProps) => {
 
     const { ClickBox } = useBoardComponent();
+
     return (
         <ClickBox 
             _onClick={onClick}
             disabled={isDisabled}
             x={x + mirror} y={y} 
             show={true}>
-            <div className="location-component-container">
+            <div className="location-component-container">                
                 <div className="location-container" style={{backgroundColor: isSelected ? "RGB(75,0,130, 0.3)" : "none"}}>
-                    {name}
-                </div>
-                {!isNullOrEmpty(worker) && (
-                    <div className="worker-image-container">
-                        <img src={redWorker}/>
+                    
+                    {/* Name */}
+                    <div className="location-name-container col-span-3 row-span-1">{name}</div>
+                    
+                    <div className="grid grid-flow-col grid-rows-1 grid-cols-3">
+                        
+                        {/* Cost */}
+                        <div className="location-cost-container col-span-2">
+                            <div className="grid grid-flow-col grid-rows-2 grid-cols-1">
+
+                                {/* Location Icons Cost */}
+                                <div className="location-icons-container">
+                                    {cost.locationIconIds.map(did => 
+                                        <DistrictIconComponent districtId={did} />
+                                    )}
+                                </div>
+                                {/* Location Resources Cost */}
+                                <div className="location-resource-cost-container">
+                                    {cost.resourceIds.map(rid => 
+                                        <ResourceComponent resourceId={rid} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Reward */}
+                        <div className="col-span-3">
+                            <div className="grid grid-flow-col grid-rows-2 grid-cols-1">
+
+                                {/* Resources and Moves Reward */}
+                                <div className="location-reward-container">
+                                    {reward.resourceIds.map(rid => 
+                                        <ResourceComponent resourceId={rid} />
+                                    )}
+                                    <div className="">{reward.moves.map(m => <span>{m}</span>)}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                )}
+
+                    {/* Worker Area */}
+                    {!isNullOrEmpty(takenByPlayerID) && (
+                        <div className="worker-image-container">
+                            <img src={workerIconsByPlayerId[parseInt(takenByPlayerID!)]}/>
+                        </div>
+                    )}
+                </div>
             </div>
         </ClickBox>
     );

@@ -1,4 +1,4 @@
-import { District } from "../../types";
+import { District } from "../../../../shared/types";
 
 export const useBoardComponent = () => {
     

@@ -2,11 +2,12 @@ import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
 import { useBoardComponent } from "./UseBoardComponent";
 import { BoardProps } from "boardgame.io/react";
 import { GameState } from "../../../../shared/types";
-import { Location } from "../../types";
+import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
-import { WorkerComponent } from "../worker-component/WorkerComponent";
+import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
+import { locsXPos, locsYPos } from "./constants";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -42,9 +43,6 @@ export const BoardComponent = ({
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
     moves.placeWorker(G, districtIndex, locationIndex);
   }
-
-  const locsXPos = [54, 178, 0, 124];
-  const locsYPos = [0, 0, 67, 67];
 
   const currentPlayerNumberOfWorkers = (): number => {
     return G.players[playerID!]?.numberOfWorkers;
@@ -112,10 +110,12 @@ return (
               <VisualTracker x={400} y={270} show={true} />
               <NumericTracker x={575} y={270} w={80} h={75} show={true} />
               
+              {/* Player Area Component */}
               <WorkerComponent
                 numerOfWorkers={currentPlayerNumberOfWorkers()}
                 x={281} y={463}
                 mirror={0}
+                playerID={parseInt(playerID!)}
               />
 
               {/* <NumericTrackers x={989} y={279} />
