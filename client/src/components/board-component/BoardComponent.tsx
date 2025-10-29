@@ -81,7 +81,7 @@ return (
   <div className='game-container'>
     {!isNullOrEmpty(matchID) && (
       <>
-        <GameInfoComponent
+        {/* <GameInfoComponent
           ctx={ctx}
           chatMessages={chatMessages}
           sendChatMessage={sendChatMessage}
@@ -91,13 +91,13 @@ return (
           <div>VP: {player.victoryPoints}</div>
           <div>Deck: {player.deck.length}</div>
           <div>Discard: {player.discardPile.length}</div>
-        </GameInfoComponent>
+        </GameInfoComponent> */}
 
         {G.districts && (
 
           <div className="flex w-screen justify-around board">
             <div className="w-[1280px] h-[720px] relative border-1 box-content" 
-              style={{backgroundImage: `url(${mapBg})`,}}
+              style={{backgroundImage: `url(${mapBg})`,backgroundSize: "cover", width: "100%", height: "1000px"}}
             >
               {G.districts.map((district, dIndex) => (
                 <div
@@ -109,8 +109,7 @@ return (
                     <LocationComponent
                       {...location}
                       key={dIndex + "-" + locIndex}
-                      x={locsXPos[locIndex]} y={locsYPos[locIndex]}
-                      mirror={(dIndex == 1 || dIndex == 2) && locIndex > 1 ? 107 : 0}
+                      x={locsXPos[dIndex][locIndex]} y={locsYPos[dIndex][locIndex]}
                       show={true}
                       district={district}
                       onClick={() => onLocationSelect(dIndex, locIndex)} 
@@ -132,10 +131,10 @@ return (
               <NumericTracker x={657} y={190} w={80} h={75} show={true} />
               <DynamicElement x={1045} y={197} show={true} /> */}
 
-              <NumericTrackers x={277} y={279} />
+              {/* <NumericTrackers x={277} y={279} />
               <NumericTracker x={345} y={270} w={54} h={54} show={true} />
               <VisualTracker x={400} y={270} show={true} />
-              <NumericTracker x={575} y={270} w={80} h={75} show={true} />
+              <NumericTracker x={575} y={270} w={80} h={75} show={true} /> */}
               
               {/* Player Area Component */}
               <WorkerComponent
@@ -165,7 +164,7 @@ return (
               <div style={{
                 width: "200px"
               }}>
-                {player.hand?.map((card: Card, index) => 
+                {false && player.hand?.map((card: Card, index) => 
                   <Card
                       isSelected={card.id == getSelectedCard()?.id}
                       y={540} x={390 + index*105} show={true} key={`card-${card.id}-${index}`} 

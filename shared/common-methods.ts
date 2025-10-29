@@ -5,7 +5,7 @@ export const isNullOrEmpty = (item: any) => {
         case "string":
             return item == "";
         default:
-           return item == null || item == undefined;
+           return item == null || item == undefined || item.length == 0;
     }
 }
 

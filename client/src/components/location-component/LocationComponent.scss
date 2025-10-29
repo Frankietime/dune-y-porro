@@ -1,8 +1,9 @@
 .location-component-container {
-    width: 106px;
-    height: 51px;
+    width: 162px;
+    height: 82px;
+    background-color: white;
 
-    font-size: 10px;
+    font-size: 8px;
 
     .worker-image-container {
         width: 10px;
@@ -23,7 +24,10 @@
         .location-name-container {
             width: 100%;
             height: 13px;
-            background-color: violet;  
+            background-color: violet;
+            font-size: 10px;
+            // padding-left: 15px;
+            text-align: center;
         }        
 
         .location-icons-container {
@@ -32,8 +36,8 @@
         }
 
         .location-resource-cost-container {
-            width: 38px;
-            height: 20px;
+            width: 100%;
+            height: 42px;
         }
 
         .location-reward-container {

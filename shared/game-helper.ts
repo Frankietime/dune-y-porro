@@ -1,5 +1,5 @@
 import { LocationCost, PlayerGameState, Location, District, Dictionary, LocationReward } from "./types";
-import { getEnumStringKeys, isNullOrEmpty } from "./common-methods";
+import { isNullOrEmpty } from "./common-methods";
 import { INITIAL_NUMBER_OF_WORKERS, NO_CARD_SELECTED } from "./constants";
 import { DistrictIconsEnum, LocationMovesEnum, ResourceEnum } from "./enums";
 import { Card } from "../shared/services/types";
@@ -37,7 +37,6 @@ export const getInitialPlayersState = (numberOfPlayers: number, plugins: Default
     let initialPlayersState: {[key: string]: PlayerGameState} = {};
 
     let deck = plugins.random.Shuffle(getInitialDeck());
-    console.dir(deck)
     let hand = deck.splice(0,4);
 
     Array.from({ length: numberOfPlayers }).forEach((value: any, Id: number) => {
