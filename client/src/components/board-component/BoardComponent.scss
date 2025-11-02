@@ -23,7 +23,6 @@
 
         .card-name {
             background-color: aqua;
-            height: 25px;
         }
 
         .card-body {
@@ -39,12 +38,17 @@
                     background-color: rgb(190, 190, 190);
                     color: grey;
             }
+            .reveal-effect {
+                color: rgb(193, 193, 193)
+            }
         }
 
         
     }
     .card-name {
         background-color: rgb(170, 184, 251);
+        height: 25px;
+
     }
 
     .card-body {
@@ -62,4 +66,8 @@
             background-color: rgb(255, 163, 163);
         }
     }
+}
+
+.payment-modal {
+    background-color: white;
 }

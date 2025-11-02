@@ -4,6 +4,8 @@ export type Card = {
   id: string;
   name: string;
   districtIds: string[];
-  primaryEffects?: BoardMove[];
-  secondaryEffects?: BoardMove[];
+
+  // card effects must be atomic in case we need rollback
+  primaryEffects?: BoardMove;
+  secondaryEffects?: BoardMove;
 }

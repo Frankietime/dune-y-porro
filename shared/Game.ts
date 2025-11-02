@@ -3,7 +3,6 @@ import { INVALID_MOVE, PlayerView } from "boardgame.io/core";
 import { GAME_NAME, NO_CARD_SELECTED } from "./constants";
 import { BoardMove, GameState, Location, PlayerGameState } from "../shared/types";
 import { 
-    getInitialDistrictsState, 
     getInitialPlayersState, 
     isPlayCardValid, 
     isWorkerPlacementValid 
@@ -12,6 +11,8 @@ import { LocationMovesEnum } from "./enums";
 import { Card } from "../shared/services/types";
 import { getMarketTierOneCards } from "../shared/services/cardServices";
 import _ from "lodash";
+
+import { getInitialDistrictsState } from "./services/locationServices";
 
 type State = {
     G: GameState;
@@ -140,7 +141,9 @@ export const Game: GameInterface<GameState> = {
                         const playedCard = discard(playerState, [selectedCard.id]);
                         
                         playerState.discardPile.push(playedCard[0] as Card);
-                        selectedCard.primaryEffects?.forEach(move => executeMove(move, state))
+                        
+                        if (selectedCard.primaryEffects)
+                            executeMove(selectedCard.primaryEffects!, state);
                     
                         // update resources
                         playerState.numberOfWorkers -= 1;

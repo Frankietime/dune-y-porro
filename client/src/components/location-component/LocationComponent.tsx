@@ -83,7 +83,9 @@ export const LocationComponent = ({
                                             <div className="resource-container" key={index}><div className={resource.resourceId}>{resource.resourceId}</div></div>
                                         ))
                                     )}
-                                    <div className="">{reward.moves?.map((m, index) => <div key={index}>{m.name}</div>)}</div>
+                                    {reward != undefined && reward.moves && reward.moves?.length > 0 ? 
+                                        <div className="reward-moves-container">{reward.moves?.map((m, index) => <><hr></hr><div className="reward-move-item" key={index}>{m.name}</div></>)}<hr></hr></div>
+                                        : <></>}
                                 </div>
                             </div>
                         </div>

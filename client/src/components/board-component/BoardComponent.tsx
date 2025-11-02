@@ -8,10 +8,12 @@ import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos } from "./constants";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../../../../shared/services/types";
 import "./BoardComponent.scss";
 import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
+import { LocationMovesEnum } from "../../../../shared/enums";
+import { Popover } from "radix-ui";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -36,6 +38,12 @@ export const BoardComponent = ({
     VisualTracker,
     Card
   } = useBoardComponent();  
+
+  type PaymentModalOptions = {
+    isOpen: boolean;
+    steps: any[];
+  }
+  const [paymentModalOptios, setPaymentModalOptions] = useState<PaymentModalOptions>({});
 
   const player = useMemo<PlayerGameState>(() => {
     if(playerID != null) 
@@ -63,6 +71,38 @@ export const BoardComponent = ({
   const getRandomLocation = () => "LOC" + Math.round((Math.random() / 0.25));
 
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
+    const selectedCard = getSelectedCard();
+    const selectedLocation = G.districts[districtIndex].locations[locationIndex];
+
+    const steps = (selectedLocation?.cost.moves ?? []).map(move => {
+      
+      switch(move.moveId) {
+        case LocationMovesEnum.DISCARD:
+          return (
+            <div className="payment-modal">DISCARD OPTIONS</div>
+          )
+
+          default:
+            return (<div></div>)
+      }
+    });
+
+    setPaymentModalOptions({
+      steps,
+      isOpen: steps.length > 0
+    })
+
+    // for (let i = 0; i <= moves.length; i++) {
+    //   switch (moves[i].moveId) {
+    //         case LocationMovesEnum.DISCARD:
+    //           setPaymentModalOpen(true);
+    //           break;
+    //         default:
+    //           break;
+    //       }
+    // }
+    
+    
     moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);
   }
 
@@ -153,6 +193,21 @@ return (
               <NumericTracker x={657} y={270} w={80} h={75} show={true} />
               <DynamicElement x={1045} y={385} show={true} /> */}
 
+              {/* Payment Modal */}
+              <Popover.Root
+                open={paymentModalOptios.isOpen}
+              >
+                	<Popover.Trigger />
+                  <Popover.Anchor />
+                  <Popover.Portal>
+                    <Popover.Content>
+                      {paymentModalOptios.steps?.map(m => (m))}
+                      <Popover.Close />
+                      <Popover.Arrow />
+                    </Popover.Content>
+                  </Popover.Portal>
+              </Popover.Root>
+
               
               
               <Hud 
@@ -198,7 +253,7 @@ return (
                           <hr></hr>
                           <div  className="play">Play</div>
                           <hr></hr> 
-                          <div>{card?.primaryEffects?.map(m => m.name).join(",")}</div>
+                          <div>{card?.primaryEffects?.name}</div>
                         </div>
                       }
                       {card?.secondaryEffects != null &&
@@ -206,7 +261,7 @@ return (
                           <hr></hr>
                           <div className="reveal">Reveal</div>
                           <hr></hr>
-                          <div>{card?.secondaryEffects?.map(m => m.name).join(",")}</div>
+                          <div className="reveal-effect">{card?.secondaryEffects.name}</div>
                         </div>
                       }
                       </div>
