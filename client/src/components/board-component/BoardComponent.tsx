@@ -163,7 +163,7 @@ return (
               >
               {/* <Card h={220} w={100} y={505} x={368} show={true}> */}
                 <div className="player-resource-container absolute" style={{
-                  color: "white", fontSize: "10px", width: "100px", height: "220px", top: "525px", left: "375px"
+                  color: "white", fontSize: "10px", width: "100px", height: "220px", top: "52git a5px", left: "375px"
                 }}>
                   <div>VP: {player.victoryPoints}</div>
                   <div>Candy: {player.candy}</div>
