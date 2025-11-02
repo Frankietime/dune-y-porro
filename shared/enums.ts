@@ -12,4 +12,18 @@ export enum ResourceEnum {
 
 export enum LocationMovesEnum {
     DRAW = "draw",
+    ADD_PRESENCE_TOKEM ="addPresenceToken",
+    GET_LOOT = "getLoot",
+    STRANGE_CANDY_PUZZLE = "strangeCandyPuzzle",
+    COOLDOWN = "coolDown",
+    SIGNET_TRIGGER = "signetTrigger",
+    ADD_REPAIR_TOKEN = "addRepairToken",
+    ADVANCE_TRACKER = "advanceTracker",
+    GET_SWORD_MASTER = "getSwordMaster",
+    TRASH = "trash",
+    BUY_CARD = "buyCard",
+    DISCARD = "discard",
+    SELECT_AND_DISCARD = "selectAndDiscard",
+    DEAL = "deal",
+
 }

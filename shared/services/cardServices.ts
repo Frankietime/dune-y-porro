@@ -1,5 +1,5 @@
 import { Card } from "./types";
-import { DistrictIconsEnum } from "../enums";
+import { DistrictIconsEnum, LocationMovesEnum } from "../enums";
 import { getEnumStringKeys } from "../common-methods";
 import _ from "lodash";
 
@@ -16,7 +16,12 @@ export const getTierOneCards = () => {
         (districtId) => {
             return {
             ...getDistrictCard([districtId]),
-            primaryEffects: ["addPresenceToken"]
+            primaryEffects: [
+                {
+                    moveId: LocationMovesEnum.ADD_PRESENCE_TOKEM,
+                    name: "FIGHT!"
+                }
+            ]
             }
         }
     );
@@ -27,11 +32,21 @@ export const getTierTwoCards = (): Card[] => {
     return [
         {
             ...getDistrictCard([DistrictIconsEnum.D1, DistrictIconsEnum.D3]),
-            secondaryEffects: ["addRepairToken"],
+            secondaryEffects: [
+                {
+                    moveId: LocationMovesEnum.ADD_REPAIR_TOKEN,
+                    name: "REPAIR"
+                }
+            ],
         },
         {
             ...getDistrictCard([DistrictIconsEnum.D2, DistrictIconsEnum.D4]),
-            secondaryEffects: ["addRepairToken"],
+            secondaryEffects: [
+                {
+                    moveId: LocationMovesEnum.ADD_REPAIR_TOKEN,
+                    name: "REPAIR"
+                }
+            ],
         },
         ...getMiscelanousDeck()
 
@@ -60,22 +75,48 @@ const getMiscelanousDeck = (): Card[] => {
         {
             id: "MISC-1",
             name: "Strange Candy",
-            districtIds: [],
-            primaryEffects: ["getLoot"],
-            secondaryEffects: ["strangeCandyPuzzle"]
+            districtIds: [DistrictIconsEnum.D1, DistrictIconsEnum.D2, DistrictIconsEnum.D3, DistrictIconsEnum.D4
+            ],
+            primaryEffects: [
+                {
+                    moveId: LocationMovesEnum.GET_LOOT,
+                    name: "GET LOOT"
+                }
+            ],
+            secondaryEffects: [
+                {
+                    moveId: LocationMovesEnum.STRANGE_CANDY_PUZZLE,
+                    name: "Stg. Candy Puzzle"
+                }
+            ]
         },
         {
             id: "MISC-2",
             name: "Cooldown",
             districtIds: [],
-            secondaryEffects: ["coolDown"]
+            secondaryEffects: [
+                {
+                    moveId: LocationMovesEnum.COOLDOWN,
+                    name: "COOLDOWN"
+                }
+            ]
         },
         {
             id: "MISC-2",
             name: "Strange Candy",
-            districtIds: [],
-            primaryEffects: ["getLoot"],
-            secondaryEffects: ["strangeCandyPuzzle"]
+            districtIds: [DistrictIconsEnum.D1, DistrictIconsEnum.D2, DistrictIconsEnum.D3, DistrictIconsEnum.D4],
+            primaryEffects: [
+                {
+                    moveId: LocationMovesEnum.GET_LOOT,
+                    name: "GET LOOT"
+                }
+            ],
+            secondaryEffects: [
+                {
+                    moveId: LocationMovesEnum.STRANGE_CANDY_PUZZLE,
+                    name: "Stg. Candy Puzzle"
+                }
+            ]
         }
     ];
 }
@@ -99,6 +140,6 @@ export const getSignetCard = () => ({
         DistrictIconsEnum.D3,
         DistrictIconsEnum.D4,
     ],
-    primaryEffect: ["signetTrigger"]
+    primaryEffect: [LocationMovesEnum.SIGNET_TRIGGER]
 });
 

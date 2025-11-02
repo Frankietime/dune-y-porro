@@ -1,7 +1,8 @@
 .location-component-container {
     width: 162px;
     height: 82px;
-    background-color: white;
+    // background-color: white;
+    background-color: rgb(218, 218, 218);
 
     font-size: 8px;
 
@@ -19,7 +20,17 @@
 
         display: grid;
 
+
         &.selected {}
+
+        .location-cost-container {
+            // background-color: red;
+            // padding: 2px;
+            margin-right: 7px;
+            border-right: 1pt solid;
+            overflow-wrap: break-word;
+            color: rgb(56, 69, 255);
+        }
 
         .location-name-container {
             width: 100%;
@@ -40,9 +51,44 @@
             height: 42px;
         }
 
+        .location-moves-cost-container {
+            padding-top: 10px;
+        }
+
         .location-reward-container {
+            padding-top: 10px;
             width: 74px;
             height: 40px;
+            // background-attachment: white !important;
+            color: rgb(255, 51, 136);
         }
     }
+}
+
+.resource-container {
+    display: inline-block;
+}
+
+.candy {
+    border-radius: 10px;
+    height: 5px;
+    width: 12px;
+    background-color: red;
+    margin: 3px;
+    display: inline;
+    text-align: center;
+    color: yellow;
+    border: 1pt solid rgb(16, 28, 255);
+}
+
+.loot {
+    border-radius: 10px;
+    height: 5px;
+    width: 12px;
+    background-color: rgb(140, 140, 140);
+    margin: 3px;
+    display: inline;
+    text-align: center;
+    color: yellow;
+    border: 1pt solid aqua;
 }

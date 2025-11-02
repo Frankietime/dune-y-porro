@@ -45,8 +45,7 @@ export const LocationComponent = ({
                     <div className="grid grid-flow-col grid-rows-1 grid-cols-2">
                         {/* Cost */}
                         <div className="location-cost-container col-span-1">
-                            <div //className="grid grid-flow-col grid-rows-2 grid-cols-1">
-                            >
+                            <div>
                                 {/* Location Icons Cost */}
                                 <div className="location-icons-container">
                                     {cost.districtIconIds.map(did => 
@@ -55,17 +54,17 @@ export const LocationComponent = ({
                                 </div>
                                 {/* Location Resources Cost */}
                                 <div className="location-resource-cost-container">
-                                    <div>{(!isNullOrEmpty(cost.resources) || !isNullOrEmpty(cost.moves)) && (<b>Cost</b>)}
+                                    <div>
                                     {cost.resources?.map(resource => 
                                         Array.from({ length: resource.amount }).map((_, index) => (
                                             // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div key={index}>{resource.resourceId}</div>
+                                            <div className="resource-container" key={index}><div className={resource.resourceId}>{resource.resourceId}</div></div>
                                         ))
                                     )}
                                     {cost.moves?.map((move, index) => (
                                         // Array.from({ length: resource.amount }).map((_, index) => (
                                             // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div key={move + "-" + index}>{move}</div>
+                                            <div className="location-moves-cost-container" key={move + "-" + index}>{move.name}</div>
                                         ))
                                     }
                                     </div>
@@ -74,19 +73,17 @@ export const LocationComponent = ({
                         </div>
 
                         {/* Reward */}
-                        <div className="col-span-3">
-                            <div style={{overflowWrap: "break-word"}} //className="grid grid-flow-col grid-rows-2 grid-cols-1">
-                            >       
-                                    {(!isNullOrEmpty(reward.resources) || !isNullOrEmpty(reward.moves)) && (<b>Reward</b>)}
+                        <div className="location-reward-container col-span-3">
+                            <div style={{overflowWrap: "break-word"}}>
                                 {/* Resources and Moves Reward */}
                                 <div className="">
                                     {reward.resources?.map(resource => 
                                         Array.from({ length: resource.amount }).map((_, index) => (
                                             // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div>{resource.resourceId}</div>
+                                            <div className="resource-container" key={index}><div className={resource.resourceId}>{resource.resourceId}</div></div>
                                         ))
                                     )}
-                                    <div className="">{reward.moves?.map((m, index) => <div key={index}>{m}</div>)}</div>
+                                    <div className="">{reward.moves?.map((m, index) => <div key={index}>{m.name}</div>)}</div>
                                 </div>
                             </div>
                         </div>

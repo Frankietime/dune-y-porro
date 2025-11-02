@@ -1,7 +1,7 @@
 import { Ctx, DefaultPluginAPIs, Game as GameInterface, PlayerID} from "boardgame.io";
 import { INVALID_MOVE, PlayerView } from "boardgame.io/core";
 import { GAME_NAME, NO_CARD_SELECTED } from "./constants";
-import { GameState, Location, PlayerGameState } from "../shared/types";
+import { BoardMove, GameState, Location, PlayerGameState } from "../shared/types";
 import { 
     getInitialDistrictsState, 
     getInitialPlayersState, 
@@ -10,7 +10,8 @@ import {
 } from "./game-helper";
 import { LocationMovesEnum } from "./enums";
 import { Card } from "../shared/services/types";
-import { getInitialDeck, getMarketTierOneCards } from "../shared/services/cardServices";
+import { getMarketTierOneCards } from "../shared/services/cardServices";
+import _ from "lodash";
 
 type State = {
     G: GameState;
@@ -33,6 +34,21 @@ export const draw = (player: PlayerGameState, random: any) => {
     }
 }
 
+export const getLoot = (player: PlayerGameState) => {
+    player.loot = player.loot + 1;
+}
+
+export const discard = (player: PlayerGameState, cardIds: string[]): Card[] | string => {
+    if (cardIds.length > player.hand.length || !cardIds.every(cid => player.hand.map(c => c.id).includes(cid)))
+        return INVALID_MOVE;
+
+    const discarded: Card[] = [];
+    cardIds.forEach(cid => {
+        discarded.push(player.hand.splice(player.hand.map(c => c.id).indexOf(cid), 1)[0]);
+    });
+    return discarded;
+}
+
 const rebuildDeck = (player: PlayerGameState, random: any): Card[] => {
     return random.Shuffle(player.discardPile);
 }
@@ -40,6 +56,27 @@ const rebuildDeck = (player: PlayerGameState, random: any): Card[] => {
 export const locationMoves: {[key: string]: Function,} = {
     [LocationMovesEnum.DRAW]: (G: GameState, ctx: Ctx, random: any) => {
         draw(G.players[ctx.currentPlayer], random)
+    },
+    [LocationMovesEnum.ADD_PRESENCE_TOKEM]: (G: GameState, ctx: Ctx, random: any) => {
+        draw(G.players[ctx.currentPlayer], random)
+    },
+    [LocationMovesEnum.GET_LOOT]: (G: GameState, ctx: Ctx, random: any) => {
+        getLoot(G.players[ctx.currentPlayer])
+    },
+    [LocationMovesEnum.DISCARD]: (G: GameState, ctx: Ctx, random: any, params: any) => {
+        discard(G.players[ctx.currentPlayer], params.indexes)
+    }, 
+}
+
+export const executeMove = (move: BoardMove, state: any) => {
+    locationMoves[move.moveId] ? locationMoves[move.moveId](state.G, state.ctx, state.random, move.params) : null;
+}
+
+export const checlInvalidMoves = (moves: BoardMove[], state: any) => {
+    const clonedState = _.cloneDeep(state);
+    for (let i = 0; i <= moves.length, i++;) {
+        const clonedMove = _.cloneDeep(moves[i]);
+        executeMove(clonedMove, clonedState)
     }
 }
 
@@ -95,9 +132,15 @@ export const Game: GameInterface<GameState> = {
                         if (!isWorkerPlacementValid(playerState, currentLocation, selectedCard))
                             return INVALID_MOVE;
 
+                        if (currentLocation.cost?.moves && currentLocation.cost.moves.length > 0) {
+                            checlInvalidMoves(currentLocation.cost.moves, state);
+                        }
+
                         // play card
-                        const playedCard = playerState.hand.splice(playerState.hand.indexOf(selectedCard), 1)[0];
-                        playerState.discardPile.push(playedCard);
+                        const playedCard = discard(playerState, [selectedCard.id]);
+                        
+                        playerState.discardPile.push(playedCard[0] as Card);
+                        selectedCard.primaryEffects?.forEach(move => executeMove(move, state))
                     
                         // update resources
                         playerState.numberOfWorkers -= 1;
@@ -110,9 +153,9 @@ export const Game: GameInterface<GameState> = {
                         currentLocation.reward.resources?.forEach(res => {
                             playerState[res.resourceId] += res.amount;
                         })
-                        currentLocation.reward.moves?.forEach(move => {
-                            locationMoves[move](state.G, state.ctx, state.random);
-                        })
+                        console.dir(selectedCard)
+                        console.dir(currentLocation.reward.moves?.map(move => move.moveId).join(","))
+                        currentLocation.reward.moves?.forEach(move => executeMove(move, state))
 
                         // update district & location
                         currentLocation.isDisabled = true;

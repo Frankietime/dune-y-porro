@@ -10,7 +10,8 @@ import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos } from "./constants";
 import { useEffect, useMemo } from "react";
 import { Card } from "../../../../shared/services/types";
-import { wrap } from "lodash";
+import "./BoardComponent.scss";
+import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -106,15 +107,17 @@ return (
                   style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
                   
                   {district.locations.map((location, locIndex) => (
-                    <LocationComponent
-                      {...location}
-                      key={dIndex + "-" + locIndex}
-                      x={locsXPos[dIndex][locIndex]} y={locsYPos[dIndex][locIndex]}
-                      show={true}
-                      district={district}
-                      onClick={() => onLocationSelect(dIndex, locIndex)} 
-                      isDisabled={isLocationDisabled(location)}
-                    />)
+                    <div>
+                      <LocationComponent
+                        {...location}
+                        key={dIndex + "-" + locIndex}
+                        x={locsXPos[dIndex][locIndex]} y={locsYPos[dIndex][locIndex]}
+                        show={true}
+                        district={district}
+                        onClick={() => onLocationSelect(dIndex, locIndex)} 
+                        isDisabled={isLocationDisabled(location)}
+                      />
+                    </div>)
                   )}
                   
                 </div>
@@ -162,12 +165,12 @@ return (
                 // selectedCardIndex={getSelectedCard()}
               >
               {/* <Card h={220} w={100} y={505} x={368} show={true}> */}
-                <div className="player-resource-container absolute" style={{
-                  color: "white", fontSize: "10px", width: "100px", height: "220px", top: "52git a5px", left: "375px"
-                }}>
-                  <div>VP: {player.victoryPoints}</div>
-                  <div>Candy: {player.candy}</div>
-                  <div>Loot: {player.loot}</div>        
+                <div className="player-resource-container absolute">
+                  <div>VP<hr /><div>{player.victoryPoints}</div></div>
+                  <div>Candy<hr /><div>{player.candy}</div></div>
+                  <div>Loot<hr /><div>{player.loot}</div></div>        
+                  <div>Deck<hr /><div>{player.deck.length}</div></div>        
+                  <div>Discard<hr /><div>{player.discardPile.length}</div></div>        
                 </div>
               {/* </Card> */}
               <div className="hand-container" style={{
@@ -180,33 +183,33 @@ return (
                       key={`card-${card.id}-${index}`} 
                       onClick={() => onSelectCard(card)} 
                   >
-                    <div className="card"style={{
-                      fontSize: "9px",
-                      overflowWrap: "break-word",
-                      backgroundColor: "white"
-                    }}>
-                      <div>
-                      {card?.name}
+                    <div className={"card " + (card.id == getSelectedCard()?.id ? "selected" : "")}>
+                      <div className="card-name">
+                         <div>{card.districtIds.length > 0 ? card.districtIds.map(did => (<DistrictIconComponent key={did} districtId={did} />)) : <div className="non-location-title">{card.name}</div>}</div>
                     </div>
                     <hr></hr>
-                    {card?.districtIds.length > 0 && 
-                      <div>
-                        Districts: {card.districtIds.join(",")}
+                    <div className="card-body">
+                      {card?.districtIds.length > 0 && 
+                        <div>
+                        </div>
+                      }
+                      {card.primaryEffects != null &&
+                        <div>
+                          <hr></hr>
+                          <div  className="play">Play</div>
+                          <hr></hr> 
+                          <div>{card?.primaryEffects?.map(m => m.name).join(",")}</div>
+                        </div>
+                      }
+                      {card?.secondaryEffects != null &&
+                        <div>
+                          <hr></hr>
+                          <div className="reveal">Reveal</div>
+                          <hr></hr>
+                          <div>{card?.secondaryEffects?.map(m => m.name).join(",")}</div>
+                        </div>
+                      }
                       </div>
-                    }
-                    <br></br>
-                    {card.primaryEffects != null &&
-                      <div>
-                        Play: {card?.primaryEffects?.join(",")}
-                      </div>
-                    }
-                    <br></br>
-
-                    {card?.primaryEffects != null &&
-                      <div>
-                        Reveal: {card?.secondaryEffects?.join(",")}
-                      </div>
-                    }
                     </div>
                   </Card>
                 )}  

@@ -34,6 +34,12 @@ export type District = {
   y: number;
   x: number;
   locations: Location[];
+  presence?: PlayerPresence[]
+}
+
+export type PlayerPresence = {
+  playerID: string;
+  amount: number;
 }
 
 export type Location = {
@@ -50,7 +56,7 @@ export type Location = {
 export type LocationCost = {
   districtIconIds: string[];
   resources?: ResourceBag[];
-  moves?: string[]; 
+  moves?: BoardMove[]; 
 }
 
 export type ResourceBag = {
@@ -60,7 +66,13 @@ export type ResourceBag = {
 
 export type LocationReward = {
   resources?: ResourceBag[];
-  moves?: string[];
+  moves?: BoardMove[];
+}
+
+export type BoardMove = {
+  moveId: string;
+  name: string;
+  params?: any;
 }
 
 // Utils
