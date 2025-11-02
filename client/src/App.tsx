@@ -38,7 +38,7 @@ export default function App() {
   const isGameInCourse = () => playerState.matchID != null && playerState.matchID != "";
 
   return (
-      <div className="flex justify-center m-auto my-4 nes-poiter">
+      <div className="flex justify-center nes-poiter">
         { !isGameInCourse() ? 
           <LobbyComponent />
             :        

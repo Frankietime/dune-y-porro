@@ -158,19 +158,29 @@ return (
                 onArrowUp={() => alert("arrow up")}
                 onArrowDown={() => alert("arrow down")}
 
-                // onSelectCard={(selectedCard) => onSelectCard(selectedCard)}
+                // onSelectCard={(selectedCard) => onSelectCard({} as Card)}
                 // selectedCardIndex={getSelectedCard()}
               >
-              <div style={{
-                width: "200px"
+              {/* <Card h={220} w={100} y={505} x={368} show={true}> */}
+                <div className="player-resource-container absolute" style={{
+                  color: "white", fontSize: "10px", width: "100px", height: "220px", top: "525px", left: "375px"
+                }}>
+                  <div>VP: {player.victoryPoints}</div>
+                  <div>Candy: {player.candy}</div>
+                  <div>Loot: {player.loot}</div>        
+                </div>
+              {/* </Card> */}
+              <div className="hand-container" style={{
+                width: "200px", position: "relative", top: "270px", left: "295px"
               }}>
-                {false && player.hand?.map((card: Card, index) => 
+                {player.hand?.map((card: Card, index) => 
                   <Card
                       isSelected={card.id == getSelectedCard()?.id}
-                      y={540} x={390 + index*105} show={true} key={`card-${card.id}-${index}`} 
+                      y={540} x={390 + index*105} show={true} 
+                      key={`card-${card.id}-${index}`} 
                       onClick={() => onSelectCard(card)} 
                   >
-                    <div style={{
+                    <div className="card"style={{
                       fontSize: "9px",
                       overflowWrap: "break-word",
                       backgroundColor: "white"

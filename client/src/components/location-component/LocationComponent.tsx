@@ -59,13 +59,13 @@ export const LocationComponent = ({
                                     {cost.resources?.map(resource => 
                                         Array.from({ length: resource.amount }).map((_, index) => (
                                             // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div>{resource.resourceId}</div>
+                                            <div key={index}>{resource.resourceId}</div>
                                         ))
                                     )}
-                                    {cost.moves?.map(move => (
+                                    {cost.moves?.map((move, index) => (
                                         // Array.from({ length: resource.amount }).map((_, index) => (
                                             // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div>{move}</div>
+                                            <div key={move + "-" + index}>{move}</div>
                                         ))
                                     }
                                     </div>
