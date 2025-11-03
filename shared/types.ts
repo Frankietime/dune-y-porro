@@ -1,5 +1,4 @@
 import { DistrictIconsEnum, ResourceEnum } from "./enums";
-import { Card } from "./services/types";
 
 export interface GameState {
   players: Dictionary<PlayerGameState>;
@@ -73,6 +72,16 @@ export type BoardMove = {
   moveId: string;
   name: string;
   params?: any;
+}
+
+export type Card = {
+  id: string;
+  name: string;
+  districtIds: string[];
+
+  // card effects must be atomic in case we need rollback
+  primaryEffects?: BoardMove;
+  secondaryEffects?: BoardMove;
 }
 
 // Utils

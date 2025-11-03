@@ -1,4 +1,4 @@
-import { Children } from "react";
+
 import { District } from "../../../../shared/types";
 
 export const useBoardComponent = () => {
@@ -13,17 +13,12 @@ export const useBoardComponent = () => {
         children?: React.ReactNode
     }) => {
     return <>
-        <Card h={220} w={150} y={805} x={118} show={true} key="arrow-up" onClick={props.onArrowUp} />        
+        <EventBox h={220} w={150} y={805} x={118} show={true} key="arrow-up" onClick={props.onArrowUp} />
 
-        {/* {Array.from(Array(5).keys()).map((_, i) => <Card
-            isSelected={i == props.selectedCardIndex} 
-            y={540} x={390 + i*105} show={true} key={`card-${i}`} 
-            onClick={() => props.onSelectCard ? props.onSelectCard(i) : undefined} 
-        />)} */}
-
+        {/* hand */}
         {props.children}
         
-        <Card h={220} w={150} y={790} x={1640} show={true} key="arrow-down" onClick={props.onArrowDown}  />
+        <EventBox h={220} w={150} y={790} x={1640} show={true} key="arrow-down" onClick={props.onArrowDown}  />
 
         <Button w={160} h={75} y={680} x={1450} show={true} key="btn-pass" onClick={props.onPass} />
         <Button  w={160} h={75} y={680} x={1630} show={true} key="btn-reveal" onClick={props.onReveal} />
@@ -131,27 +126,6 @@ export const useBoardComponent = () => {
     </div>;
     }
 
-    const Card = (props: {
-    w?: number,
-    h?: number,
-    x: number,
-    y: number,
-    show?: boolean,
-    onClick?: () => void,
-    isSelected?: boolean,
-    children?: React.ReactNode
-    }) => {
-    return (
-        <EventBox 
-            {...props} 
-            key={props.x + "-" + props.y}
-            w={props.w ?? 105} 
-            h={props.h ?? 157} 
-            isSelected={props.isSelected}
-            children={props.children} 
-        />);
-    }
-
     const Button = (props: {
     w?: number,
     h?: number,
@@ -193,7 +167,6 @@ export const useBoardComponent = () => {
         NumericTracker,
         VisualTracker,
         DynamicElement,
-        Card,
         Button,
         EventBox
     }

@@ -8,7 +8,7 @@ import {
     isWorkerPlacementValid 
 } from "./game-helper";
 import { LocationMovesEnum } from "./enums";
-import { Card } from "../shared/services/types";
+import { Card } from "../shared/types";
 import { getMarketTierOneCards } from "../shared/services/cardServices";
 import _ from "lodash";
 

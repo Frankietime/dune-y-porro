@@ -9,11 +9,13 @@ import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos } from "./constants";
 import { useEffect, useMemo, useState } from "react";
-import { Card } from "../../../../shared/services/types";
+import { Card } from "../../../../shared/types";
 import "./BoardComponent.scss";
 import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
 import { LocationMovesEnum } from "../../../../shared/enums";
 import { Popover } from "radix-ui";
+import { CardComponent } from "../card-components/CardComponent";
+import _ from "lodash";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -39,11 +41,19 @@ export const BoardComponent = ({
     Card
   } = useBoardComponent();  
 
-  type PaymentModalOptions = {
+  type CardSelectionModalOptions = {
     isOpen: boolean;
-    steps: any[];
+    cardOptions: Card[];
+    cardsSelected?: Card[];
+    isRequired: boolean;
+    callback: () => void;
   }
-  const [paymentModalOptios, setPaymentModalOptions] = useState<PaymentModalOptions>({});
+  const [cardSelectionModalOptions, setCardSelectionModalOptions] = useState<CardSelectionModalOptions>({
+    isOpen: false,
+    isRequired: true,
+    cardOptions: [],
+    callback: () => {}
+  });
 
   const player = useMemo<PlayerGameState>(() => {
     if(playerID != null) 
@@ -74,23 +84,19 @@ export const BoardComponent = ({
     const selectedCard = getSelectedCard();
     const selectedLocation = G.districts[districtIndex].locations[locationIndex];
 
-    const steps = (selectedLocation?.cost.moves ?? []).map(move => {
-      
-      switch(move.moveId) {
-        case LocationMovesEnum.DISCARD:
-          return (
-            <div className="payment-modal">DISCARD OPTIONS</div>
-          )
+    // Open card selection modal
+    if (selectedLocation.cost.moves?.map(m => m.moveId).some(mid => mid == LocationMovesEnum.DISCARD || LocationMovesEnum.TRASH)) {
+      setCardSelectionModalOptions({
+        isOpen: true,
+        isRequired: true,
+        cardOptions: _.cloneDeep(player.hand.filter(c => c.id != selectedCard!.id)),
+        callback: () => moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard) 
+      })
+    } else {
+      moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);
+    }
 
-          default:
-            return (<div></div>)
-      }
-    });
-
-    setPaymentModalOptions({
-      steps,
-      isOpen: steps.length > 0
-    })
+    
 
     // for (let i = 0; i <= moves.length; i++) {
     //   switch (moves[i].moveId) {
@@ -103,7 +109,6 @@ export const BoardComponent = ({
     // }
     
     
-    moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);
   }
 
   const currentPlayerNumberOfWorkers = (): number => {
@@ -195,13 +200,17 @@ return (
 
               {/* Payment Modal */}
               <Popover.Root
-                open={paymentModalOptios.isOpen}
+                open={cardSelectionModalOptions.isOpen}
               >
                 	<Popover.Trigger />
                   <Popover.Anchor />
                   <Popover.Portal>
                     <Popover.Content>
-                      {paymentModalOptios.steps?.map(m => (m))}
+                      {cardSelectionModalOptions.cardOptions?.map(card => (
+                        <CardComponent
+                          card={card}
+                        />
+                      ))}
                       <Popover.Close />
                       <Popover.Arrow />
                     </Popover.Content>
@@ -219,7 +228,6 @@ return (
                 // onSelectCard={(selectedCard) => onSelectCard({} as Card)}
                 // selectedCardIndex={getSelectedCard()}
               >
-              {/* <Card h={220} w={100} y={505} x={368} show={true}> */}
                 <div className="player-resource-container absolute">
                   <div>VP<hr /><div>{player.victoryPoints}</div></div>
                   <div>Candy<hr /><div>{player.candy}</div></div>
@@ -227,18 +235,19 @@ return (
                   <div>Deck<hr /><div>{player.deck.length}</div></div>        
                   <div>Discard<hr /><div>{player.discardPile.length}</div></div>        
                 </div>
-              {/* </Card> */}
+              {/* Hand*/}
               <div className="hand-container" style={{
-                width: "200px", position: "relative", top: "270px", left: "295px"
+                width: "200px", position: "relative", top: "240px", left: "295px"
               }}>
                 {player.hand?.map((card: Card, index) => 
-                  <Card
+                  <CardComponent
                       isSelected={card.id == getSelectedCard()?.id}
                       y={540} x={390 + index*105} show={true} 
                       key={`card-${card.id}-${index}`} 
-                      onClick={() => onSelectCard(card)} 
+                      onClick={() => onSelectCard(card)}
+                      card={card}
                   >
-                    <div className={"card " + (card.id == getSelectedCard()?.id ? "selected" : "")}>
+                    {/* <div className={"card " + (card.id == getSelectedCard()?.id ? "selected" : "")}>
                       <div className="card-name">
                          <div>{card.districtIds.length > 0 ? card.districtIds.map(did => (<DistrictIconComponent key={did} districtId={did} />)) : <div className="non-location-title">{card.name}</div>}</div>
                     </div>
@@ -265,8 +274,8 @@ return (
                         </div>
                       }
                       </div>
-                    </div>
-                  </Card>
+                    </div> */}
+                  </CardComponent>
                 )}  
               </div>
               </Hud>
