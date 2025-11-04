@@ -13,11 +13,9 @@ import { Card } from "../../../../shared/types";
 import "./BoardComponent.scss";
 import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
 import { LocationMovesEnum } from "../../../../shared/enums";
-import { Popover } from "radix-ui";
 import { CardComponent } from "../card-components/CardComponent";
 import _ from "lodash";
-import * as Dialog from "@radix-ui/react-dialog";
-import { Flex, Text, TextField, Tooltip } from "@radix-ui/themes";
+import { Button, Dialog, Flex, Text, TextField, Tooltip } from "@radix-ui/themes";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -43,6 +41,7 @@ export const BoardComponent = ({
   } = useBoardComponent();  
 
   type CardSelectionModalOptions = {
+    actionName: string;
     isOpen: boolean;
     cardOptions: Card[];
     cardsSelected?: Card[];
@@ -52,6 +51,7 @@ export const BoardComponent = ({
   }
 
   const initialCardSelectionModalOptions = {
+    actionName: "",
     isOpen: false,
     isRequired: true,
     cardOptions: [],
@@ -118,9 +118,12 @@ export const BoardComponent = ({
     const selectedCard = getSelectedCard();
     const selectedLocation = G.districts[districtIndex].locations[locationIndex];
 
+    const move = selectedLocation.cost.moves?.find(m => m.moveId == LocationMovesEnum.DISCARD ||m.moveId == LocationMovesEnum.TRASH)
+
     // Open card selection modal
-    if (player.hand.length >= 2 && selectedLocation.cost.moves?.map(m => m.moveId).some(mid => mid == LocationMovesEnum.DISCARD || LocationMovesEnum.TRASH)) {
+    if (player.hand.length >= 2 && move) {
       setCardSelectionModalOptions({
+        actionName: move.moveId.toUpperCase(),
         isOpen: true,
         isRequired: true,
         cardOptions: _.cloneDeep(player.hand.filter(c => c.id != selectedCard!.id)),
@@ -206,7 +209,7 @@ return (
               }}>
                 {cardSelectionModalOptions.isOpen && (
                   <>
-                    <button style={{
+                    {/* <button style={{
                       top: "600px",
                       left: "200px",
                       position: "relative",
@@ -227,7 +230,7 @@ return (
                     onClick={cancelCardSelection}  
                   >
                     CANCEL
-                  </button>
+                  </button> */}
                 </>
                 )}
                 {!cardSelectionModalOptions.isOpen ? player.hand?.map((card: Card, index) => 
@@ -242,20 +245,39 @@ return (
                   >
                   </CardComponent>
                 ) :
-                
+                (
                 // card selection for discard or trash
-                
-                cardSelectionModalOptions.cardOptions.map((card, index) => (
-                  <CardComponent
-                      isSelected={cardSelectionModalOptions.cardsSelected?.map(c => c.id).includes(card.id)}
-                      y={540} x={390 + index*105} show={true} 
-                      key={`card-${card.id}-${index}`} 
-                      onClick={() => onSelectToDiscard(card, cardSelectionModalOptions.selectionLimit)}
-                      card={card}
-                      selectionColor={"red"}
-                  >
-                  </CardComponent>
-                ))}  
+                <Dialog.Root open={cardSelectionModalOptions.isOpen}>
+
+                  <Dialog.Content height={"300px"} maxWidth={"1000px"}>
+                    <Dialog.Title><Flex justify={"center"}>{cardSelectionModalOptions.actionName}</Flex></Dialog.Title>
+                    <Flex>
+                      {cardSelectionModalOptions.cardOptions.map((card, index) => (
+                        <CardComponent
+                            isSelected={cardSelectionModalOptions.cardsSelected?.map(c => c.id).includes(card.id)}
+                            y={120} x={20 + index*105} show={true} 
+                            key={`card-${card.id}-${index}`} 
+                            onClick={() => onSelectToDiscard(card, cardSelectionModalOptions.selectionLimit)}
+                            card={card}
+                            selectionColor={"red"}
+                        >
+                        </CardComponent>
+                      ))}
+                    </Flex>
+
+                    <Flex gap="3" justify="center">
+                      <Dialog.Close>
+                        <Button variant="soft" color="gray" onClick={confirmCardSelection}>
+                          Confirm Selection
+                        </Button>
+                      </Dialog.Close>
+                      <Dialog.Close>
+                        <Button onClick={cancelCardSelection}>Cancel Selection</Button>
+                      </Dialog.Close>
+                    </Flex>
+                  </Dialog.Content>
+                </Dialog.Root>
+                )}  
               </div>
               </Hud>
             </div>

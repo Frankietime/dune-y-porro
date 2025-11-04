@@ -1,7 +1,7 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { Card, MetaGameState, PlayerGameState } from "../../types";
 import { isPlayCardValid } from "../../game-helper";
-import { getCurrentPlayer } from "./helper";
+import { getCurrentPlayer, takeFromHand } from "./helper";
 
 export const selectCard = (player: PlayerGameState, selectedCard: Card) => {
     if (!isPlayCardValid(player, selectedCard.id))
@@ -23,18 +23,17 @@ export const getLoot = (player: PlayerGameState) => {
 }
 
 export const discard = (player: PlayerGameState, cards: Card[]): Card[] | string => {
-    let cardIds = cards.map(c => c.id);
     
-    if (cardIds.length > player.hand.length || !cardIds.every(cid => player.hand.map(c => c.id).includes(cid)))
-        return INVALID_MOVE;
+    const discarded = takeFromHand(player, cards);
+    
+    return discarded == INVALID_MOVE ? INVALID_MOVE : player.discardPile = [...player.discardPile, ...discarded as Card[]];
+}
 
-    const discarded: Card[] = cardIds.map(cid => {
-        return player.hand.splice(
-            player.hand.map(c => c.id).indexOf(cid), 1
-        )[0];
-    });
-
-    return player.discardPile = [...player.discardPile, ...discarded];
+export const trash = (player: PlayerGameState, cards: Card[]): Card[] | string => {
+    
+    const trashed = takeFromHand(player, cards);
+    
+    return trashed == INVALID_MOVE ? INVALID_MOVE : player.trashPile = [...player.trashPile, ...trashed as Card[]];
 }
 
 const rebuildDeck = (player: PlayerGameState, random: any): Card[] => {
