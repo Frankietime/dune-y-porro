@@ -6,6 +6,9 @@ import { LobbyProvider } from "./lib/LobbyProvider";
 import { Game } from "../../shared/Game";
 import { BoardComponent } from "./components/board-component/BoardComponent";
 import { BACKEND_URL } from "./config";
+import { Theme } from "@radix-ui/themes";
+import "././styles.scss";
+
 
 const queryClient = new QueryClient();
 
@@ -16,7 +19,9 @@ createRoot(document.getElementById("root")!).render(
         serverUrl={BACKEND_URL}
         gameComponents={[{ game: Game, board: BoardComponent }]}
       >
-        <App />
+        <Theme appearance="inherit" scaling="110%">
+          <App />
+        </Theme>
       </LobbyProvider>
     </QueryClientProvider>
   </React.StrictMode>

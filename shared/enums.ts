@@ -7,7 +7,7 @@ export enum DistrictIconsEnum {
 
 export enum ResourceEnum {
     Candy = "candy",
-    Loot = "loot"
+    Loot = "loot",
 }
 
 export enum LocationMovesEnum {

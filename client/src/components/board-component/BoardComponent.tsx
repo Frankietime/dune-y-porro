@@ -16,6 +16,8 @@ import { LocationMovesEnum } from "../../../../shared/enums";
 import { Popover } from "radix-ui";
 import { CardComponent } from "../card-components/CardComponent";
 import _ from "lodash";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Flex, Text, TextField, Tooltip } from "@radix-ui/themes";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -38,7 +40,6 @@ export const BoardComponent = ({
     NumericTrackers,
     NumericTracker,
     VisualTracker,
-    Card
   } = useBoardComponent();  
 
   type CardSelectionModalOptions = {
@@ -46,14 +47,18 @@ export const BoardComponent = ({
     cardOptions: Card[];
     cardsSelected?: Card[];
     isRequired: boolean;
-    callback: () => void;
+    callback: (selectedCards: Card[]) => void;
+    selectionLimit: number;
   }
-  const [cardSelectionModalOptions, setCardSelectionModalOptions] = useState<CardSelectionModalOptions>({
+
+  const initialCardSelectionModalOptions = {
     isOpen: false,
     isRequired: true,
     cardOptions: [],
-    callback: () => {}
-  });
+    callback: () => {},
+    selectionLimit: 0
+  }
+  const [cardSelectionModalOptions, setCardSelectionModalOptions] = useState<CardSelectionModalOptions>({...initialCardSelectionModalOptions});
 
   const player = useMemo<PlayerGameState>(() => {
     if(playerID != null) 
@@ -78,37 +83,53 @@ export const BoardComponent = ({
     moves.selectCard(G, selectedCard)
   }
 
-  const getRandomLocation = () => "LOC" + Math.round((Math.random() / 0.25));
+  const onSelectToDiscard = (selectedCard: Card, limit: number) => {
+
+    let _cardSelection: Card[] = [];
+    
+    const selectedCardIds = cardSelectionModalOptions.cardsSelected?.map(c => c.id) ?? [];
+
+    if (selectedCardIds && selectedCardIds.includes(selectedCard.id)) {
+      _cardSelection = [];
+    } else if (selectedCardIds.length < limit) {
+        _cardSelection = [...(cardSelectionModalOptions.cardsSelected ?? []), selectedCard];
+    } else {
+      _cardSelection = cardSelectionModalOptions.cardsSelected ?? []; 
+    }
+
+    setCardSelectionModalOptions({
+      ...cardSelectionModalOptions,
+      cardsSelected: Array.from(new Set(_cardSelection))
+    });
+  }
+
+  const confirmCardSelection = () => {
+    if (cardSelectionModalOptions.cardsSelected && cardSelectionModalOptions.cardsSelected.length == cardSelectionModalOptions.selectionLimit) {
+      cardSelectionModalOptions.callback(cardSelectionModalOptions.cardsSelected!);
+      setCardSelectionModalOptions({...initialCardSelectionModalOptions});
+    }
+  }
+  
+  const cancelCardSelection = () => {
+      setCardSelectionModalOptions({...initialCardSelectionModalOptions});
+  }
 
   const onLocationSelect = (districtIndex: number, locationIndex: number) => {
     const selectedCard = getSelectedCard();
     const selectedLocation = G.districts[districtIndex].locations[locationIndex];
 
     // Open card selection modal
-    if (selectedLocation.cost.moves?.map(m => m.moveId).some(mid => mid == LocationMovesEnum.DISCARD || LocationMovesEnum.TRASH)) {
+    if (player.hand.length >= 2 && selectedLocation.cost.moves?.map(m => m.moveId).some(mid => mid == LocationMovesEnum.DISCARD || LocationMovesEnum.TRASH)) {
       setCardSelectionModalOptions({
         isOpen: true,
         isRequired: true,
         cardOptions: _.cloneDeep(player.hand.filter(c => c.id != selectedCard!.id)),
-        callback: () => moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard) 
+        callback: (selectedCards: Card[]) => moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard, selectedCards),
+        selectionLimit: 2
       })
     } else {
       moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);
-    }
-
-    
-
-    // for (let i = 0; i <= moves.length; i++) {
-    //   switch (moves[i].moveId) {
-    //         case LocationMovesEnum.DISCARD:
-    //           setPaymentModalOpen(true);
-    //           break;
-    //         default:
-    //           break;
-    //       }
-    // }
-    
-    
+    }    
   }
 
   const currentPlayerNumberOfWorkers = (): number => {
@@ -127,17 +148,6 @@ return (
   <div className='game-container'>
     {!isNullOrEmpty(matchID) && (
       <>
-        {/* <GameInfoComponent
-          ctx={ctx}
-          chatMessages={chatMessages}
-          sendChatMessage={sendChatMessage}
-        >
-          <div>Candy: {player.candy}</div>
-          <div>Loot: {player.loot}</div>
-          <div>VP: {player.victoryPoints}</div>
-          <div>Deck: {player.deck.length}</div>
-          <div>Discard: {player.discardPile.length}</div>
-        </GameInfoComponent> */}
 
         {G.districts && (
 
@@ -168,78 +178,61 @@ return (
                 </div>
               ))}
               
-              {/* <NumericTracker x={345} y={209} w={54} h={54} show={true} />  
-              <VisualTracker x={400} y={210} show={true} /> 
-              <NumericTracker x={575} y={190} w={80} h={75} show={true} />
-              <DynamicElement x={229} y={197} show={true} />  
-
-              <NumericTrackers x={989} y={88} />
-              <NumericTracker x={912} y={209} w={54} h={54} show={true} />
-              <VisualTracker x={735} y={210} show={true} />
-              <NumericTracker x={657} y={190} w={80} h={75} show={true} />
-              <DynamicElement x={1045} y={197} show={true} /> */}
-
-              {/* <NumericTrackers x={277} y={279} />
-              <NumericTracker x={345} y={270} w={54} h={54} show={true} />
-              <VisualTracker x={400} y={270} show={true} />
-              <NumericTracker x={575} y={270} w={80} h={75} show={true} /> */}
-              
               {/* Player Area Component */}
               <WorkerComponent
                 numerOfWorkers={currentPlayerNumberOfWorkers()}
                 x={281} y={463}
                 mirror={0}
                 playerID={parseInt(playerID!)}
-              />
-
-              {/* <NumericTrackers x={989} y={279} />
-              <NumericTracker x={912} y={270} w={54} h={54} show={true} />
-              <VisualTracker x={735} y={270} show={true} />
-              <NumericTracker x={657} y={270} w={80} h={75} show={true} />
-              <DynamicElement x={1045} y={385} show={true} /> */}
-
-              {/* Payment Modal */}
-              <Popover.Root
-                open={cardSelectionModalOptions.isOpen}
-              >
-                	<Popover.Trigger />
-                  <Popover.Anchor />
-                  <Popover.Portal>
-                    <Popover.Content>
-                      {cardSelectionModalOptions.cardOptions?.map(card => (
-                        <CardComponent
-                          card={card}
-                        />
-                      ))}
-                      <Popover.Close />
-                      <Popover.Arrow />
-                    </Popover.Content>
-                  </Popover.Portal>
-              </Popover.Root>
-
-              
+              />              
               
               <Hud 
                 onPass={() => onTurnEnd()}
                 onReveal={() => alert("Reveal!")}
                 onArrowUp={() => alert("arrow up")}
                 onArrowDown={() => alert("arrow down")}
-
-                // onSelectCard={(selectedCard) => onSelectCard({} as Card)}
-                // selectedCardIndex={getSelectedCard()}
               >
                 <div className="player-resource-container absolute">
                   <div>VP<hr /><div>{player.victoryPoints}</div></div>
                   <div>Candy<hr /><div>{player.candy}</div></div>
                   <div>Loot<hr /><div>{player.loot}</div></div>        
                   <div>Deck<hr /><div>{player.deck.length}</div></div>        
-                  <div>Discard<hr /><div>{player.discardPile.length}</div></div>        
+                  <Tooltip content={player.discardPile.length > 0 ? player.discardPile.map(t => t.name).join(" - ") : "Discard Pile"}><div>Discard<hr /><div>{player.discardPile.length}</div></div></Tooltip>  
+                  <Tooltip content={player.trashPile.length > 0 ? player.trashPile.map(t => t.name).join(" - ") : "Trash Pile"}><div>Trash<hr /><div>{player.trashPile.length}</div></div></Tooltip>   
                 </div>
-              {/* Hand*/}
+      
               <div className="hand-container" style={{
                 width: "200px", position: "relative", top: "240px", left: "295px"
               }}>
-                {player.hand?.map((card: Card, index) => 
+                {cardSelectionModalOptions.isOpen && (
+                  <>
+                    <button style={{
+                      top: "600px",
+                      left: "200px",
+                      position: "relative",
+                      backgroundColor: "red",
+                      padding: "5px"
+                    }}
+                      onClick={confirmCardSelection}  
+                    >
+                      CONFIRM
+                    </button>
+                    <button style={{
+                      top: "620px",
+                      left: "200px",
+                      position: "relative",
+                      backgroundColor: "blue",
+                      padding: "5px"
+                    }}
+                    onClick={cancelCardSelection}  
+                  >
+                    CANCEL
+                  </button>
+                </>
+                )}
+                {!cardSelectionModalOptions.isOpen ? player.hand?.map((card: Card, index) => 
+                  
+                  // hand
                   <CardComponent
                       isSelected={card.id == getSelectedCard()?.id}
                       y={540} x={390 + index*105} show={true} 
@@ -247,36 +240,22 @@ return (
                       onClick={() => onSelectCard(card)}
                       card={card}
                   >
-                    {/* <div className={"card " + (card.id == getSelectedCard()?.id ? "selected" : "")}>
-                      <div className="card-name">
-                         <div>{card.districtIds.length > 0 ? card.districtIds.map(did => (<DistrictIconComponent key={did} districtId={did} />)) : <div className="non-location-title">{card.name}</div>}</div>
-                    </div>
-                    <hr></hr>
-                    <div className="card-body">
-                      {card?.districtIds.length > 0 && 
-                        <div>
-                        </div>
-                      }
-                      {card.primaryEffects != null &&
-                        <div>
-                          <hr></hr>
-                          <div  className="play">Play</div>
-                          <hr></hr> 
-                          <div>{card?.primaryEffects?.name}</div>
-                        </div>
-                      }
-                      {card?.secondaryEffects != null &&
-                        <div>
-                          <hr></hr>
-                          <div className="reveal">Reveal</div>
-                          <hr></hr>
-                          <div className="reveal-effect">{card?.secondaryEffects.name}</div>
-                        </div>
-                      }
-                      </div>
-                    </div> */}
                   </CardComponent>
-                )}  
+                ) :
+                
+                // card selection for discard or trash
+                
+                cardSelectionModalOptions.cardOptions.map((card, index) => (
+                  <CardComponent
+                      isSelected={cardSelectionModalOptions.cardsSelected?.map(c => c.id).includes(card.id)}
+                      y={540} x={390 + index*105} show={true} 
+                      key={`card-${card.id}-${index}`} 
+                      onClick={() => onSelectToDiscard(card, cardSelectionModalOptions.selectionLimit)}
+                      card={card}
+                      selectionColor={"red"}
+                  >
+                  </CardComponent>
+                ))}  
               </div>
               </Hud>
             </div>

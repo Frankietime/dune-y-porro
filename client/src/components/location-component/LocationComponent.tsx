@@ -5,6 +5,7 @@ import { useBoardComponent } from "../board-component/UseBoardComponent";
 import { ResourceComponent } from "../icon-components/ResourceComponent";
 import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
 import { workerIconsByPlayerId } from "../icon-components/constants";
+import { LocationMovesEnum } from "../../../../shared/enums";
 
 export interface LocationComponentProps extends Location {
     x: number,
@@ -56,17 +57,15 @@ export const LocationComponent = ({
                                 <div className="location-resource-cost-container">
                                     <div>
                                     {cost.resources?.map(resource => 
-                                        Array.from({ length: resource.amount }).map((_, index) => (
-                                            // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div className="resource-container" key={index}><div className={resource.resourceId}>{resource.resourceId}</div></div>
-                                        ))
+                                        <ResourceComponent resourceId={resource.resourceId ?? ""} amount={resource.amount} />
                                     )}
-                                    {cost.moves?.map((move, index) => (
-                                        // Array.from({ length: resource.amount }).map((_, index) => (
-                                            // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div className="location-moves-cost-container" key={move + "-" + index}>{move.name}</div>
-                                        ))
-                                    }
+                                    {cost.moves?.map((move, index) => {
+                                       if (move.moveId == LocationMovesEnum.DISCARD || move.moveId == LocationMovesEnum.TRASH) {
+                                            return Array.from({ length: move.params?.selectionNumber }).map((_, index: number) => <ResourceComponent key={index} resourceId={move.moveId ?? ""} />)
+                                        } else {
+                                            return <></>
+                                        } 
+                                    })}
                                     </div>
                                 </div>
                             </div>
@@ -78,13 +77,15 @@ export const LocationComponent = ({
                                 {/* Resources and Moves Reward */}
                                 <div className="">
                                     {reward.resources?.map(resource => 
-                                        Array.from({ length: resource.amount }).map((_, index) => (
-                                            // <ResourceComponent key={index} resourceId={resource.resourceId} />
-                                            <div className="resource-container" key={index}><div className={resource.resourceId}>{resource.resourceId}</div></div>
-                                        ))
+                                        <ResourceComponent resourceId={resource.resourceId} amount={resource.amount}/>
                                     )}
                                     {reward != undefined && reward.moves && reward.moves?.length > 0 ? 
-                                        <div className="reward-moves-container">{reward.moves?.map((m, index) => <><hr></hr><div className="reward-move-item" key={index}>{m.name}</div></>)}<hr></hr></div>
+                                        reward.moves.map((move, index) => {
+                                            if (move.moveId == LocationMovesEnum.DISCARD || move.moveId == LocationMovesEnum.TRASH || move.moveId == LocationMovesEnum.DRAW) {
+                                                return Array.from({ length: move.params?.selectionNumber }).map((_, index: number) => <ResourceComponent key={index} resourceId={move.moveId ?? ""} />)
+                                            } else {
+                                                return <span key={index}><hr></hr><div className="reward-move-item" key={index}>{move.name}</div></ span>
+}                                        })
                                         : <></>}
                                 </div>
                             </div>

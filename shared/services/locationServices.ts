@@ -7,7 +7,7 @@ export const getInitialLocationReward = (): LocationReward => ({
         // {resourceId: ResourceEnum.Candy, amount: 1},
         // {resourceId: ResourceEnum.Loot, amount: 1},
     ],
-    moves: [{ moveId: LocationMovesEnum.DRAW, name: "draw", params: [1]}]
+    moves: [{ moveId: LocationMovesEnum.DRAW, name: "draw", params: { selectionNumber: 2 }}]
 });
 
 export const getHighCouncil = (district: DistrictIconsEnum, locIndex: number): Location => ({
@@ -15,7 +15,7 @@ export const getHighCouncil = (district: DistrictIconsEnum, locIndex: number): L
     name: "High Council",
     cost: {
         districtIconIds: [district],
-        moves: [{ moveId: LocationMovesEnum.DISCARD, name: "discard 2", params: {cardIds: []}}]
+        moves: [{ moveId: LocationMovesEnum.DISCARD, name: "discard 2", params: {cardIds: [], selectionNumber: 2}}]
     },
     reward: {
         moves: [
@@ -53,7 +53,7 @@ export const getInitialDistrictsState = (): District[] => {
                 name: "CONURBA Market",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D1],
-                    moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash"}]
+                    moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash", params: {cardIds: [], selectionNumber: 2}}]
                 },
                 reward: {
                     moves: [{moveId: LocationMovesEnum.BUY_CARD, name: "buy card"}]
@@ -65,7 +65,7 @@ export const getInitialDistrictsState = (): District[] => {
                 name: "Time for Candy",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D1],
-                    moves: [{ moveId: LocationMovesEnum.DISCARD, name: "discard 2", params: {indexes: []}}]
+                    moves: [{ moveId: LocationMovesEnum.DISCARD, name: "discard 2", params: {cardIds: [], selectionNumber: 2}}]
                 },
                 reward: {
                     resources: [{resourceId: ResourceEnum.Candy, amount: 1}]
@@ -96,7 +96,7 @@ export const getInitialDistrictsState = (): District[] => {
                     districtIconIds: [DistrictIconsEnum.D2],
                 },
                 reward: {
-                    moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash 2", params: {trashNumber: 2}}]
+                    moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash 2", params: {cardIds: [], selectionNumber: 2}}]
                 }
             },
             {
@@ -139,7 +139,7 @@ export const getInitialDistrictsState = (): District[] => {
                     name: "Bargain",
                     cost: {
                         districtIconIds: [DistrictIconsEnum.D3],
-                        moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash"}]
+                        moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash", params: {cardIds: [], selectionNumber: 2}}]
                     },
                     reward: {
                         resources: [
@@ -183,7 +183,7 @@ export const getInitialDistrictsState = (): District[] => {
                     ],
                 },
                 reward: {
-                    moves: [{moveId: LocationMovesEnum.DRAW, name: "draw"}, {moveId: LocationMovesEnum.DRAW, name: "draw"}, {moveId: LocationMovesEnum.DRAW, name: "draw"}]
+                    moves: [{moveId: LocationMovesEnum.DRAW, name: "draw", params: {selectionNumber: 2}}]
                 }
             },
             {

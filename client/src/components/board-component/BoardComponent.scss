@@ -12,6 +12,9 @@
     }
 }
 
-.payment-modal {
+.card-selection-dialog-content {
+    z-index: 9999;
     background-color: white;
+    width: 1500px;
+    height: 500px;
 }

@@ -1,10 +1,14 @@
 .card {
-    font-size: 9px;
+    font-size: 12px;
     overflow-wrap: break-word;
     background-color: white;
     height: 157px;
     border: 2px solid black;
-
+    
+    &.red {
+        border: 2pt solid red !important;
+    }
+    
     &.selected {
         border: 2pt solid aqua;
 

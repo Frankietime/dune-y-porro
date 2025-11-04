@@ -12,7 +12,8 @@ export type CardComponentProps = {
     onClick?: () => void,
     isSelected?: boolean,
     children?: React.ReactNode,
-    card: Card
+    card: Card,
+    selectionColor?: string;
 }
 export const CardComponent = ({
     card,
@@ -23,7 +24,8 @@ export const CardComponent = ({
     isSelected,
     onClick,
     show,
-    w
+    w,
+    selectionColor
 }: CardComponentProps) => {
 
     const { EventBox } = useBoardComponent();
@@ -37,7 +39,7 @@ export const CardComponent = ({
             isSelected={isSelected}
             onClick={onClick}
         >
-            <div className={"card" + (isSelected ? " selected" : "")}>
+            <div className={"card" + (isSelected ? " selected" + (selectionColor ? " " + selectionColor : "") : "")}>
                 <div className="card-name">
                     <div>{card.districtIds.length > 0 ? card.districtIds
                         .map(did => (<DistrictIconComponent key={did} districtId={did} />)) : <div className="non-location-title">{card.name}</div>}</div>

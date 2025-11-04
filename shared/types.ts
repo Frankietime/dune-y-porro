@@ -1,4 +1,13 @@
+import { Ctx, DefaultPluginAPIs, PlayerID } from "boardgame.io";
 import { DistrictIconsEnum, ResourceEnum } from "./enums";
+
+export type MetaGameState = {
+    G: GameState;
+    ctx: Ctx;
+    playerID: PlayerID;
+    random?: any;
+    plugins?: DefaultPluginAPIs;
+}
 
 export interface GameState {
   players: Dictionary<PlayerGameState>;

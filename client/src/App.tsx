@@ -1,5 +1,4 @@
 import "./App.css";
-import "././styles.scss";
 import { LobbyComponent } from "./components/lobby-component/LobbyComponent";
 import { BoardComponent } from "./components/board-component/BoardComponent";
 import { useAppStore } from "./store";

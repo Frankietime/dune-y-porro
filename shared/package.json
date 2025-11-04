@@ -6,8 +6,7 @@
         "module": "ESNext",
         "moduleResolution": "NodeNext",
         "esModuleInterop": true,
-        "outDir": "dist",
         "strict": true,
         "skipLibCheck": true
-    } 
+    }
 }
