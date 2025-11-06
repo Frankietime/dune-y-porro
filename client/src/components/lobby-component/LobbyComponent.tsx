@@ -4,6 +4,10 @@ import { useAppStore } from '../../store';
 import { useLobbyStore } from './store';
 import { useLobbyServices } from '../../services/lobbyServices';
 import { BACKEND_URL } from '../../config';
+import { UpdateIcon } from "@radix-ui/react-icons"
+import { Button, Tooltip } from '@radix-ui/themes';
+import { getRandomPlayerName } from '../../../../shared/services/moves/playerServices';
+import { generateBattleEvent } from './helper';
 
 
 export const LobbyComponent = () => {
@@ -21,8 +25,8 @@ export const LobbyComponent = () => {
   } = useAppStore();
 
   const {
-    matchName,
-    setMatchName,
+    matchLore,
+    setMatchLore,
     matchList,
     setMatchList
   } = useLobbyStore();
@@ -42,7 +46,7 @@ export const LobbyComponent = () => {
     return await createMatch(
       numberOfPlayers, 
       {
-        name: useLobbyStore.getState().matchName, 
+        name: useLobbyStore.getState().matchLore.title, 
         playerName: useAppStore.getState().playerState.name
       }       
     ).then((res) =>  res);
@@ -83,14 +87,23 @@ export const LobbyComponent = () => {
 
           {/* Player name */}
           <div className="mt-4">
-            <label htmlFor="playerName" className="text-sm">Player Name</label>
+            <label htmlFor="playerName" className="text-sm" style={{display: "block"}}>Player Name</label>
             <input
               id="playerName"
               value={playerState.name}
               onChange={(e) => setPlayerState({ ...playerState, name: e.target.value })}
               className="mt-1 w-full border rounded px-2 py-1"
               placeholder="Tu nombre"
+              style={{ width: "350px", display: "inline-block"}}
             />
+            <div style={{display: "inline", marginLeft: "15px"}}>
+              <Button onClick={() => setPlayerState({
+                ...playerState,
+                name: getRandomPlayerName()
+              })}>
+                <UpdateIcon />
+              </Button>
+            </div>
           </div>
 
           {/* Ongoing matches */}
@@ -144,11 +157,25 @@ export const LobbyComponent = () => {
             <label htmlFor="matchName" className="sr-only">Match Name</label>
             <input
               id="matchName"
-              value={matchName}
-              onChange={(e) => setMatchName(e.target.value)}
+              value={matchLore.title}
+              onChange={(e) => setMatchLore({...matchLore, title: e.target.value})}
               className="mt-2 w-full border rounded px-2 py-1"
               placeholder="Nombre de la partida"
+              style={{
+                width: "300px",
+                marginBottom: "30px"
+              }}
             />
+            <div style={{display: "inline", marginLeft: "15px"}}>
+              {/* <Tooltip content={matchLore.description}> */}
+                <Button style={{ width: "90px" }} onClick={() => {setMatchLore(generateBattleEvent())}}>
+                  <UpdateIcon />
+                  Lore
+                </Button>
+              {/* </Tooltip> */}
+            </div>
+            <div>
+            </div>
             <button
               onClick={onCreateMatch}
               className="mt-2 w-full rounded bg-emerald-600 px-3 py-1.5 text-white text-sm"

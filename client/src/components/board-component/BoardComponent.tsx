@@ -7,15 +7,18 @@ import { LocationComponent } from "../location-component/LocationComponent";
 import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
-import { locsXPos, locsYPos } from "./constants";
-import { useEffect, useMemo, useState } from "react";
+import { locsXPos, locsYPos, trackerXPos, trackerYPos } from "./constants";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "../../../../shared/types";
 import "./BoardComponent.scss";
 import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
-import { LocationMovesEnum } from "../../../../shared/enums";
+import { LocationMovesEnum, PlayerColorsEnum } from "../../../../shared/enums";
 import { CardComponent } from "../card-components/CardComponent";
 import _ from "lodash";
-import { Button, Dialog, Flex, Text, TextField, Tooltip } from "@radix-ui/themes";
+import { Button, Dialog, Flex, Table, Text, TextField, Tooltip } from "@radix-ui/themes";
+import { useAppStore } from "../../store";
+import { CardSelectionModalOptions } from "./types";
+import { PlayerAreaComponent } from "../player-area-component/PlayerAreaComponent";
 
 interface BoardGameProps extends BoardProps<GameState> {};
 
@@ -34,21 +37,17 @@ export const BoardComponent = ({
 }: BoardGameProps) => {
 
   const {
-    Hud,
-    NumericTrackers,
-    NumericTracker,
-    VisualTracker,
+    Hud
   } = useBoardComponent();  
 
-  type CardSelectionModalOptions = {
-    actionName: string;
-    isOpen: boolean;
-    cardOptions: Card[];
-    cardsSelected?: Card[];
-    isRequired: boolean;
-    callback: (selectedCards: Card[]) => void;
-    selectionLimit: number;
-  }
+  useEffect(() => {
+    // reset UI non-cient state at the begining of the round
+    if (ctx.phase == "mainPhase")
+      setRoundIsEnding(false);
+    
+  }, [ctx.phase])
+
+  const { matchData } = useAppStore();
 
   const initialCardSelectionModalOptions = {
     actionName: "",
@@ -64,24 +63,7 @@ export const BoardComponent = ({
     if(playerID != null) 
       return G.players[playerID] as PlayerGameState;    
     return {} as PlayerGameState;
-  }, [G])
-  
-  const currentPlayer = useMemo(() => {
-    const player = G.players[ctx.currentPlayer];
-    return player;
   }, [G]);
-
-  useEffect(() => {
-
-  }, [G.players])
-
-  const onTurnEnd = (): void => {
-    events.endTurn!();
-  }
-
-  const onSelectCard = (selectedCard: Card) => {
-    moves.selectCard(G, selectedCard)
-  }
 
   const onSelectToDiscard = (selectedCard: Card, limit: number) => {
 
@@ -114,7 +96,10 @@ export const BoardComponent = ({
       setCardSelectionModalOptions({...initialCardSelectionModalOptions});
   }
 
-  const onLocationSelect = (districtIndex: number, locationIndex: number) => {
+  const onLocationSelect = (districtIndex: number, locationIndex: number, e: any) => {
+
+    if (player.hasPlayedCard)
+      return;
     const selectedCard = getSelectedCard();
     const selectedLocation = G.districts[districtIndex].locations[locationIndex];
 
@@ -131,8 +116,11 @@ export const BoardComponent = ({
         selectionLimit: 2
       })
     } else {
-      moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard);
-    }    
+      !player.hasPlayedCard || selectedLocation.takenByPlayerID == undefined ? moves.placeWorker(G, districtIndex, locationIndex, G.players[ctx.currentPlayer]?.selectedCard) : null;
+    }   
+    
+    e.stopPropagation();
+    
   }
 
   const currentPlayerNumberOfWorkers = (): number => {
@@ -140,39 +128,84 @@ export const BoardComponent = ({
   }
 
   const isLocationDisabled = (location: Location): boolean => {
-    return location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard;
+    return location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard || player.numberOfWorkers == 0;
   }
 
   const getSelectedCard = (): Card | undefined => {
     return G.players[ctx.currentPlayer]?.selectedCard;
   }
 
+  const [roundIsEnding, setRoundIsEnding] = useState(false);
+
 return (
   <div className='game-container'>
     {!isNullOrEmpty(matchID) && (
       <>
-
-        {G.districts && (
-
+        {G.districts && G.players && player && (
           <div className="flex w-screen justify-around board">
+            <GameInfoComponent
+              playersPublicInfo={G.playersViewModel}
+              G={G}
+              ctx={ctx}
+            />
+
+            {/* Board Area */}
             <div className="w-[1280px] h-[720px] relative border-1 box-content" 
               style={{backgroundImage: `url(${mapBg})`,backgroundSize: "cover", width: "100%", height: "1000px"}}
             >
               {G.districts.map((district, dIndex) => (
                 <div
                   key={dIndex} 
-                  className="relative" 
+                  className="district-container absolute" 
                   style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
+                    <div 
+                      className="district-name-container"
+                      style={{
+                        top: locsYPos[dIndex][0] -60, 
+                        left: locsXPos[dIndex][dIndex == 0 ? 2 : dIndex == 3 ? 3 : 0] + (dIndex == 1 || dIndex == 3 ? -180 : 10), 
+                        position: "relative", 
+                        color: "black", 
+                        fontWeight: 600, 
+                        backgroundColor: "white",
+                        padding: "10px"
+                      }}
+                    >
+                      <div className="district-name">
+                        {district.id} - {district.name} |  {ctx.phase != "combatPhase" && district.presence ? G.playersViewModel
+                          .map(player => 
+                            <span
+                              key={player.id}
+                              style={{ 
+                              fontWeight: "600", 
+                              color: PlayerColorsEnum[parseInt(player.id)], 
+                              display: "inline"}}
+                            > 
+                              {district.presence[player.id]?.amount ?? " - "}
+                            </span>
+                          ) : 
+                            <span style={{ 
+                                fontWeight: "600", 
+                                display: "inline"
+                              }}> 
+                                Winner:  
+                                <span style={{
+                                  color: district.combatWinnerId ? PlayerColorsEnum[parseInt(district.combatWinnerId)] : "black"
+                                }}> 
+                                  {" "}{district.combatWinnerId ? matchData.players[parseInt(district.combatWinnerId)].name :  " - "}
+                                </span>
+                            </span>
+                        }
+                      </div>
+                    </div>
                   
                   {district.locations.map((location, locIndex) => (
-                    <div>
+                    <div className="location-container" key={dIndex + "-" + locIndex}>
                       <LocationComponent
                         {...location}
-                        key={dIndex + "-" + locIndex}
                         x={locsXPos[dIndex][locIndex]} y={locsYPos[dIndex][locIndex]}
                         show={true}
                         district={district}
-                        onClick={() => onLocationSelect(dIndex, locIndex)} 
+                        onClick={(e: Event) => onLocationSelect(dIndex, locIndex, e)} 
                         isDisabled={isLocationDisabled(location)}
                       />
                     </div>)
@@ -182,104 +215,66 @@ return (
               ))}
               
               {/* Player Area Component */}
-              <WorkerComponent
-                numerOfWorkers={currentPlayerNumberOfWorkers()}
-                x={281} y={463}
-                mirror={0}
-                playerID={parseInt(playerID!)}
-              />              
+              <PlayerAreaComponent 
+                G={G}
+                cancelCardSelection={cancelCardSelection}
+                cardSelectionModalOptions={cardSelectionModalOptions}
+                confirmCardSelection={confirmCardSelection}
+                events={events}
+                moves={moves}
+                onSelectToDiscard={onSelectToDiscard}
+                player={player}
+                selectedCard={getSelectedCard()}
+              />
               
-              <Hud 
-                onPass={() => onTurnEnd()}
-                onReveal={() => alert("Reveal!")}
-                onArrowUp={() => alert("arrow up")}
-                onArrowDown={() => alert("arrow down")}
-              >
-                <div className="player-resource-container absolute">
-                  <div>VP<hr /><div>{player.victoryPoints}</div></div>
-                  <div>Candy<hr /><div>{player.candy}</div></div>
-                  <div>Loot<hr /><div>{player.loot}</div></div>        
-                  <div>Deck<hr /><div>{player.deck.length}</div></div>        
-                  <Tooltip content={player.discardPile.length > 0 ? player.discardPile.map(t => t.name).join(" - ") : "Discard Pile"}><div>Discard<hr /><div>{player.discardPile.length}</div></div></Tooltip>  
-                  <Tooltip content={player.trashPile.length > 0 ? player.trashPile.map(t => t.name).join(" - ") : "Trash Pile"}><div>Trash<hr /><div>{player.trashPile.length}</div></div></Tooltip>   
-                </div>
-      
-              <div className="hand-container" style={{
-                width: "200px", position: "relative", top: "240px", left: "295px"
-              }}>
-                {cardSelectionModalOptions.isOpen && (
-                  <>
-                    {/* <button style={{
-                      top: "600px",
-                      left: "200px",
-                      position: "relative",
-                      backgroundColor: "red",
-                      padding: "5px"
-                    }}
-                      onClick={confirmCardSelection}  
-                    >
-                      CONFIRM
-                    </button>
-                    <button style={{
-                      top: "620px",
-                      left: "200px",
-                      position: "relative",
-                      backgroundColor: "blue",
-                      padding: "5px"
-                    }}
-                    onClick={cancelCardSelection}  
-                  >
-                    CANCEL
-                  </button> */}
-                </>
-                )}
-                {!cardSelectionModalOptions.isOpen ? player.hand?.map((card: Card, index) => 
-                  
-                  // hand
-                  <CardComponent
-                      isSelected={card.id == getSelectedCard()?.id}
-                      y={540} x={390 + index*105} show={true} 
-                      key={`card-${card.id}-${index}`} 
-                      onClick={() => onSelectCard(card)}
-                      card={card}
-                  >
-                  </CardComponent>
-                ) :
-                (
-                // card selection for discard or trash
-                <Dialog.Root open={cardSelectionModalOptions.isOpen}>
+              {/* Combat Phase Modal */}
+              <Dialog.Root open={ctx.phase == "combatPhase"}>
+                <Dialog.Content style={{
+                  top: "230px",
+                  width: "100%",
+                  height: "100%"
+                }}>
+                  <Table.Root size="1">
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.ColumnHeaderCell>District</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Winner</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Ranking</Table.ColumnHeaderCell>
+                      </Table.Row>
+                    </Table.Header>
 
-                  <Dialog.Content height={"300px"} maxWidth={"1000px"}>
-                    <Dialog.Title><Flex justify={"center"}>{cardSelectionModalOptions.actionName}</Flex></Dialog.Title>
-                    <Flex>
-                      {cardSelectionModalOptions.cardOptions.map((card, index) => (
-                        <CardComponent
-                            isSelected={cardSelectionModalOptions.cardsSelected?.map(c => c.id).includes(card.id)}
-                            y={120} x={20 + index*105} show={true} 
-                            key={`card-${card.id}-${index}`} 
-                            onClick={() => onSelectToDiscard(card, cardSelectionModalOptions.selectionLimit)}
-                            card={card}
-                            selectionColor={"red"}
-                        >
-                        </CardComponent>
+                    <Table.Body>
+                      {G.districts.map(d => (
+                        <Table.Row>
+                          <Table.RowHeaderCell><span style={{ fontWeight: 600 }}>{d.id} - {d.name}</span></Table.RowHeaderCell>
+                          <Table.Cell>
+                            <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(d.combatWinnerId!)]}}>
+                              {d.combatWinnerId ? matchData.players[parseInt(d.combatWinnerId)].name :  " - "}
+                            </span>
+                          </Table.Cell>
+                          <Table.Cell>
+                            { Object.keys(d.presence)
+                              .map(k => d.presence[k])
+                              .sort((a, b) => a.amount - b.amount)
+                              .map((p, i, array) => 
+                                <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(p.playerID)]}}>{(p.amount ?? "") } {array.length != i + 1 &&<span style={{ color: "black"}}> / </span>}</span>
+                              )}
+                            </Table.Cell>
+                        </Table.Row>
                       ))}
-                    </Flex>
-
-                    <Flex gap="3" justify="center">
-                      <Dialog.Close>
-                        <Button variant="soft" color="gray" onClick={confirmCardSelection}>
-                          Confirm Selection
-                        </Button>
-                      </Dialog.Close>
-                      <Dialog.Close>
-                        <Button onClick={cancelCardSelection}>Cancel Selection</Button>
-                      </Dialog.Close>
-                    </Flex>
-                  </Dialog.Content>
-                </Dialog.Root>
-                )}  
-              </div>
-              </Hud>
+                      
+                    </Table.Body>
+                  </Table.Root>
+                  <Button 
+                    style={{ marginTop: "25px", width: "100%"}}
+                    highContrast={true} 
+                    color="red" 
+                    size={"3"}
+                    disabled={roundIsEnding}
+                    onClick={() => { moves.endRound(); setRoundIsEnding(true) }}
+                  >{ roundIsEnding ? "Waiting for other players..." : "End Round"} </Button>
+                </Dialog.Content>
+              </Dialog.Root>
             </div>
           </div>
         )}

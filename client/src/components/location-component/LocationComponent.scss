@@ -5,6 +5,10 @@
     background-color: rgb(218, 218, 218);
 
     font-size: 12px;
+
+    &.disabled {
+        opacity: 0.5;
+    }
     
 
     .worker-image-container {
@@ -22,7 +26,9 @@
         display: grid;
 
 
-        &.selected {}
+        &.selected {
+            border: 1px solid aqua;
+        }
 
         .location-cost-container {
             // background-color: red;

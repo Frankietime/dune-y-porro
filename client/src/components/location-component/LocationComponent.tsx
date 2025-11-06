@@ -56,8 +56,8 @@ export const LocationComponent = ({
                                 {/* Location Resources Cost */}
                                 <div className="location-resource-cost-container">
                                     <div>
-                                    {cost.resources?.map(resource => 
-                                        <ResourceComponent resourceId={resource.resourceId ?? ""} amount={resource.amount} />
+                                    {cost.resources?.map((resource, index) => 
+                                        <ResourceComponent key={index} resourceId={resource.resourceId ?? ""} amount={resource.amount} />
                                     )}
                                     {cost.moves?.map((move, index) => {
                                        if (move.moveId == LocationMovesEnum.DISCARD || move.moveId == LocationMovesEnum.TRASH) {
@@ -76,8 +76,8 @@ export const LocationComponent = ({
                             <div style={{overflowWrap: "break-word"}}>
                                 {/* Resources and Moves Reward */}
                                 <div className="">
-                                    {reward.resources?.map(resource => 
-                                        <ResourceComponent resourceId={resource.resourceId} amount={resource.amount}/>
+                                    {reward.resources?.map((resource, index) => 
+                                        <ResourceComponent key={index} resourceId={resource.resourceId} amount={resource.amount}/>
                                     )}
                                     {reward != undefined && reward.moves && reward.moves?.length > 0 ? 
                                         reward.moves.map((move, index) => {

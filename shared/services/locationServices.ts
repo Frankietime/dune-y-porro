@@ -12,7 +12,8 @@ export const getInitialLocationReward = (): LocationReward => ({
 
 export const getHighCouncil = (district: DistrictIconsEnum, locIndex: number): Location => ({
     Id: district.toString() + locIndex,
-    name: "High Council",
+    districtId: district.toString(),
+    name: district.toString() + " - High Council",
     cost: {
         districtIconIds: [district],
         moves: [{ moveId: LocationMovesEnum.DISCARD, name: "discard 2", params: {cardIds: [], selectionNumber: 2}}]
@@ -24,7 +25,7 @@ export const getHighCouncil = (district: DistrictIconsEnum, locIndex: number): L
                 name: "+Tracker"
             },
             {
-                moveId: LocationMovesEnum.ADD_PRESENCE_TOKEM,
+                moveId: LocationMovesEnum.ADD_PRESENCE_TOKEN,
                 name: "FIGHT!"
             }
         ],
@@ -38,18 +39,21 @@ export const getInitialDistrictsState = (): District[] => {
             name: "CONURBAPLEX",
             y: 67,
             x: 355,
+            presence: {},
             locations: [
             {
                 Id: DistrictIconsEnum.D1.toString() + 0,
+                districtId: DistrictIconsEnum.D1,
                 name: "Restricted Area",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D1],
                 },
                 reward: {moves: [], resources: []},
-                dominanceBy: []
+                dominanceBy: [],
             },
             {
                 Id: DistrictIconsEnum.D1 + 1,
+                districtId: DistrictIconsEnum.D1,
                 name: "CONURBA Market",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D1],
@@ -62,6 +66,7 @@ export const getInitialDistrictsState = (): District[] => {
             {...getHighCouncil(DistrictIconsEnum.D1, 2)},
             {
                 Id: DistrictIconsEnum.D1.toString() + 3,
+                districtId: DistrictIconsEnum.D1,
                 name: "Time for Candy",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D1],
@@ -76,31 +81,35 @@ export const getInitialDistrictsState = (): District[] => {
         {
             id: DistrictIconsEnum.D2,
             name: "ECOPLEX - MARKET",
+            presence: {},
             x: 613,
             y: 67,
             locations: [
             {
                 Id: DistrictIconsEnum.D2 + 0,
+                districtId: DistrictIconsEnum.D2,
                 name: "ECO Market",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D2],
+                    moves: [{moveId: LocationMovesEnum.TRASH, name: "trash", params: { cardIds: [], selectionNumber: 2 }}, {moveId: LocationMovesEnum.BUY_CARD, name: "buy card"}]
                 },
                 reward: {
-                    moves: [{moveId: LocationMovesEnum.TRASH, name: "trash"}, {moveId: LocationMovesEnum.BUY_CARD, name: "buy card"}]
                 }
             },
             {
                 Id: DistrictIconsEnum.D2 + 1,
+                districtId: DistrictIconsEnum.D2,
                 name: "Momentum",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D2],
+                    moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash 2", params: {cardIds: [], selectionNumber: 2}}]
                 },
                 reward: {
-                    moves: [{ moveId: LocationMovesEnum.TRASH, name: "trash 2", params: {cardIds: [], selectionNumber: 2}}]
                 }
             },
             {
                 Id: DistrictIconsEnum.D2 + 2,
+                districtId: DistrictIconsEnum.D2,
                 name: "Restricted Area",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D2],
@@ -116,11 +125,13 @@ export const getInitialDistrictsState = (): District[] => {
         {
             id: DistrictIconsEnum.D3,
             name: "Streets",
+            presence: {},
             x: 303,
             y: 344,
             locations: [
                 {
                     Id: DistrictIconsEnum.D3.toString() + 0,
+                    districtId: DistrictIconsEnum.D3,
                     name: "Easy Job",
                     cost: {
                         districtIconIds: [DistrictIconsEnum.D3],
@@ -136,6 +147,7 @@ export const getInitialDistrictsState = (): District[] => {
                 },
                 {
                     Id: DistrictIconsEnum.D3.toString() + 0,
+                    districtId: DistrictIconsEnum.D3,
                     name: "Bargain",
                     cost: {
                         districtIconIds: [DistrictIconsEnum.D3],
@@ -152,6 +164,7 @@ export const getInitialDistrictsState = (): District[] => {
                 },
                 {
                     Id: DistrictIconsEnum.D3.toString() + 0,
+                    districtId: DistrictIconsEnum.D3,
                     name: "Restricted Area",
                     cost: {
                         districtIconIds: [DistrictIconsEnum.D3],
@@ -166,12 +179,14 @@ export const getInitialDistrictsState = (): District[] => {
         {
         id: DistrictIconsEnum.D4,
         name: "AGI Control Zone",
+        presence: {},
         x: 665,
         y: 344,
         locations: [
             { ...getHighCouncil(DistrictIconsEnum.D4, 0) },
             {
                 Id: DistrictIconsEnum.D4.toString() + 1,
+                districtId: DistrictIconsEnum.D4,
                 name: "Time is Gold",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D4],
@@ -188,6 +203,7 @@ export const getInitialDistrictsState = (): District[] => {
             },
             {
                 Id: DistrictIconsEnum.D4.toString() + 2,
+                districtId: DistrictIconsEnum.D4,
                 name: "Sword Master",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D4],
@@ -204,6 +220,7 @@ export const getInitialDistrictsState = (): District[] => {
             },
             {
                 Id: DistrictIconsEnum.D4.toString() + 3,
+                districtId: DistrictIconsEnum.D4,
                 name: "Restricted Area",
                 cost: {
                     districtIconIds: [DistrictIconsEnum.D4],

@@ -1,17 +1,17 @@
 import { LocationMovesEnum } from "../../enums"
 import { BoardMove, MetaGameState } from "../../types"
-import { discard, draw, getLoot } from "./moves"
+import { discard, draw, getLoot, trash } from "./moves"
 import { getCurrentPlayer } from "./helper"
 import { MoveFunction, MoveFunctionArgs } from "./types"  
 
 export const locationMoves: { [key: string]: MoveFunction } = {
     [LocationMovesEnum.DRAW]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
         
-        draw(playerState, mgState.random)
+        draw(playerState, mgState.random, move.params.selectionNumber)
     },
-    [LocationMovesEnum.ADD_PRESENCE_TOKEM]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+    [LocationMovesEnum.ADD_PRESENCE_TOKEN]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
         
-        draw(playerState, mgState.random)
+        // draw(playerState, mgState.random)
     },
     [LocationMovesEnum.GET_LOOT]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
 
@@ -19,8 +19,33 @@ export const locationMoves: { [key: string]: MoveFunction } = {
     },
     [LocationMovesEnum.DISCARD]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
 
-        discard(playerState, move.params.indexes)
+        discard(playerState, move.params)
     }, 
+    [LocationMovesEnum.TRASH]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+        trash(playerState, move.params)
+    },
+    [LocationMovesEnum.ADD_REPAIR_TOKEN]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
+    [LocationMovesEnum.ADVANCE_TRACKER]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
+    [LocationMovesEnum.BUY_CARD]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
+    [LocationMovesEnum.COOLDOWN]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
+    [LocationMovesEnum.DEAL]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
+    [LocationMovesEnum.GET_SWORD_MASTER]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
+    [LocationMovesEnum.SIGNET_TRIGGER]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
+        
+    },
 }
 
 export const executeMove = (mgState: MetaGameState, move: BoardMove) => {

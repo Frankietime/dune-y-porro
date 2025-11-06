@@ -1,5 +1,6 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { Card, MetaGameState, PlayerGameState } from "../../types";
+import { isNullOrEmpty } from "../../common-methods";
 
 export const getCurrentPlayer = (mgState: MetaGameState) => {
     return mgState.G.players[mgState.ctx.currentPlayer];
@@ -10,6 +11,9 @@ export const getCurrentLocation = (mgState: MetaGameState, districtID: number, l
 }
 
 export const takeFromHand = (player: PlayerGameState, cards: Card[]): Card[] | string => {
+    if (isNullOrEmpty(cards))
+        return [];
+
     let cardIds = cards.map(c => c.id);
     
     if (cardIds.length > player.hand.length || !cardIds.every(cid => player.hand.map(c => c.id).includes(cid)))

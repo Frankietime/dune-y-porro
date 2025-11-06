@@ -4,18 +4,21 @@ import { DistrictIconsEnum, ResourceEnum } from "./enums";
 export type MetaGameState = {
     G: GameState;
     ctx: Ctx;
-    playerID: PlayerID;
+    playerID?: PlayerID;
     random?: any;
     plugins?: DefaultPluginAPIs;
 }
 
 export interface GameState {
   players: Dictionary<PlayerGameState>;
+  playersViewModel: PlayerViewModel[];
   districts: District[];
   cardMarket: Card[];
+  roundEndingCounter: number;
 }
 
 export type PlayerGameState = {
+  id: string;
   cardsInPlay?: Card[];
   hasPlayedCard: boolean;
   numberOfWorkers: number;
@@ -27,6 +30,18 @@ export type PlayerGameState = {
   discardPile: Card[];
   trashPile: Card[];
   hand: Card[];
+  hasRevealed: boolean;
+ }
+
+export type PlayerViewModel = {
+  id: string;
+  hasRevealed: boolean,
+  numberOfWorkers: number;
+  victoryPoints: number;
+  deckLength: number;
+  discardPile: Card[];
+  trashPile: Card[];
+  handLength: number;
 }
 
 export type PlayerState = { 
@@ -42,7 +57,8 @@ export type District = {
   y: number;
   x: number;
   locations: Location[];
-  presence?: PlayerPresence[]
+  presence: { [key: string]: PlayerPresence }
+  combatWinnerId?: string;
 }
 
 export type PlayerPresence = {
@@ -52,8 +68,11 @@ export type PlayerPresence = {
 
 export type Location = {
   Id: string;
+  districtId: string;
   name: string;
   cost: LocationCost;
+  // evitar rewards que requieren elecciones de usuario por el momento
+  // la interaccion es mas facil en el momento de pagar el coste (cuando todavia no se ejecuta la move)
   reward: LocationReward;
   isDisabled?: boolean;
   isSelected?: boolean;
@@ -72,6 +91,8 @@ export type ResourceBag = {
   amount: number
 }
 
+// evitar rewards que requieren elecciones de usuario por el momento
+// la interaccion es mas facil en el momento de pagar el coste (cuando todavia no se ejecuta la move)
 export type LocationReward = {
   resources?: ResourceBag[];
   moves?: BoardMove[];

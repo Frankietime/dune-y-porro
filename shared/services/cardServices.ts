@@ -20,7 +20,7 @@ export const getTierOneCards = () => {
             ...getDistrictCard([districtId]),
             primaryEffects: 
                 {
-                    moveId: LocationMovesEnum.ADD_PRESENCE_TOKEM,
+                    moveId: LocationMovesEnum.ADD_PRESENCE_TOKEN,
                     name: "FIGHT!"
                 }
             }
@@ -101,7 +101,7 @@ const getMiscelanousDeck = (): Card[] => {
                 }            
         },
         {
-            id: "MISC-2",
+            id: "MISC-3",
             name: "Strange Candy",
             districtIds: [DistrictIconsEnum.D1, DistrictIconsEnum.D2, DistrictIconsEnum.D3, DistrictIconsEnum.D4],
             primaryEffects: 

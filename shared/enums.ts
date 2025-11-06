@@ -12,7 +12,7 @@ export enum ResourceEnum {
 
 export enum LocationMovesEnum {
     DRAW = "draw",
-    ADD_PRESENCE_TOKEM ="addPresenceToken",
+    ADD_PRESENCE_TOKEN ="addPresenceToken",
     GET_LOOT = "getLoot",
     STRANGE_CANDY_PUZZLE = "strangeCandyPuzzle",
     COOLDOWN = "coolDown",
@@ -25,5 +25,11 @@ export enum LocationMovesEnum {
     DISCARD = "discard",
     SELECT_AND_DISCARD = "selectAndDiscard",
     DEAL = "deal",
+}
 
+export enum PlayerColorsEnum {
+    "red" = 0,
+    "green" = 1,
+    "violet" = 2,
+    "yellow" = 3,
 }

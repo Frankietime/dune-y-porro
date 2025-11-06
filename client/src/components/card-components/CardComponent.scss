@@ -4,6 +4,10 @@
     background-color: white;
     height: 157px;
     border: 2px solid black;
+
+    &.disabled {
+        opacity: 0.5;
+    }
     
     &.red {
         border: 2pt solid red !important;

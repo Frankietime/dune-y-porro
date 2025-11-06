@@ -8,6 +8,7 @@ import { Client as ClientComponent} from "boardgame.io/react";
 import { Game } from "../../shared/Game";
 import { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
 import { BACKEND_URL } from "./config";
+import { SocketIOTransport } from "boardgame.io/dist/types/src/client/transport/socketio";
 
 export default function App() {
 
@@ -16,29 +17,44 @@ export default function App() {
     setClient,
 
     playerState,
+    server,
     setServer
   } = useAppStore();
 
-  const server = SocketIO({ server: BACKEND_URL });
-
-  const GameClientComponent = useMemo(() => {
-    const gameClientComponent = ClientComponent({ 
-      game: Game, 
-      board: BoardComponent,
-      multiplayer: server,
-    });   
+  let socketIOserver: (transportOpts: any) => SocketIOTransport = useMemo(() => { 
     
-    setClient(client);
-    setServer(server);
+    if (server != null && server.length == 1)
+      return server;
 
-    return gameClientComponent;
-  }, [Game]);
+    const _server = SocketIO({ server: BACKEND_URL });
+    setServer(_server);
+    return _server; 
+
+  }, []);
+  
+  const GameClientComponent = useMemo(() => {
+    // server = SocketIO({ server: BACKEND_URL });
+    if (client == null || client.defaultProps == null || client.defaultProps.matchID == null) {
+      const gameClientComponent = ClientComponent({ 
+        game: Game, 
+        board: BoardComponent,
+        multiplayer: socketIOserver!,
+        debug: false,
+      });   
+      
+      setClient(gameClientComponent);
+
+      return gameClientComponent;
+    } else {
+      return client;
+    }
+  }, []);
 
   const isGameInCourse = () => playerState.matchID != null && playerState.matchID != "";
 
   return (
       <div className="flex justify-center nes-poiter">
-        { !isGameInCourse() ? 
+        { !isGameInCourse() && GameClientComponent ? 
           <LobbyComponent />
             :        
           <GameClientComponent

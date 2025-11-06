@@ -2,6 +2,7 @@ import { INVALID_MOVE } from "boardgame.io/core";
 import { Card, MetaGameState, PlayerGameState } from "../../types";
 import { isPlayCardValid } from "../../game-helper";
 import { getCurrentPlayer, takeFromHand } from "./helper";
+import { log } from "../../common-methods";
 
 export const selectCard = (player: PlayerGameState, selectedCard: Card) => {
     if (!isPlayCardValid(player, selectedCard.id))
@@ -9,13 +10,27 @@ export const selectCard = (player: PlayerGameState, selectedCard: Card) => {
     player.selectedCard = selectedCard;
 }
 
-export const draw = (player: PlayerGameState, random: any) => {
-    if (player.hand.length == 0) {
-        player.deck = rebuildDeck(player, random);
+const doDraw = (player: PlayerGameState) => player.hand.push(player.deck.pop()!);
 
-    } else {
-        player.hand.push(player.deck.pop()!);                        
+export const draw = (player: PlayerGameState, random: any, numberOfCards?: number) => {
+    log("draw " + numberOfCards);
+    if (player.deck.length == 0) {
+        player.deck = rebuildDeck(player, random);
     }
+    
+    numberOfCards ? 
+        Array.from({ length: numberOfCards })
+            .forEach(c => {
+                if (player.deck.length > 0) {
+                    doDraw(player);
+                } else {
+                    rebuildDeck(player, random);
+                    doDraw(player);
+                }                
+            })
+            :
+        doDraw(player);                       
+    
 }
 
 export const getLoot = (player: PlayerGameState) => {
@@ -30,6 +45,9 @@ export const discard = (player: PlayerGameState, cards: Card[]): Card[] | string
 }
 
 export const trash = (player: PlayerGameState, cards: Card[]): Card[] | string => {
+
+    if ((player.deck.length + player.discardPile.length + player.hand.length) <= 5)
+        return INVALID_MOVE;
     
     const trashed = takeFromHand(player, cards);
     
@@ -37,5 +55,6 @@ export const trash = (player: PlayerGameState, cards: Card[]): Card[] | string =
 }
 
 const rebuildDeck = (player: PlayerGameState, random: any): Card[] => {
-    return random.Shuffle(player.discardPile);
+    log("REBUILD DECK");
+    return player.deck = random.Shuffle(player.discardPile).map(() => player.discardPile.pop());
 }
