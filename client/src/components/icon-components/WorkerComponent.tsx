@@ -17,7 +17,7 @@ export const WorkerComponent = ({
     playerID,
 }: WorkerComponentProps) => {
     return (
-        <div className={"absolute player-" + playerID + "-worker"} style={{top: y + 200, left: x + 125 + mirror}}>            
+        <div className={"absolute player-" + playerID + "-worker worker-container"} >            
             <div className="worker-container">
                 {Array.from({length: numerOfWorkers}).map((_, index) => (
                     <div key={index} className="worker-image-container" style={{ left: index * 10, width: "40%", height: "40%" }}>

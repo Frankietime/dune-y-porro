@@ -58,7 +58,7 @@ export const CardComponent = ({
                     <hr></hr>
                     <div  className="play">Play</div>
                     <hr></hr> 
-                    <div>{card?.primaryEffects?.name}</div>
+                    <div className="play-effect">{card?.primaryEffects?.name}</div>
                 </div>
                 }
                 {card?.secondaryEffects != null &&

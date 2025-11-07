@@ -20,8 +20,10 @@ export const useBoardComponent = () => {
         
         <EventBox h={220} w={150} y={790} x={1640} show={true} key="arrow-down" onClick={props.onArrowDown}  />
 
-        <Button w={160} h={75} y={680} x={1450} show={true} key="btn-pass" onClick={props.onPass} />
-        <Button  w={160} h={75} y={680} x={1630} show={true} key="btn-reveal" onClick={props.onReveal} />
+        {/* <Button style y={455} x={970} show={true} key="btn-pass" onClick={props.onPass} /> */}
+
+        
+        {/* <Button  w={160} h={75} y={680} x={1630} show={true} key="btn-reveal" onClick={props.onReveal} /> */}
         </>;
     };
 
