@@ -8,7 +8,7 @@ import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
 import { locsXPos, locsYPos, trackerXPos, trackerYPos } from "./constants";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Card } from "../../../../shared/types";
 import "./BoardComponent.scss";
 import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
@@ -35,11 +35,28 @@ export const BoardComponent = ({
     chatMessages,
     
 }: BoardGameProps) => {
+  const BASE_W = 1280;
+  const BASE_H = 720;
 
-  const {
-    Hud
-  } = useBoardComponent();  
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const [scale, setScale] = useState(1);
 
+  useLayoutEffect(() => {
+    const el = outerRef.current!;
+    const update = () => {
+      const availW = el.clientWidth;
+      const availH = el.clientHeight;
+      const s = Math.min(availW / BASE_W, availH / BASE_H);
+      // Upscale only (no shrink). Si querés permitir shrink, quitá el max(1, ...)
+      setScale(Math.max(1, s));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener('resize', update);
+    return () => { ro.disconnect(); window.removeEventListener('resize', update); };
+  }, []);
+  
   useEffect(() => {
     // reset UI non-cient state at the begining of the round
     if (ctx.phase == "mainPhase")
@@ -142,139 +159,149 @@ return (
     {!isNullOrEmpty(matchID) && (
       <>
         {G.districts && G.players && player && (
-          <div className="flex w-screen justify-around board">
-            <GameInfoComponent
-              playersPublicInfo={G.playersViewModel}
-              G={G}
-              ctx={ctx}
-            />
-
-            {/* Board Area */}
-            <div className="w-[1280px] h-[720px] relative border-1 box-content" 
-              style={{backgroundImage: `url(${mapBg})`,backgroundSize: "cover", width: "100%", height: "1000px"}}
-            >
-              {G.districts.map((district, dIndex) => (
-                <div
-                  key={dIndex} 
-                  className="district-container absolute" 
-                  style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
-                    <div 
-                      className="district-name-container"
-                      style={{
-                        top: locsYPos[dIndex][0] -60, 
-                        left: locsXPos[dIndex][dIndex == 0 ? 2 : dIndex == 3 ? 3 : 0] + (dIndex == 1 || dIndex == 3 ? -180 : 10), 
-                        position: "relative", 
-                        color: "black", 
-                        fontWeight: 600, 
-                        backgroundColor: "white",
-                        padding: "10px"
-                      }}
-                    >
-                      <div className="district-name">
-                        {district.id} - {district.name} |  {ctx.phase != "combatPhase" && district.presence ? G.playersViewModel
-                          .map(player => 
-                            <span
-                              key={player.id}
-                              style={{ 
-                              fontWeight: "600", 
-                              color: PlayerColorsEnum[parseInt(player.id)], 
-                              display: "inline"}}
-                            > 
-                              {district.presence[player.id]?.amount ?? " - "}
-                            </span>
-                          ) : 
-                            <span style={{ 
-                                fontWeight: "600", 
-                                display: "inline"
-                              }}> 
-                                Winner:  
-                                <span style={{
-                                  color: district.combatWinnerId ? PlayerColorsEnum[parseInt(district.combatWinnerId)] : "black"
-                                }}> 
-                                  {" "}{district.combatWinnerId ? matchData.players[parseInt(district.combatWinnerId)].name :  " - "}
-                                </span>
-                            </span>
-                        }
-                      </div>
-                    </div>
-                  
-                  {district.locations.map((location, locIndex) => (
-                    <div className="location-container" key={dIndex + "-" + locIndex}>
-                      <LocationComponent
-                        {...location}
-                        x={locsXPos[dIndex][locIndex]} y={locsYPos[dIndex][locIndex]}
-                        show={true}
-                        district={district}
-                        onClick={(e: Event) => onLocationSelect(dIndex, locIndex, e)} 
-                        isDisabled={isLocationDisabled(location)}
-                      />
-                    </div>)
-                  )}
-                  
-                </div>
-              ))}
-              
-              {/* Player Area Component */}
-              <PlayerAreaComponent 
+          <div className="w-screen overflow-auto board-outer" ref={outerRef} style={{ ['--scale' as any]: scale }}>
+            <div className="board-viewport">
+              <GameInfoComponent
+                playersPublicInfo={G.playersViewModel}
                 G={G}
-                cancelCardSelection={cancelCardSelection}
-                cardSelectionModalOptions={cardSelectionModalOptions}
-                confirmCardSelection={confirmCardSelection}
-                events={events}
-                moves={moves}
-                onSelectToDiscard={onSelectToDiscard}
-                player={player}
-                selectedCard={getSelectedCard()}
+                ctx={ctx}
               />
-              
-              {/* Combat Phase Modal */}
-              <Dialog.Root open={ctx.phase == "combatPhase"}>
-                <Dialog.Content style={{
-                  top: "230px",
-                  width: "100%",
-                  height: "100%"
-                }}>
-                  <Table.Root size="1">
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.ColumnHeaderCell>District</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>Winner</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>Ranking</Table.ColumnHeaderCell>
-                      </Table.Row>
-                    </Table.Header>
 
-                    <Table.Body>
-                      {G.districts.map(d => (
+              {/* Board Area */}
+              <div style={{
+                    width: BASE_W,
+                    height: BASE_H,
+                    backgroundImage: `url(${mapBg})`,
+                    backgroundSize: '100% 100%',
+                    imageRendering: 'crisp-edges', // 'auto' si preferís suavizado
+                  }}
+                className="board-container relative mx-auto" 
+                style={{backgroundImage: `url(${mapBg})`,backgroundSize: "100% 100%"}}
+              >
+                {G.districts.map((district, dIndex) => (
+                  <div
+                    key={dIndex} 
+                    className="district-container absolute" 
+                    style={{top: district.y, left: district.x, width: "fit-content", height: "fit-content"}}>
+                      <div 
+                        className="district-name-container"
+                        style={{
+                          // top: locsYPos[dIndex][0] -60, 
+                          // left: locsXPos[dIndex][dIndex == 0 ? 2 : dIndex == 3 ? 3 : 0] + (dIndex == 1 || dIndex == 3 ? -180 : 10), 
+                          top: "-50px",
+                          position: "relative", 
+                          color: "black", 
+                          fontWeight: 600, 
+                          backgroundColor: "white",
+                          padding: "10px"
+                        }}
+                      >
+                        <div className="district-name">
+                          {district.id} - {district.name} |  {ctx.phase != "combatPhase" && district.presence ? G.playersViewModel
+                            .map(player => 
+                              <span
+                                key={player.id}
+                                style={{ 
+                                fontWeight: "600", 
+                                color: PlayerColorsEnum[parseInt(player.id)], 
+                                display: "inline"}}
+                              > 
+                                {district.presence[player.id]?.amount ?? " - "}
+                              </span>
+                            ) : 
+                              <span style={{ 
+                                  fontWeight: "600", 
+                                  display: "inline"
+                                }}> 
+                                  Winner:  
+                                  <span style={{
+                                    color: district.combatWinnerId ? PlayerColorsEnum[parseInt(district.combatWinnerId)] : "black"
+                                  }}> 
+                                    {" "}{district.combatWinnerId ? matchData.players[parseInt(district.combatWinnerId)].name :  " - "}
+                                  </span>
+                              </span>
+                          }
+                        </div>
+                      </div>
+                    
+                    {district.locations.map((location, locIndex) => (
+                      <div className="location-container" key={dIndex + "-" + locIndex}>
+                        <LocationComponent
+                          {...location}
+                          x={locsXPos[dIndex][locIndex]} y={locsYPos[dIndex][locIndex]}
+                          show={true}
+                          district={district}
+                          onClick={(e: Event) => onLocationSelect(dIndex, locIndex, e)} 
+                          isDisabled={isLocationDisabled(location)}
+                        />
+                      </div>)
+                    )}
+                    
+                  </div>
+                ))}
+                
+                {/* Player Area Component */}
+                <PlayerAreaComponent 
+                  G={G}
+                  cancelCardSelection={cancelCardSelection}
+                  cardSelectionModalOptions={cardSelectionModalOptions}
+                  confirmCardSelection={confirmCardSelection}
+                  events={events}
+                  moves={moves}
+                  onSelectToDiscard={onSelectToDiscard}
+                  player={player}
+                  selectedCard={getSelectedCard()}
+                />
+                
+                {/* Combat Phase Modal */}
+                <Dialog.Root open={ctx.phase == "combatPhase"}>
+                  <Dialog.Content style={{
+                    top: "230px",
+                    width: "100%",
+                    height: "100%"
+                  }}>
+                    <Table.Root size="1">
+                      <Table.Header>
                         <Table.Row>
-                          <Table.RowHeaderCell><span style={{ fontWeight: 600 }}>{d.id} - {d.name}</span></Table.RowHeaderCell>
-                          <Table.Cell>
-                            <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(d.combatWinnerId!)]}}>
-                              {d.combatWinnerId ? matchData.players[parseInt(d.combatWinnerId)].name :  " - "}
-                            </span>
-                          </Table.Cell>
-                          <Table.Cell>
-                            { Object.keys(d.presence)
-                              .map(k => d.presence[k])
-                              .sort((a, b) => a.amount - b.amount)
-                              .map((p, i, array) => 
-                                <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(p.playerID)]}}>{(p.amount ?? "") } {array.length != i + 1 &&<span style={{ color: "black"}}> / </span>}</span>
-                              )}
-                            </Table.Cell>
+                          <Table.ColumnHeaderCell>District</Table.ColumnHeaderCell>
+                          <Table.ColumnHeaderCell>Winner</Table.ColumnHeaderCell>
+                          <Table.ColumnHeaderCell>Ranking</Table.ColumnHeaderCell>
                         </Table.Row>
-                      ))}
-                      
-                    </Table.Body>
-                  </Table.Root>
-                  <Button 
-                    style={{ marginTop: "25px", width: "100%"}}
-                    highContrast={true} 
-                    color="red" 
-                    size={"3"}
-                    disabled={roundIsEnding}
-                    onClick={() => { moves.endRound(); setRoundIsEnding(true) }}
-                  >{ roundIsEnding ? "Waiting for other players..." : "End Round"} </Button>
-                </Dialog.Content>
-              </Dialog.Root>
+                      </Table.Header>
+
+                      <Table.Body>
+                        {G.districts.map(d => (
+                          <Table.Row>
+                            <Table.RowHeaderCell><span style={{ fontWeight: 600 }}>{d.id} - {d.name}</span></Table.RowHeaderCell>
+                            <Table.Cell>
+                              <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(d.combatWinnerId!)]}}>
+                                {d.combatWinnerId ? matchData.players[parseInt(d.combatWinnerId)].name :  " - "}
+                              </span>
+                            </Table.Cell>
+                            <Table.Cell>
+                              { Object.keys(d.presence)
+                                .map(k => d.presence[k])
+                                .sort((a, b) => a.amount - b.amount)
+                                .map((p, i, array) => 
+                                  <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(p.playerID)]}}>{(p.amount ?? "") } {array.length != i + 1 &&<span style={{ color: "black"}}> / </span>}</span>
+                                )}
+                              </Table.Cell>
+                          </Table.Row>
+                        ))}
+                        
+                      </Table.Body>
+                    </Table.Root>
+                    <Button 
+                      style={{ marginTop: "25px", width: "100%"}}
+                      highContrast={true} 
+                      color="red" 
+                      size={"3"}
+                      disabled={roundIsEnding}
+                      onClick={() => { moves.endRound(); setRoundIsEnding(true) }}
+                    >{ roundIsEnding ? "Waiting for other players..." : "End Round"} </Button>
+                  </Dialog.Content>
+                </Dialog.Root>
+              </div>
             </div>
           </div>
         )}

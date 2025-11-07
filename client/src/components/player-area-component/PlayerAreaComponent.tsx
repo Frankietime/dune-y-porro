@@ -35,6 +35,10 @@ export const PlayerAreaComponent = ({
         moves.selectCard(G, selectedCard)
     }
 
+    const onPass = () => G.playersViewModel.filter(p => !p.hasRevealed).length == 1 ? null : events.endTurn();
+    
+    const onReveal = () => moves.reveal();
+    
     return (<>
         <WorkerComponent
             numerOfWorkers={player.numberOfWorkers}
@@ -42,13 +46,6 @@ export const PlayerAreaComponent = ({
             mirror={0}
             playerID={parseInt(player.id!)}
             />              
-            
-            <Hud 
-                onPass={() => G.playersViewModel.filter(p => !p.hasRevealed).length == 1 ? null : events.endTurn()}
-                onReveal={() => moves.reveal()}
-                onArrowUp={() => alert("arrow up")}
-                onArrowDown={() => alert("arrow down")}
-            >
             <div className="player-resource-container absolute">
                 <div>VP<hr /><div>{player.victoryPoints}</div></div>
                 <div>Candy<hr /><div>{player.candy}</div></div>
@@ -59,7 +56,7 @@ export const PlayerAreaComponent = ({
             </div>
     
             <div className="hand-container" style={{
-            width: "200px", position: "relative", top: "240px", left: "295px"
+            width: "200px", position: "relative", top: "-14px"
             }}>
 
             {!cardSelectionModalOptions.isOpen ? player.hand?.map((card: Card, index) => 
@@ -109,7 +106,8 @@ export const PlayerAreaComponent = ({
             </Dialog.Root>
             )}  
             </div>
-        </Hud>
+            <div className="pass-btn" onClick={onPass} />
+            <div className="reveal-btn" onClick={onReveal} />
         </>
     )
 }
