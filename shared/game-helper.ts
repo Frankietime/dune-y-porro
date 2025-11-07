@@ -90,18 +90,19 @@ export const districtsSetup = (G: GameState) => {
 
         d.locations.forEach(l => {
             l.isDisabled = false;
+            l.isSelected = false;
             l.takenByPlayerID = undefined;
         })
     });
 }
 
 export const calculateCombatWinner = (district: District): string | undefined => {
-    // let combatWinnerId = null;
+
     if (!isNullOrEmpty(district.presence)) {
         const ranking = 
             Object.keys(district.presence)
                 .map(key => district.presence[key])
-                .sort((a, b) => a.amount - b.amount);
+                .sort((a, b) => b.amount - a.amount);
 
         if (ranking != null && ranking.length == 1) {
             return ranking[0].playerID;

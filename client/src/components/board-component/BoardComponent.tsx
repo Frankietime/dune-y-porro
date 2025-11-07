@@ -281,7 +281,7 @@ return (
                             <Table.Cell>
                               { Object.keys(d.presence)
                                 .map(k => d.presence[k])
-                                .sort((a, b) => a.amount - b.amount)
+                                .sort((a, b) => b.amount - a.amount)
                                 .map((p, i, array) => 
                                   <span style={{fontStyle: "italic", fontWeight: 600, color: PlayerColorsEnum[parseInt(p.playerID)]}}>{(p.amount ?? "") } {array.length != i + 1 &&<span style={{ color: "black"}}> / </span>}</span>
                                 )}

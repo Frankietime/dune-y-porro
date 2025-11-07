@@ -102,6 +102,7 @@ export type BoardMove = {
   moveId: string;
   name: string;
   params?: any;
+  location?: Location;
 }
 
 export type Card = {
