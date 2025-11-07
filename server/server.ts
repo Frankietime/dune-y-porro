@@ -30,6 +30,22 @@ server.app.use(
   })
 );
 
+// server.app.use(async (ctx, next) => {
+//     const matchID  = ctx.query.matchID  ?? ctx.query.matchId  ?? ctx.query.matchid;
+//     const playerID = ctx.query.playerID ?? ctx.query.playerId ?? ctx.query.playerid;
+
+//     console.log(ctx)
+
+//     console.log('[SOCKET HANDSHAKE]',
+//       'method:', ctx.method,
+//       'url:', ctx.url,
+//       'matchID:', matchID,
+//       'playerID:', playerID
+//     );
+//   // }
+//   await next();
+// });
+
 server.router.delete('/admin/matches/:matchID', async (ctx) => {
   const { matchID } = ctx.params;
 

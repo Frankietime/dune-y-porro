@@ -8,5 +8,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["*.js", "*.cjs", "*.ts", "../client/src/", "react-app-env.d.ts", "../client/src/assets/board/*.png"]
+  "include": ["./", "*.js", "*.cjs", "*.ts", "../client/src/", "react-app-env.d.ts", "../client/src/assets/board/*.png"]
 }

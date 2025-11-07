@@ -2,18 +2,28 @@ import { useEffect, useRef, useState } from "react";
 import { useLobbyServices } from "../../services/lobbyServices";
 import { useAppStore } from "../../store";
 import { useQuery } from "@tanstack/react-query";
+import "./GameInfoComponent.scss"
+import { Ctx } from "boardgame.io";
+import _ from "lodash";
+import { GameState, PlayerViewModel } from "../../../../shared/types";
 
 interface GameInfoComponentProps {
-    ctx: any;
-    chatMessages: any[];
-    sendChatMessage: (message: string) => void;
+    ctx: Ctx;
+    playersPublicInfo: PlayerViewModel[];
+    G: GameState;
+    chatMessages?: any[];
+    sendChatMessage?: (message: string) => void;
     errorNotification?: string;
+    children?: React.ReactNode;
 }
 
 export const GameInfoComponent = ({
     ctx,
+    G,
     chatMessages,
     sendChatMessage,
+    children,
+    playersPublicInfo
 }: GameInfoComponentProps) => {
 
     const { 
@@ -95,41 +105,41 @@ export const GameInfoComponent = ({
                 width: "310px",
                 zIndex: 10,
                 fontFamily: "'Press Start 2P', cursive",
-                fontSize: "12px",
-                paddingLeft: "0px"
+                fontSize: "9px",
+                paddingLeft: "0px",
+                opacity: "0.7"
             }}
             >
-            <p className="title">Game | {matchData.setupData.name}</p>
+            <h2 style={{ textDecoration: "underline", fontSize: 10}}>Game | {matchData.setupData.name}</h2>
 
             <div className="message-list">
                 <div className="nes-text is-primary">
-                    <strong>Player Name:</strong> <p>{playerState.name}</p>
+                    <p className="content-text">{playerState.name} | ID: {playerState.playerID}</p>
+                </div>
+                <div className="nes-text is-primary">
+                    <p><strong>PHASE: </strong><span className="content-text">{_.kebabCase(ctx.phase).replace("-", " ").toUpperCase()}</ span></p>
                 </div>
 
                 <div className="nes-text is-primary">
-                    <strong>Players:</strong>
+                    <strong>TURN</strong>
                 </div>
                 <ul className="nes-list is-circle" style={{ marginLeft: "1rem" }}>
                 
-                {matchData.players.map((p: any, index: number) => (
+                {playersPublicInfo.map((p: PlayerViewModel, index: number) => (
                     <li
                         key={index}
                         className={ctx.currentPlayer == p.id ? "nes-text is-success" : "nes-text"}
                     >
-                        {p.name}
+                        {matchData.players[index].name} { p.hasRevealed ? "- REVEALED" : ""}
                     </li>
                 ))}
                 </ul>
-
-                <div className="nes-text is-primary">
-                    <strong>ID:</strong> <p>{playerState.playerID}</p>
-                </div>
-                <div className="nes-text is-primary">
+                {/* <div className="nes-text is-primary">
                     <strong>Match ID:</strong> <p>{playerState.matchID}</p>
                 </div>
                 <div className="nes-text is-primary">
                     <strong>Creds:</strong> <p>{playerState.playerCredentials}</p>
-                </div>
+                </div> */}
 
                 {errorNotification && (
                     <div className="nes-text is-error">{errorNotification}</div>
@@ -137,79 +147,80 @@ export const GameInfoComponent = ({
             </div>
 
             {/* CHAT */}
-            <div  
-                className=" with-title is-rounded is-dark"
-                style={{
-                    marginTop: "1rem",
-                    margin: "10px",
-                    fontFamily: "'Press Start 2P', cursive",
-                    scrollBehavior: "smooth",
-                }}
-            >
-                <p className="title">Chat</p>
-
-                {/* Chat con alto fijo y scroll */}
-                <div
-                    ref={chatRef}
-                    className="chat-log"
+            { sendChatMessage && (
+                <div  
+                    className=" with-title is-rounded is-dark"
                     style={{
                         marginTop: "1rem",
-                        height: "300px",
-                        overflowY: "auto",
-                        paddingRight: "4px",
+                        margin: "10px",
+                        fontFamily: "'Press Start 2P', cursive",
+                        scrollBehavior: "smooth",
                     }}
                 >
+                    <p className="title">Chat</p>
 
-                {chatMessages != null &&
-                    chatMessages.map((msj, index) => (
-                    <p
-                        key={index}
-                        className={"nes-balloon " + (msj.sender == playerState.playerID ? "from-left" : "from-right")}
+                    {/* Chat con alto fijo y scroll */}
+                    <div
+                        ref={chatRef}
+                        className="chat-log"
                         style={{
-                        marginBottom: "1.5rem",
-                        fontFamily: "'Press Start 2P', cursive",
-                        fontSize: "10px",
-                        lineHeight: "1.4",
-                        color: "black",
-                        marginLeft: msj.sender == playerState.playerID ? "0px" : "40px"
+                            marginTop: "1rem",
+                            height: "300px",
+                            overflowY: "auto",
+                            paddingRight: "4px",
                         }}
                     >
-                        <span className="nes-text is-info">
-                        {matchData.players[msj.sender].name}:
-                        </span>{" "}
-                        {msj.payload}
-                    </p>
-                    ))}
-                </div>
-            </div>
 
-            <div className="nes-field" style={{ marginBottom: ".75rem" }}>
-                <input
-                    type="text"
-                    className="nes-input"
-                    placeholder="..."
-                    value={chatMessage}
-                    onChange={(evt) => setChatMessage(evt.target.value)}
-                    style={{ fontFamily: "'Press Start 2P', cursive" }}
-                    onKeyDown={(event) => { 
-                    if(event.code == "Enter") {
-                        sendChatMessage(chatMessage);
-                        setChatMessage(""); 
-                    }}}
-                />
-            </div>
+                    {chatMessages != null &&
+                        chatMessages.map((msj, index) => (
+                        <p
+                            key={index}
+                            className={"nes-balloon " + (msj.sender == playerState.playerID ? "from-left" : "from-right")}
+                            style={{
+                            marginBottom: "1.5rem",
+                            fontFamily: "'Press Start 2P', cursive",
+                            fontSize: "10px",
+                            lineHeight: "1.4",
+                            color: "black",
+                            marginLeft: msj.sender == playerState.playerID ? "0px" : "40px"
+                            }}
+                        >
+                            <span className="nes-text is-info">
+                            {matchData.players[msj.sender].name}:
+                            </span>{" "}
+                            {msj.payload}
+                        </p>
+                        ))}
+                    </div>
+                    <div className="nes-field" style={{ marginBottom: ".75rem" }}>
+                        <input
+                            type="text"
+                            className="nes-input"
+                            placeholder="..."
+                            value={chatMessage}
+                            onChange={(evt) => setChatMessage(evt.target.value)}
+                            style={{ fontFamily: "'Press Start 2P', cursive" }}
+                            onKeyDown={(event) => { 
+                            if(event.code == "Enter") {
+                                sendChatMessage(chatMessage);
+                                setChatMessage(""); 
+                            }}}
+                        />
+                    </div>
             
-            <button
-                type="button"
-                className="nes-btn is-primary"
-                style={{ fontFamily: "'Press Start 2P', cursive" }}
-                onClick={() => {
-                    sendChatMessage(chatMessage);
-                    setChatMessage("");
-                }}
-            >
-                Enviar
-            </button>
+                    <button
+                        type="button"
+                        className="nes-btn is-primary"
+                        style={{ fontFamily: "'Press Start 2P', cursive" }}
+                        onClick={() => {
+                            sendChatMessage(chatMessage);
+                            setChatMessage("");
+                        }}
+                    >
+                        Enviar
+                    </button>
+                </div>
+            )}
 
             <button
                 onClick={onLeaveMatch}
@@ -219,6 +230,7 @@ export const GameInfoComponent = ({
             >
                 Leave
             </button>
+            {children}
         </div>
     )
 }

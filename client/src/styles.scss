@@ -2,8 +2,17 @@ body {
   width: 100vw;
   height: 100vh;
 
+  // disable text select
+  -webkit-user-select: none; /* For Safari */
+  -ms-user-select: none;    /* For IE 10 and 11 */
+  user-select: none;        /* Standard syntax */
+
   .disabled {
     pointer-events: 'none'!important;
   }
+}
+
+.theme-styles {
+  font-size: 16px;
 }
 

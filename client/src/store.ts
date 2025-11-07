@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { PlayerState } from "../../shared/types";
 import { LobbyAPI } from "boardgame.io";
+import { getRandomPlayerName } from "../../shared/services/moves/playerServices";
 
 type AppState = {
   playerState: PlayerState;
@@ -17,7 +18,7 @@ type AppState = {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  playerState: { name: "Player 1"} as PlayerState,
+  playerState: { name: getRandomPlayerName()} as PlayerState,
   setPlayerState: (p) => set({ playerState: p }),
   
   matchData: {} as LobbyAPI.Match,

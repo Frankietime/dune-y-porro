@@ -1,3 +1,4 @@
+
 import { District } from "../../../../shared/types";
 
 export const useBoardComponent = () => {
@@ -9,20 +10,18 @@ export const useBoardComponent = () => {
         onPass?: () => void,
         onReveal?: () => void,
         selectedCardIndex: number | undefined,
+        children?: React.ReactNode
     }) => {
     return <>
-        <Card y={540} x={83} show={true} key="arrow-up" onClick={props.onArrowUp} />
+        <EventBox h={220} w={150} y={805} x={118} show={true} key="arrow-up" onClick={props.onArrowUp} />
 
-        {Array.from(Array(5).keys()).map((_, i) => <Card
-            isSelected={i == props.selectedCardIndex} 
-            y={540} x={390 + i*105} show={true} key={`card-${i}`} 
-            onClick={() => props.onSelectCard ? props.onSelectCard(i) : undefined} 
-        />)}
+        {/* hand */}
+        {props.children}
         
-        <Card y={540} x={1115} show={true} key="arrow-down" onClick={props.onArrowDown}  />
+        <EventBox h={220} w={150} y={790} x={1640} show={true} key="arrow-down" onClick={props.onArrowDown}  />
 
-        <Button y={470} x={992} show={true} key="btn-pass" onClick={props.onPass} />
-        <Button y={470} x={1110} show={true} key="btn-reveal" onClick={props.onReveal} />
+        <Button w={160} h={75} y={680} x={1450} show={true} key="btn-pass" onClick={props.onPass} />
+        <Button  w={160} h={75} y={680} x={1630} show={true} key="btn-reveal" onClick={props.onReveal} />
         </>;
     };
 
@@ -35,7 +34,7 @@ export const useBoardComponent = () => {
     const bottomRowOffsetX = props.mirror ? 108 : 0;
     const offsetY = 0;
     const offsetX = 0;
-    return <div className="relative" style={{top: props.y ?? 0, left: props.x ?? 0, width: "fit-content", height: "fit-content"}}>
+    return <div key={props.x + "-" + props.y} className="relative" style={{top: props.y ?? 0, left: props.x ?? 0, width: "fit-content", height: "fit-content"}}>
         <ClickBox _onClick={() => props.onLocationSelect(0, 0)} x={54 + offsetX} y={0 + offsetY} show={true} />
         <ClickBox _onClick={() => props.onLocationSelect(0, 1)} x={178 + offsetX} y={0 + offsetY} show={true} />
         <ClickBox _onClick={() => props.onLocationSelect(0, 2)} x={0 + bottomRowOffsetX} y={67 + offsetY} show={true} />
@@ -62,6 +61,7 @@ export const useBoardComponent = () => {
     }) => {
     return ( 
         <EventBox 
+            key={props.x + "-" + props.y}
             onClick={props._onClick} 
             // w={props.w ?? 110} h={props.h ?? 55} 
             // isSelected={props.isSelected}
@@ -80,7 +80,7 @@ export const useBoardComponent = () => {
     x: number,
     y: number,
     }) => {
-    return <div className="relative" style={{top: props.y, left: props.x}}>
+    return <div key={props.x + "-" + props.y} className="relative" style={{top: props.y, left: props.x}}>
         <NumericTracker x={0} y={0} show={true} />
         <NumericTracker x={4} y={50} h={38} w={38} show={true} />
         <NumericTracker x={4} y={49 + 1 * 38} h={38} w={38} show={true} />
@@ -120,28 +120,10 @@ export const useBoardComponent = () => {
     y: number,
     show?: boolean,
     }) => {
-    return <div className="relative" style={{top: props.y, left: props.x}}>
+    return <div key={props.x + "-" + props.y} className="relative" style={{top: props.y, left: props.x}}>
         <EventBox {...props} w={props.w ?? 20} h={props.h ?? 50} x={0} y={0} />
         <EventBox {...props} w={props.w ?? 20} h={props.h ?? 50} x={(props.w ?? 20) - 1} y={0} />
     </div>;
-    }
-
-    const Card = (props: {
-    w?: number,
-    h?: number,
-    x: number,
-    y: number,
-    show?: boolean,
-    onClick?: () => void,
-    isSelected?: boolean,
-    }) => {
-    return (
-        <EventBox 
-            {...props} 
-            w={props.w ?? 105} 
-            h={props.h ?? 157} 
-            isSelected={props.isSelected} 
-        />);
     }
 
     const Button = (props: {
@@ -167,7 +149,7 @@ export const useBoardComponent = () => {
         disabled?: boolean,
         }) => {
         return (
-            <div className={"event-box absolute" + (props.show ? " border-2 border-solid" : "") + (props.disabled ? " disabled" : "")}
+            <div key={props.x + "-" + props.y} className={"event-box absolute" + (props.show ? " border-2 border-solid" : "") + (props.disabled ? " disabled" : "")}
                 style={{top: props.y, left: props.x, backgroundColor: props.isSelected ? "RGB(75,0,130, 0.3)" : "none", width: props.w ?? "fit-content", height: props.h ?? "fit-content"}}
                 onClick={props.disabled ? () => {} : props.onClick}
             >
@@ -185,7 +167,6 @@ export const useBoardComponent = () => {
         NumericTracker,
         VisualTracker,
         DynamicElement,
-        Card,
         Button,
         EventBox
     }
