@@ -139,7 +139,7 @@ export const Game: GameInterface<GameState> = {
                         // playerState.discardPile.push(playedCard[0] as Card);
                         
                         if (selectedCard.primaryEffects)
-                            executeMove(mgState, selectedCard.primaryEffects!);
+                            executeMove(mgState, {...selectedCard.primaryEffects!, params: { ...selectedCard.primaryEffects.params }, location: currentLocation });
                     
                         // update resources
                         playerState.numberOfWorkers -= 1;
@@ -159,7 +159,7 @@ export const Game: GameInterface<GameState> = {
                         });
 
                         currentLocation.reward.moves?.forEach(move => {
-                            locationMoves[move.moveId]({ mgState, playerState, move });
+                            locationMoves[move.moveId]({ mgState, playerState, move, location: currentLocation });
                         })
 
                         // update district & location
@@ -170,7 +170,7 @@ export const Game: GameInterface<GameState> = {
                             if (d.id == currentLocation.districtId)
                                 d.presence[playerState.id] = {
                                     playerID: playerState.id,
-                                    amount: 1
+                                    amount: d.presence && d.presence[playerState.id] ? d.presence[playerState.id].amount + 1 : 1
                                 };
                             
                         });

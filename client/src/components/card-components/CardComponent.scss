@@ -5,6 +5,12 @@
     height: 157px;
     border: 2px solid black;
 
+    &:hover {
+        border: 2pt solid aqua;
+        // opacity: 0.5;
+    }
+
+
     &.disabled {
         opacity: 0.5;
     }

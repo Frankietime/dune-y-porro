@@ -1,16 +1,22 @@
 import { LocationMovesEnum } from "../../enums"
-import { BoardMove, MetaGameState } from "../../types"
+import { BoardMove, MetaGameState, PlayerPresence } from "../../types"
 import { discard, draw, getLoot, trash } from "./moves"
 import { getCurrentPlayer } from "./helper"
 import { MoveFunction, MoveFunctionArgs } from "./types"  
+import { isNullOrEmpty } from "../../common-methods"
 
 export const locationMoves: { [key: string]: MoveFunction } = {
     [LocationMovesEnum.DRAW]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
         
         draw(playerState, mgState.random, move.params.selectionNumber)
     },
-    [LocationMovesEnum.ADD_PRESENCE_TOKEN]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
-        
+    [LocationMovesEnum.ADD_PRESENCE_TOKEN]: ({ mgState, playerState, move, location }: MoveFunctionArgs) => {
+        const district = mgState.G.districts.find(d => d.id == location!.districtId);
+        if (district && !isNullOrEmpty(district.presence) && district.presence[playerState.id]) {
+            district.presence[playerState.id].amount += 1;
+        } else {
+            district!.presence = {...district?.presence, [playerState.id]: {playerID: playerState.id, amount: 1}};            
+        }
         // draw(playerState, mgState.random)
     },
     [LocationMovesEnum.GET_LOOT]: ({ mgState, playerState, move }: MoveFunctionArgs) => {
@@ -50,5 +56,5 @@ export const locationMoves: { [key: string]: MoveFunction } = {
 
 export const executeMove = (mgState: MetaGameState, move: BoardMove) => {
     const playerState = getCurrentPlayer(mgState);
-    locationMoves[move.moveId] ? locationMoves[move.moveId]({ mgState, playerState, move }) : null;
+    locationMoves[move.moveId] ? locationMoves[move.moveId]({ mgState, playerState, move, location: move.location }) : null;
 }
