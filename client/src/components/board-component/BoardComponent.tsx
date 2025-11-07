@@ -1,21 +1,17 @@
 import mapBg from "../../assets/board/prodis-tablero-estilo-y-char-v1.png";
-import { useBoardComponent } from "./UseBoardComponent";
 import { BoardProps } from "boardgame.io/react";
 import {  GameState, PlayerGameState } from "../../../../shared/types";
 import { Location } from "../../../../shared/types";
 import { LocationComponent } from "../location-component/LocationComponent";
-import { WorkerComponent } from "../icon-components/WorkerComponent";
 import { GameInfoComponent } from "../game-info-component/GameInfoComponent";
 import { isNullOrEmpty } from "../../../../shared/common-methods";
-import { locsXPos, locsYPos, trackerXPos, trackerYPos } from "./constants";
+import { locsXPos, locsYPos } from "./constants";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Card } from "../../../../shared/types";
 import "./BoardComponent.scss";
-import { DistrictIconComponent } from "../icon-components/DistrictIconComponent";
 import { LocationMovesEnum, PlayerColorsEnum } from "../../../../shared/enums";
-import { CardComponent } from "../card-components/CardComponent";
 import _ from "lodash";
-import { Button, Dialog, Flex, Table, Text, TextField, Tooltip } from "@radix-ui/themes";
+import { Button, Dialog, Table } from "@radix-ui/themes";
 import { useAppStore } from "../../store";
 import { CardSelectionModalOptions } from "./types";
 import { PlayerAreaComponent } from "../player-area-component/PlayerAreaComponent";
@@ -47,7 +43,6 @@ export const BoardComponent = ({
       const availW = el.clientWidth;
       const availH = el.clientHeight;
       const s = Math.min(availW / BASE_W, availH / BASE_H);
-      // Upscale only (no shrink). Si querés permitir shrink, quitá el max(1, ...)
       setScale(Math.max(1, s));
     };
     update();
@@ -140,10 +135,6 @@ export const BoardComponent = ({
     
   }
 
-  const currentPlayerNumberOfWorkers = (): number => {
-    return G.players[playerID!]?.numberOfWorkers;
-  }
-
   const isLocationDisabled = (location: Location): boolean => {
     return location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard || player.numberOfWorkers == 0;
   }
@@ -173,7 +164,7 @@ return (
                   height: BASE_H,
                   backgroundImage: `url(${mapBg})`,
                   backgroundSize: '100% 100%',
-                  imageRendering: 'crisp-edges', // 'auto' si preferís suavizado
+                  imageRendering: 'crisp-edges',
                 }}
                 className="board-container relative mx-auto" 
               >
@@ -185,8 +176,6 @@ return (
                       <div 
                         className="district-name-container"
                         style={{
-                          // top: locsYPos[dIndex][0] -60, 
-                          // left: locsXPos[dIndex][dIndex == 0 ? 2 : dIndex == 3 ? 3 : 0] + (dIndex == 1 || dIndex == 3 ? -180 : 10), 
                           top: "-50px",
                           position: "relative", 
                           color: "black", 
