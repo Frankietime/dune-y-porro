@@ -169,14 +169,13 @@ return (
 
               {/* Board Area */}
               <div style={{
-                    width: BASE_W,
-                    height: BASE_H,
-                    backgroundImage: `url(${mapBg})`,
-                    backgroundSize: '100% 100%',
-                    imageRendering: 'crisp-edges', // 'auto' si preferís suavizado
-                  }}
+                  width: BASE_W,
+                  height: BASE_H,
+                  backgroundImage: `url(${mapBg})`,
+                  backgroundSize: '100% 100%',
+                  imageRendering: 'crisp-edges', // 'auto' si preferís suavizado
+                }}
                 className="board-container relative mx-auto" 
-                style={{backgroundImage: `url(${mapBg})`,backgroundSize: "100% 100%"}}
               >
                 {G.districts.map((district, dIndex) => (
                   <div
