@@ -13,7 +13,7 @@ export interface LocationComponentProps extends Location {
     district: District,
     show?: boolean,
     isSelected?: boolean;
-    onClick: () => void,
+    onClick: (event: any) => void,
 }
 
 export const LocationComponent = ({

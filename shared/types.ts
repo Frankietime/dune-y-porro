@@ -15,6 +15,8 @@ export interface GameState {
   districts: District[];
   cardMarket: Card[];
   roundEndingCounter: number;
+  gameEndingCounter: number;
+  ranking: PlayerGameState[];
 }
 
 export type PlayerGameState = {
@@ -42,6 +44,8 @@ export type PlayerViewModel = {
   discardPile: Card[];
   trashPile: Card[];
   handLength: number;
+  candy: number;
+  loot: number;
 }
 
 export type PlayerState = { 
