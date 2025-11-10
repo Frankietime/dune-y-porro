@@ -48,7 +48,8 @@ export const BoardComponent = ({
       const availW = el.clientWidth;
       const availH = el.clientHeight;
       const s = Math.min(availW / BASE_W, availH / BASE_H);
-      setScale(Math.max(1, s));
+      // Allow scaling down on small (mobile) viewports
+      setScale(s);
     };
     update();
     const ro = new ResizeObserver(update);
@@ -152,7 +153,7 @@ export const BoardComponent = ({
   }
 
   const isLocationDisabled = (location: Location): boolean => {
-    return location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard || player.numberOfWorkers == 0;
+    return (location.name.includes("Sword Master") && player.maxNumberOfWorkers >= 3) || location.isDisabled || !G.players[ctx.currentPlayer]?.selectedCard || player.currentNumberOfWorkers == 0;
   }
 
   const getSelectedCard = (): Card | undefined => {
@@ -293,6 +294,8 @@ return (
                           district={district}
                           onClick={(e) => onLocationSelect(dIndex, locIndex, e)} 
                           isDisabled={isLocationDisabled(location)}
+                          selectedCard={getSelectedCard()}
+                          player={player}
                         />
                       </div>)
                     )}

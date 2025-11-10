@@ -44,7 +44,7 @@ export const PlayerAreaComponent = ({
     
     return (<>
         <WorkerComponent
-            numerOfWorkers={player.numberOfWorkers}
+            numerOfWorkers={player.currentNumberOfWorkers}
             x={281} y={463}
             mirror={0}
             playerID={parseInt(player.id!)}
@@ -79,7 +79,7 @@ export const PlayerAreaComponent = ({
                 
                 // hand
                 <CardComponent
-                    isDisabled={player.numberOfWorkers == 0}
+                    isDisabled={player.currentNumberOfWorkers == 0}
                     isSelected={card?.id == selectedCard?.id}
                     y={540} x={390 + index*105} show={true} 
                     key={`card-${card?.id}-${index}`} 

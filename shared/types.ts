@@ -23,7 +23,8 @@ export type PlayerGameState = {
   id: string;
   cardsInPlay?: Card[];
   hasPlayedCard: boolean;
-  numberOfWorkers: number;
+  currentNumberOfWorkers: number;
+  maxNumberOfWorkers: number;
   selectedCard?: Card;
   [ResourceEnum.Candy]: number;
   [ResourceEnum.Loot]: number;
@@ -33,12 +34,13 @@ export type PlayerGameState = {
   trashPile: Card[];
   hand: Card[];
   hasRevealed: boolean;
+  
  }
 
 export type PlayerViewModel = {
   id: string;
   hasRevealed: boolean,
-  numberOfWorkers: number;
+  currentNumberOfWorkers: number;
   victoryPoints: number;
   deckLength: number;
   discardPile: Card[];
@@ -82,6 +84,7 @@ export type Location = {
   isSelected?: boolean;
   takenByPlayerID?: string;
   dominanceBy?: string[];
+  isRestrictedArea?: boolean;
 }
 
 export type LocationCost = {

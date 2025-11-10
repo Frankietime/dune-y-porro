@@ -67,7 +67,7 @@ export const Game: GameInterface<GameState> = {
                     discardPile: p.discardPile,
                     handLength: p.hand.length,
                     hasRevealed: false,
-                    numberOfWorkers: p.numberOfWorkers,
+                    currentNumberOfWorkers: p.currentNumberOfWorkers,
                     trashPile: p.trashPile,
                     victoryPoints: p.victoryPoints,
                     candy: p.candy,
@@ -146,7 +146,7 @@ export const Game: GameInterface<GameState> = {
                             executeMove(mgState, {...selectedCard.primaryEffects!, params: { ...selectedCard.primaryEffects.params }, location: currentLocation });
                     
                         // update resources
-                        playerState.numberOfWorkers -= 1;
+                        playerState.currentNumberOfWorkers -= 1;
                         playerState.hasPlayedCard = true;
                         playerState.cardsInPlay?.push(selectedCard);
                         
