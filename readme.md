@@ -1,6 +1,6 @@
-# 🍬 Candy Fight
+# Candy Fight
 
-**Candy Fight** is a **web-based multiplayer board game prototype** that blends **worker placement**, **deck building**, and **political control** mechanics.  
+**Candy Fight** is a **web-based multiplayer board game** that blends **worker placement**, **deck building**, and **political control** mechanics.  
 Inspired by *Dune: Imperium* and *Rise of Ix*, it reimagines strategic conflict within a **psychedelic dystopia**, where intelligence, addiction, and influence determine survival.
 
 Built with **TypeScript**, **React**, and **boardgame.io**, the game aims to reproduce the depth of a modern tabletop experience in an interactive online format.
