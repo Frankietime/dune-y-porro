@@ -21,6 +21,7 @@ import { getInitialDistrictsState } from "./services/locationServices";
 import { discard, draw, getLoot, selectCard } from "./services/moves/moves";
 import { checlInvalidMoves } from "./services/moves/moveValidations";
 import { executeMove, locationMoves } from "./services/moves/movesServices";
+import { payLocationCost, grantLocationReward } from "./services/costRewardEngine";
 import { getCurrentLocation, getCurrentPlayer } from "./services/moves/helper";
 import { getPlayersList } from "./services/moves/playerServices";
 import { log } from "./common-methods";
@@ -150,21 +151,10 @@ export const Game: GameInterface<GameState> = {
                         playerState.hasPlayedCard = true;
                         playerState.cardsInPlay?.push(selectedCard);
                         
-                        currentLocation.cost.resources?.forEach(res => {
-                            playerState[res.resourceId] -= res.amount;
-                        })
-
-                        currentLocation.cost.moves?.map(move => {
-                            locationMoves[move.moveId]({ mgState, playerState, move: {...move, params: [...moveParams]}});
-                        });
-
-                        currentLocation.reward.resources?.forEach(res => {
-                            playerState[res.resourceId] += res.amount;
-                        });
-
-                        currentLocation.reward.moves?.forEach(move => {
-                            locationMoves[move.moveId]({ mgState, playerState, move, location: currentLocation });
-                        })
+                        // centralized cost/reward engine
+                        const costResult = payLocationCost(mgState, playerState, currentLocation, moveParams);
+                        if (costResult === INVALID_MOVE) return INVALID_MOVE;
+                        grantLocationReward(mgState, playerState, currentLocation);
 
                         // update district & location
                         currentLocation.isDisabled = true;

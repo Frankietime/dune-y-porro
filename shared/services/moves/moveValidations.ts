@@ -3,10 +3,12 @@ import _ from "lodash";
 import { BoardMove, MetaGameState } from "../../types";
 import { executeMove } from "./movesServices";
 
-export const checlInvalidMoves = (mgState: MetaGameState ,moves: BoardMove[]) => {
-    const clonedState = _.cloneDeep(mgState);
-    for (let i = 0; i <= moves.length, i++;) {
-        const clonedMove = _.cloneDeep(moves[i]);
-        executeMove(clonedState, clonedMove)
-    }
+// Simulate a sequence of moves on a cloned state to detect obvious errors.
+// Note: Current move implementations do not return status; this is a best-effort dry-run.
+export const checlInvalidMoves = (mgState: MetaGameState, moves: BoardMove[]) => {
+  const clonedState = _.cloneDeep(mgState);
+  (moves ?? []).forEach((m) => {
+    const clonedMove = _.cloneDeep(m);
+    executeMove(clonedState, clonedMove);
+  });
 }
